@@ -1,0 +1,39 @@
+┳ File: tests/serviceExample.proto
+┣┳ Message: Message
+┃┣┳ Enum: Humour
+┃┃┣━ UNKNOWN
+┃┃┣━ PUNS
+┃┃┣━ SLAPSTICK
+┃┃┣━ BILL_BAILEY
+┃┣━ name
+┃┣━ hilarity
+┃┣━ height_in_cm
+┃┣━ data
+┃┣━ result_count
+┃┣━ true_scotsman
+┃┣━ score
+┃┣━ key
+┃┣━ short_key
+┃┣━ nested
+┃┣━ r_funny
+┃┣━ terrain
+┃┣━ anything
+┃┣━ many_things
+┃┣━ submessage
+┃┣━ children
+┃┣━ string_map
+┣┳ Message: Nested
+┃┣━ bunny
+┃┣━ cute
+┣┳ Message: MessageWithMap
+┃┣━ byte_mapping
+┣┳ Message: IntMap
+┃┣━ rtt
+┣┳ Message: IntMaps
+┃┣━ maps
+┣┳ Message: TestUTF8
+┃┣━ scalar
+┃┣━ vector
+┃┣━ field
+┃┣━ map_key
+┃┣━ map_value
