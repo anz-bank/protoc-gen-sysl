@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
-
 	"github.com/sirupsen/logrus"
 
 	"bytes"
@@ -16,6 +15,11 @@ import (
 
 type PrinterModule struct {
 	*pgs.ModuleBase
+	pgs.Visitor
+	prefix string
+	w      io.Writer
+	Log    *logrus.Logger
+	Module *sysl.Module
 }
 
 func ASTPrinter() *PrinterModule { return &PrinterModule{ModuleBase: &pgs.ModuleBase{}} }
@@ -24,7 +28,10 @@ func (p *PrinterModule) Name() string { return "printer" }
 
 func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string]pgs.Package) []pgs.Artifact {
 	buf := &bytes.Buffer{}
-
+	println("wefg")
+	p.Module = &sysl.Module{
+		Apps: make(map[string]*sysl.Application, 0),
+	}
 	for _, f := range targets {
 		p.printFile(f, buf)
 	}
@@ -37,9 +44,8 @@ func (p *PrinterModule) printFile(f pgs.File, buf *bytes.Buffer) {
 	defer p.Pop()
 
 	buf.Reset()
-	v := initPrintVisitor(buf, "")
+	v := p.initPrintVisitor(buf, "")
 	p.CheckErr(pgs.Walk(v, f), "unable to print AST tree")
-
 	out := buf.String()
 
 	if ok, _ := p.Parameters().Bool("log_tree"); ok {
@@ -50,6 +56,7 @@ func (p *PrinterModule) printFile(f pgs.File, buf *bytes.Buffer) {
 		f.InputPath().SetExt(".tree.txt").String(),
 		out,
 	)
+
 }
 
 const (
@@ -59,71 +66,53 @@ const (
 	leafNodeSpacer  = "━ "
 )
 
-type PrinterVisitor struct {
-	pgs.Visitor
-	prefix string
-	w      io.Writer
-	Log    *logrus.Logger
-	Module *sysl.Module
+func (p *PrinterModule) initPrintVisitor(w io.Writer, prefix string) pgs.Visitor {
+	p.prefix = prefix
+	p.Visitor = pgs.PassThroughVisitor(p)
+	p.w = w
+	return p
 }
 
-func initPrintVisitor(w io.Writer, prefix string) pgs.Visitor {
-	v := PrinterVisitor{
-		prefix: prefix,
-		w:      w,
-		Log:    logrus.StandardLogger(),
-		Module: &sysl.Module{
-			Apps: make(map[string]*sysl.Application),
-		},
-	}
-	v.Visitor = pgs.PassThroughVisitor(&v)
-	return &v
-}
-
-func (v *PrinterVisitor) leafPrefix() string {
+func (v PrinterModule) leafPrefix() string {
 	if strings.HasSuffix(v.prefix, subNodePrefix) {
 		return strings.TrimSuffix(v.prefix, subNodePrefix) + leafNodePrefix
 	}
 	return v.prefix
 }
 
-func (v *PrinterVisitor) writeSubNode(str string) pgs.Visitor {
+func (v PrinterModule) writeSubNode(str string) pgs.Visitor {
 	fmt.Fprintf(v.w, "%s%s%s\n", v.leafPrefix(), startNodePrefix, str)
-	return initPrintVisitor(v.w, fmt.Sprintf("%s%v", v.prefix, subNodePrefix))
+	return v.initPrintVisitor(v.w, fmt.Sprintf("%s%v", v.prefix, subNodePrefix))
 }
 
-func (v *PrinterVisitor) writeLeaf(str string) {
+func (v PrinterModule) writeLeaf(str string) {
 	fmt.Fprintf(v.w, "%s%s%s\n", v.leafPrefix(), leafNodeSpacer, str)
 }
 
-func (v *PrinterVisitor) VisitFile(f pgs.File) (pgs.Visitor, error) {
+func (v PrinterModule) VisitFile(f pgs.File) (pgs.Visitor, error) {
 	return v.writeSubNode("File: " + f.Name().String()), nil
 }
 
-func (v *PrinterVisitor) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
+func (v PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 	return v.writeSubNode("sysltemplate.Execute(sysltemplate.Type, m)"), nil
 }
 
-func (v *PrinterVisitor) VisitEnum(e pgs.Enum) (pgs.Visitor, error) {
+func (v PrinterModule) VisitEnum(e pgs.Enum) (pgs.Visitor, error) {
 	return v.writeSubNode("Enum: " + e.Name().String()), nil
 }
 
-func (v *PrinterVisitor) VisitService(s pgs.Service) (pgs.Visitor, error) {
+func (v PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 	v.Module.Apps[s.Name().String()] = &sysl.Application{
-		Name:                 &sysl.AppName{Part: []string{s.Name().String()}},
-		LongName:             "",
-		Docstring:            "",
-		Attrs:                nil,
-		Endpoints:            fillEndpoints(s.Methods()),
-		Types:                nil,
-		Views:                nil,
-		Mixin2:               nil,
-		Wrapped:              nil,
-		SourceContext:        nil,
-		DONOTUSEMixin:        nil,
-		XXX_NoUnkeyedLiteral: struct{}{},
-		XXX_unrecognized:     nil,
-		XXX_sizecache:        0,
+		Name:          &sysl.AppName{Part: []string{s.Name().String()}},
+		LongName:      "",
+		Docstring:     "",
+		Attrs:         nil,
+		Endpoints:     fillEndpoints(s.Methods()),
+		Types:         nil,
+		Views:         nil,
+		Mixin2:        nil,
+		Wrapped:       nil,
+		SourceContext: nil,
 	}
 	return v.writeSubNode("Service: " + s.Name().String()), nil
 }
@@ -168,17 +157,17 @@ func typeFromMessage(message pgs.Message) *sysl.Type {
 	}
 }
 
-func (v *PrinterVisitor) VisitEnumValue(ev pgs.EnumValue) (pgs.Visitor, error) {
+func (v PrinterModule) VisitEnumValue(ev pgs.EnumValue) (pgs.Visitor, error) {
 	v.writeLeaf(ev.Name().String())
 	return nil, nil
 }
 
-func (v *PrinterVisitor) VisitField(f pgs.Field) (pgs.Visitor, error) {
+func (v PrinterModule) VisitField(f pgs.Field) (pgs.Visitor, error) {
 	v.writeLeaf(f.Name().String())
 	return nil, nil
 }
 
-func (v *PrinterVisitor) VisitMethod(m pgs.Method) (pgs.Visitor, error) {
+func (v PrinterModule) VisitMethod(m pgs.Method) (pgs.Visitor, error) {
 	v.writeLeaf(m.Name().String())
 	return nil, nil
 }

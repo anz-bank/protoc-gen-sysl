@@ -7,3 +7,9 @@ install:
 	go install github.com/joshcarp/protoc-gen-example
 test:
 	protoc --example_out=. tests/serviceExample.proto
+
+tests:
+	protoc \
+      --plugin=debug_out=. \
+      --debug_out=".:." \
+      ./tests/serviceExample.proto
