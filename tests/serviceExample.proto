@@ -18,8 +18,6 @@ syntax = "proto3";
 
 package grpc.testing;
 
-message Empty {}
-
 // The type of payload that should be returned.
 enum PayloadType {
     // Compressable text format.
@@ -164,7 +162,7 @@ message StreamingOutputCallResponse {
 // performance with various types of payload.
 service TestService {
     // One empty request followed by one empty response.
-    rpc EmptyCall(Empty) returns (Empty);
+//    rpc EmptyCall(Empty) returns (Empty);
 
     // One request followed by one response.
     // The server returns the client payload as-is.
@@ -196,7 +194,7 @@ service TestService {
 
 // A simple service NOT implemented at servers so clients can test for
 // that case.
-service UnimplementedService {
-    // A call that no server should implement
-    rpc UnimplementedCall(grpc.testing.Empty) returns (grpc.testing.Empty);
-}
+//service UnimplementedService {
+//    // A call that no server should implement
+////    rpc UnimplementedCall(grpc.testing.Empty) returns (grpc.testing.Empty);
+//}

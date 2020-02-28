@@ -1,5 +1,5 @@
 all: install test
-.PHONY: build install test
+.PHONY: build install test tests
 build:
 	go build -o=protoc-gen-example .
 

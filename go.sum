@@ -95,6 +95,8 @@ github.com/jessevdk/go-flags v1.4.0/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJS
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 github.com/joshcarp/sysl-printer v0.0.0-20200226234749-4f7ae96dfc5b h1:7aET1b4O/YSl1q1yG7NlsXw+vBMMBOAzA5k9n8Ohww4=
 github.com/joshcarp/sysl-printer v0.0.0-20200226234749-4f7ae96dfc5b/go.mod h1:F1lGMrl7b0Y10w402Lrr49rJujUjdjS99PDxbeFypAQ=
+github.com/joshcarp/sysl-printer v0.0.0-20200228031225-975fc2240bd7 h1:b4stf0mLnXFHEPmKGl7Z17NL1BJfj2PymxfF2Ll18qg=
+github.com/joshcarp/sysl-printer v0.0.0-20200228031225-975fc2240bd7/go.mod h1:F1lGMrl7b0Y10w402Lrr49rJujUjdjS99PDxbeFypAQ=
 github.com/karrick/godirwalk v1.10.12/go.mod h1:RoGL9dQei4vP9ilrpETWE8CLOZ1kiN0LhBygSwrAsHA=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/konsorten/go-windows-terminal-sequences v1.0.2 h1:DB17ag19krx9CFsz4o3enTrPXyIXCl+2iCXH/aMAp9s=

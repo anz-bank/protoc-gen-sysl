@@ -24,6 +24,8 @@ type PrinterModule struct {
 	Module *sysl.Module
 }
 
+const typeApplication = "Types"
+
 var TypeMapping = map[string]sysl.Type_Primitive{"TYPE_BYTES": sysl.Type_BYTES, "TYPE_INT32": sysl.Type_INT, "TYPE_STRING": sysl.Type_STRING, "TYPE_BOOL": sysl.Type_BOOL}
 
 func ASTPrinter() *PrinterModule { return &PrinterModule{ModuleBase: &pgs.ModuleBase{}} }
@@ -35,7 +37,6 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	if p.Log == nil {
 		p.Log = logrus.New()
 	}
-	println("wefg")
 	p.Module = &sysl.Module{
 		Apps:                 make(map[string]*sysl.Application, 0),
 		SourceContext:        nil,
@@ -43,23 +44,22 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 		XXX_unrecognized:     nil,
 		XXX_sizecache:        0,
 	}
-	p.Module.Apps["_types"] = &sysl.Application{
+	p.Module.Apps[typeApplication] = &sysl.Application{
 		Name: &sysl.AppName{
-			Part: []string{"_types"},
+			Part: []string{typeApplication},
 		},
 		Attrs:     nil,
 		Endpoints: nil,
 		Types:     nil,
 		Views:     nil,
 	}
-	p.Module.Apps["_types"].Types = map[string]*sysl.Type{}
+	p.Module.Apps[typeApplication].Types = map[string]*sysl.Type{}
 
 	for _, f := range targets {
 		p.populateModule(f, buf)
 	}
 	prin := printer.NewPrinter(os.Stdout)
 	prin.PrintModule(p.Module)
-	fmt.Println(buf.String())
 	return p.Artifacts()
 }
 
@@ -84,10 +84,8 @@ func (p *PrinterModule) populateModule(f pgs.File, buf *bytes.Buffer) {
 }
 
 const (
-	startNodePrefix = "┳ "
-	subNodePrefix   = "┃"
-	leafNodePrefix  = "┣"
-	leafNodeSpacer  = "━ "
+	subNodePrefix  = "┃"
+	leafNodePrefix = "┣"
 )
 
 func (p *PrinterModule) initPrintVisitor(w io.Writer, prefix string) pgs.Visitor {
@@ -109,7 +107,6 @@ func (v PrinterModule) writeSubNode(str string) pgs.Visitor {
 }
 
 func (v PrinterModule) writeLeaf(str string) {
-	//fmt.Fprintf(v.w, "%s%s%s\n", v.leafPrefix(), leafNodeSpacer, str)
 }
 
 func (v PrinterModule) VisitFile(f pgs.File) (pgs.Visitor, error) {
@@ -117,45 +114,20 @@ func (v PrinterModule) VisitFile(f pgs.File) (pgs.Visitor, error) {
 }
 
 func (v PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
-	packageName := m.Package().ProtoName().String()
 	attrDefs := make(map[string]*sysl.Type)
 
-	var fieldType, fieldName string
+	var fieldName string
+	var syslType *sysl.Type
 	for _, e := range m.Fields() {
-		fieldName = e.Name().String()
-		if t := e.Descriptor(); t != nil && t.TypeName != nil {
-			fieldType = strings.ReplaceAll(*t.TypeName, packageName, "")
-			attrDefs[fieldName] = &sysl.Type{
-				Type: &sysl.Type_TypeRef{
-					TypeRef: nil,
-				},
-			}
-
-		} else {
-			fieldType = e.Type().ProtoType().String()
-
-			attrDefs[fieldName] = &sysl.Type{
-				Type: &sysl.Type_Primitive_{
-					Primitive: TypeMapping[fieldType],
-				},
-			}
-		}
-
+		fieldName, syslType = fieldToSysl(e)
+		attrDefs[fieldName] = syslType
 	}
-	v.Module.Apps["_types"].Types[m.Name().String()] = &sysl.Type{
+	v.Module.Apps[typeApplication].Types[m.Name().String()] = &sysl.Type{
 		Type: &sysl.Type_Tuple_{
 			Tuple: &sysl.Type_Tuple{
-				AttrDefs: attrDefs, //map[string]*sysl.Type{m.Fields()[0].Type(): },
+				AttrDefs: attrDefs,
 			},
 		},
-		Attrs:                nil,
-		Constraint:           nil,
-		Docstring:            "",
-		Opt:                  false,
-		SourceContext:        nil,
-		XXX_NoUnkeyedLiteral: struct{}{},
-		XXX_unrecognized:     nil,
-		XXX_sizecache:        0,
 	}
 	return v.writeSubNode(""), nil
 }
@@ -166,50 +138,26 @@ func (v PrinterModule) VisitEnum(e pgs.Enum) (pgs.Visitor, error) {
 
 func (v PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 	v.Module.Apps[s.Name().String()] = &sysl.Application{
-		Name:          &sysl.AppName{Part: []string{s.Name().String()}},
-		LongName:      "",
-		Docstring:     "",
-		Attrs:         nil,
-		Endpoints:     fillEndpoints(s.Methods()),
-		Types:         nil,
-		Views:         nil,
-		Mixin2:        nil,
-		Wrapped:       nil,
-		SourceContext: nil,
+		Name:      &sysl.AppName{Part: []string{s.Name().String()}},
+		Endpoints: v.fillEndpoints(s.Methods()),
 	}
 	return v.writeSubNode("Service: " + s.Name().String()), nil
 }
 
-func fillEndpoints(methods []pgs.Method) map[string]*sysl.Endpoint {
+func (v PrinterModule) fillEndpoints(methods []pgs.Method) map[string]*sysl.Endpoint {
 	ep := make(map[string]*sysl.Endpoint, len(methods))
 	for _, method := range methods {
 		ep[method.Name().String()] = &sysl.Endpoint{
-			Name:      method.Name().String(),
-			LongName:  method.FullyQualifiedName(),
-			Docstring: "",
-			Attrs:     nil,
-			Flag:      nil,
-			Source:    nil,
-			IsPubsub:  false,
-			Param: []*sysl.Param{&sysl.Param{
-				Name: method.Input().Name().String(),
-				Type: typeFromMessage(method.Input())},
-			},
-			Stmt: []*sysl.Statement{&sysl.Statement{Stmt: &sysl.Statement_Ret{Ret: &sysl.Return{
-				Payload:              method.Output().Name().String(),
-				XXX_NoUnkeyedLiteral: struct{}{},
-				XXX_unrecognized:     nil,
-				XXX_sizecache:        0},
-			},
-			},
-			},
-			RestParams:           nil,
-			SourceContext:        nil,
-			XXX_NoUnkeyedLiteral: struct{}{},
-			XXX_unrecognized:     nil,
-			XXX_sizecache:        0,
+			Name:     method.Name().String(),
+			LongName: method.FullyQualifiedName(),
+			Param: []*sysl.Param{{
+				Name: "input",
+				Type: messageToSysl(method.Input()),
+			}},
+			Stmt: []*sysl.Statement{{Stmt: &sysl.Statement_Ret{Ret: &sysl.Return{
+				Payload: method.Output().Name().String(),
+			}}}},
 		}
-
 	}
 	return ep
 }
