@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"io"
-	"os"
-	"strings"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
 	printer "github.com/joshcarp/sysl-printer"
@@ -38,32 +35,26 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 		p.Log = logrus.New()
 	}
 	p.Module = &sysl.Module{
-		Apps:                 make(map[string]*sysl.Application, 0),
-		SourceContext:        nil,
-		XXX_NoUnkeyedLiteral: struct{}{},
-		XXX_unrecognized:     nil,
-		XXX_sizecache:        0,
+		Apps: make(map[string]*sysl.Application, 0),
 	}
 	p.Module.Apps[typeApplication] = &sysl.Application{
 		Name: &sysl.AppName{
 			Part: []string{typeApplication},
 		},
-		Attrs:     nil,
-		Endpoints: nil,
-		Types:     nil,
-		Views:     nil,
 	}
 	p.Module.Apps[typeApplication].Types = map[string]*sysl.Type{}
 
 	for _, f := range targets {
 		p.populateModule(f, buf)
 	}
-	prin := printer.NewPrinter(os.Stdout)
+	prin := printer.NewPrinter(buf)
 	prin.PrintModule(p.Module)
+
+	p.AddGeneratorFile("sysl.sysl", buf.String())
 	return p.Artifacts()
 }
 
-func (p *PrinterModule) populateModule(f pgs.File, buf *bytes.Buffer) {
+func (p *PrinterModule) printFile(f pgs.File, buf *bytes.Buffer) {
 	p.Push(f.Name().String())
 	defer p.Pop()
 
@@ -82,11 +73,23 @@ func (p *PrinterModule) populateModule(f pgs.File, buf *bytes.Buffer) {
 	)
 
 }
+func (p *PrinterModule) populateModule(f pgs.File, buf *bytes.Buffer) {
+	p.Push(f.Name().String())
+	defer p.Pop()
 
-const (
-	subNodePrefix  = "┃"
-	leafNodePrefix = "┣"
-)
+	buf.Reset()
+	v := p.initPrintVisitor(buf, "")
+	p.CheckErr(pgs.Walk(v, f), "unable to print AST tree")
+	out := buf.String()
+	if ok, _ := p.Parameters().Bool("log_tree"); ok {
+		p.Logf("Proto Tree:\n%s", out)
+	}
+	p.AddGeneratorFile(
+		f.InputPath().SetExt(".tree.txt").String(),
+		out,
+	)
+
+}
 
 func (p *PrinterModule) initPrintVisitor(w io.Writer, prefix string) pgs.Visitor {
 	p.prefix = prefix
@@ -95,22 +98,8 @@ func (p *PrinterModule) initPrintVisitor(w io.Writer, prefix string) pgs.Visitor
 	return p
 }
 
-func (v PrinterModule) leafPrefix() string {
-	if strings.HasSuffix(v.prefix, subNodePrefix) {
-		return strings.TrimSuffix(v.prefix, subNodePrefix) + leafNodePrefix
-	}
-	return v.prefix
-}
-
-func (v PrinterModule) writeSubNode(str string) pgs.Visitor {
-	return v.initPrintVisitor(v.w, fmt.Sprintf("%s%v", v.prefix, subNodePrefix))
-}
-
-func (v PrinterModule) writeLeaf(str string) {
-}
-
 func (v PrinterModule) VisitFile(f pgs.File) (pgs.Visitor, error) {
-	return v.writeSubNode("File: " + f.Name().String()), nil
+	return v, nil
 }
 
 func (v PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
@@ -129,11 +118,11 @@ func (v PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 			},
 		},
 	}
-	return v.writeSubNode(""), nil
+	return v, nil
 }
 
 func (v PrinterModule) VisitEnum(e pgs.Enum) (pgs.Visitor, error) {
-	return v.writeSubNode("Enum: " + e.Name().String()), nil
+	return v, nil
 }
 
 func (v PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
@@ -141,7 +130,7 @@ func (v PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 		Name:      &sysl.AppName{Part: []string{s.Name().String()}},
 		Endpoints: v.fillEndpoints(s.Methods()),
 	}
-	return v.writeSubNode("Service: " + s.Name().String()), nil
+	return v, nil
 }
 
 func (v PrinterModule) fillEndpoints(methods []pgs.Method) map[string]*sysl.Endpoint {
@@ -162,31 +151,14 @@ func (v PrinterModule) fillEndpoints(methods []pgs.Method) map[string]*sysl.Endp
 	return ep
 }
 
-func typeFromMessage(message pgs.Message) *sysl.Type {
-	return &sysl.Type{
-		Type:                 &sysl.Type_TypeRef{},
-		Attrs:                nil,
-		Constraint:           nil,
-		Docstring:            "",
-		Opt:                  false,
-		SourceContext:        nil,
-		XXX_NoUnkeyedLiteral: struct{}{},
-		XXX_unrecognized:     nil,
-		XXX_sizecache:        0,
-	}
-}
-
 func (v PrinterModule) VisitEnumValue(ev pgs.EnumValue) (pgs.Visitor, error) {
-	v.writeLeaf(ev.Name().String())
 	return nil, nil
 }
 
 func (v PrinterModule) VisitField(f pgs.Field) (pgs.Visitor, error) {
-	v.writeLeaf(f.Name().String())
 	return nil, nil
 }
 
 func (v PrinterModule) VisitMethod(m pgs.Method) (pgs.Visitor, error) {
-	v.writeLeaf(m.Name().String())
 	return nil, nil
 }
