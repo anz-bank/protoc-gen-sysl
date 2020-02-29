@@ -1,18 +1,19 @@
-all: install test
-.PHONY: build install test tests syslproto
-build:
-	go build -o=protoc-gen-example .
+all: install test tests syslproto
+.PHONY: install test tests syslproto
 
 install:
 	go install github.com/joshcarp/protoc-gen-sysl
+
 test:
 	protoc --example_out=. tests/serviceExample.proto
 
+# This updates the code_generator_request.pb.bin for debugging
 tests:
 	protoc \
       --plugin=debug_out=. \
       --debug_out=".:." \
       ./tests/serviceExample.proto
 
+# This rebuilds the option protos
 syslproto:
 	protoc --go_out=. sysloption/sysloption.proto

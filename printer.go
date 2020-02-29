@@ -53,8 +53,8 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	}
 	prin := printer.NewPrinter(buf)
 	prin.PrintModule(p.Module)
-
 	p.AddGeneratorFile("sysl.sysl", buf.String())
+
 	return p.Artifacts()
 }
 
