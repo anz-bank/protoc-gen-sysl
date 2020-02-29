@@ -4,7 +4,7 @@ build:
 	go build -o=protoc-gen-example .
 
 install:
-	go install github.com/joshcarp/protoc-gen-example
+	go install github.com/joshcarp/protoc-gen-sysl
 test:
 	protoc --example_out=. tests/serviceExample.proto
 

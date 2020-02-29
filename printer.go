@@ -8,7 +8,7 @@ import (
 
 	"github.com/anz-bank/sysl/pkg/sysl"
 	"github.com/golang/protobuf/proto"
-	"github.com/joshcarp/protoc-gen-example/sysloption"
+	"github.com/joshcarp/protoc-gen-sysl/sysloption"
 	printer "github.com/joshcarp/sysl-printer"
 	"github.com/sirupsen/logrus"
 

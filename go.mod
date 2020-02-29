@@ -1,4 +1,4 @@
-module github.com/joshcarp/protoc-gen-example
+module github.com/joshcarp/protoc-gen-sysl
 
 go 1.13
 
