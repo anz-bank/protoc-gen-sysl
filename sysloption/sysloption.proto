@@ -18,7 +18,7 @@ package sysl.option;
 
 import "google/protobuf/descriptor.proto";
 
-option go_package = "sysl/sysl.proto";
+option go_package = "/sysloption";
 option java_multiple_files = true;
 option java_outer_classname = "AnnotationsProto";
 option java_package = "com.google.api";
@@ -26,7 +26,7 @@ option objc_class_prefix = "GAPI";
 
 extend google.protobuf.MethodOptions {
     // See `HttpRule`.
-    repeated CallRule calls = 72295715;
+    repeated CallRule calls = 72295728;
 }
 //message Call {
 //    repeated Call Calls = 1;

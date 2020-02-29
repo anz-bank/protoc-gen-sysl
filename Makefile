@@ -15,4 +15,4 @@ tests:
       ./tests/serviceExample.proto
 
 syslproto:
-	protoc --go_out=. sysl.proto
+	protoc --go_out=. sysloption/sysloption.proto

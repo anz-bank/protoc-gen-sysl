@@ -20,7 +20,7 @@ package grpc.testing;
 
 import "google/protobuf/descriptor.proto";
 
-import "sysl.proto";
+import "sysloption/sysloption.proto";
 
 extend google.protobuf.ServiceOptions {
     sint64 service_opt1 = 7887650;

@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/golang/protobuf/proto"
-	sysl_proto "github.com/joshcarp/protoc-gen-example/sysl/sysl.proto"
-
 	"bytes"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
+	"github.com/golang/protobuf/proto"
+	"github.com/joshcarp/protoc-gen-example/sysloption"
 	printer "github.com/joshcarp/sysl-printer"
 	"github.com/sirupsen/logrus"
 
@@ -100,25 +99,18 @@ func (v PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 }
 
 func (v PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
-
-	//for _, meth := range s.Methods() {
-	//	if proto.HasExtension(meth.Descriptor().Options, sysl_proto.E_Calls) {
-	//		this, _ := proto.GetExtension(meth.Descriptor().Options, sysl_proto.E_Calls)
-	//		call := this.([]*sysl_proto.CallRule)
-	//	}
-	//
-	//}
 	v.Module.Apps[s.Name().String()] = &sysl.Application{
 		Name:      &sysl.AppName{Part: []string{s.Name().String()}},
 		Endpoints: v.fillEndpoints(s.Methods()),
 	}
 	return nil, nil
 }
-func customOption(meth pgs.Method) []*sysl_proto.CallRule {
-	var call []*sysl_proto.CallRule
-	if proto.HasExtension(meth.Descriptor().Options, sysl_proto.E_Calls) {
-		this, _ := proto.GetExtension(meth.Descriptor().Options, sysl_proto.E_Calls)
-		call = this.([]*sysl_proto.CallRule)
+
+func customOption(meth pgs.Method) []*sysloption.CallRule {
+	var call []*sysloption.CallRule
+	if proto.HasExtension(meth.Descriptor().Options, sysloption.E_Calls) {
+		this, _ := proto.GetExtension(meth.Descriptor().Options, sysloption.E_Calls)
+		call = this.([]*sysloption.CallRule)
 	}
 	return call
 }
