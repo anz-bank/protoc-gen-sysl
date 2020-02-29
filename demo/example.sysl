@@ -1,0 +1,12 @@
+Bar:
+    AnotherEndpoint(input <: Types.Request):
+        return Response
+Foo:
+    thisEndpoint(input <: Types.Request):
+        Bar <- AnotherEndpoint
+        return Response
+Types:
+    !type Request:
+        query <: string
+    !type Response:
+        query <: string

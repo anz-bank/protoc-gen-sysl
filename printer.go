@@ -34,12 +34,11 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 		p.Log = logrus.New()
 	}
 	for _, f := range targets {
-
 		p.Module = &sysl.Module{
 		Apps: make(map[string]*sysl.Application, 0),
 	}
 	p.Module.Apps[typeApplication] = &sysl.Application{
-		Name: &sysl.AppName{
+		Name: &sysl.AppName{Part: []string{typeApplication},
 		},
 	}
 	p.Module.Apps[typeApplication].Types = map[string]*sysl.Type{}
