@@ -1,18 +1,15 @@
 package main
 
 import (
-	"fmt"
-	"io"
-
 	"bytes"
-
+	"fmt"
 	"github.com/anz-bank/sysl/pkg/sysl"
-	"github.com/golang/protobuf/proto"
-	"github.com/joshcarp/protoc-gen-sysl/sysloption"
 	printer "github.com/joshcarp/sysl-printer"
-	"github.com/sirupsen/logrus"
-
 	pgs "github.com/lyft/protoc-gen-star"
+	"github.com/sirupsen/logrus"
+	"io"
+	"regexp"
+	"strings"
 )
 
 type PrinterModule struct {
@@ -43,12 +40,13 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	}
 	p.Module.Apps[typeApplication] = &sysl.Application{
 		Name: &sysl.AppName{
-			Part: []string{typeApplication},
 		},
 	}
 	p.Module.Apps[typeApplication].Types = map[string]*sysl.Type{}
 
 	for _, f := range targets {
+		fileName := strings.Replace(regexp.MustCompile(`(?m)\w*\.proto`).FindString(f.Name().String()), ".proto", "", -1)
+		fmt.Println(fileName)
 		p.populateModule(f, buf)
 	}
 	prin := printer.NewPrinter(buf)
@@ -106,14 +104,6 @@ func (v PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 	return nil, nil
 }
 
-func customOption(meth pgs.Method) []*sysloption.CallRule {
-	var call []*sysloption.CallRule
-	if proto.HasExtension(meth.Descriptor().Options, sysloption.E_Calls) {
-		this, _ := proto.GetExtension(meth.Descriptor().Options, sysloption.E_Calls)
-		call = this.([]*sysloption.CallRule)
-	}
-	return call
-}
 func (v PrinterModule) fillEndpoints(methods []pgs.Method) map[string]*sysl.Endpoint {
 	ep := make(map[string]*sysl.Endpoint, len(methods))
 	for _, method := range methods {
@@ -157,7 +147,6 @@ func (v PrinterModule) VisitField(f pgs.Field) (pgs.Visitor, error) {
 }
 
 func (v PrinterModule) VisitMethod(m pgs.Method) (pgs.Visitor, error) {
-	fmt.Println("hello")
 	return nil, nil
 }
 
