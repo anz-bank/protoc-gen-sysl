@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/golang/protobuf/proto"
+	"github.com/joshcarp/protoc-gen-sysl/sysloption"
 	"strings"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
@@ -19,12 +21,6 @@ func syslStruct(fieldType string) *sysl.Type {
 					},
 					Path: []string{fieldType},
 				},
-				//Context: &sysl.Scope{
-				//	Appname: &sysl.AppName{
-				//		Part: []string{typeApplication},
-				//	},
-				//	Path: []string{fieldType},
-				//},
 			},
 		},
 	}
@@ -67,4 +63,13 @@ func messageToSysl(e pgs.Message) *sysl.Type {
 		syslType = syslPrimitive(fieldType)
 	}
 	return syslType
+}
+
+func customOption(meth pgs.Method) []*sysloption.CallRule {
+	var call []*sysloption.CallRule
+	if proto.HasExtension(meth.Descriptor().Options, sysloption.E_Calls) {
+		this, _ := proto.GetExtension(meth.Descriptor().Options, sysloption.E_Calls)
+		call = this.([]*sysloption.CallRule)
+	}
+	return call
 }

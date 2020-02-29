@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/anz-bank/sysl/pkg/sysl"
 	printer "github.com/joshcarp/sysl-printer"
 	pgs "github.com/lyft/protoc-gen-star"
@@ -34,8 +33,9 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	if p.Log == nil {
 		p.Log = logrus.New()
 	}
+	for _, f := range targets {
 
-	p.Module = &sysl.Module{
+		p.Module = &sysl.Module{
 		Apps: make(map[string]*sysl.Application, 0),
 	}
 	p.Module.Apps[typeApplication] = &sysl.Application{
@@ -43,15 +43,13 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 		},
 	}
 	p.Module.Apps[typeApplication].Types = map[string]*sysl.Type{}
-
-	for _, f := range targets {
-		fileName := strings.Replace(regexp.MustCompile(`(?m)\w*\.proto`).FindString(f.Name().String()), ".proto", "", -1)
-		fmt.Println(fileName)
-		p.populateModule(f, buf)
-	}
+	fileName := strings.Replace(regexp.MustCompile(`(?m)\w*\.proto`).FindString(f.Name().String()), ".proto", "", -1)
+	p.populateModule(f, buf)
 	prin := printer.NewPrinter(buf)
 	prin.PrintModule(p.Module)
-	p.AddGeneratorFile("sysl.sysl", buf.String())
+	p.AddGeneratorFile(fileName+".sysl", buf.String())
+	}
+
 
 	return p.Artifacts()
 }

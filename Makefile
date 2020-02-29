@@ -5,13 +5,11 @@ install:
 	go install github.com/joshcarp/protoc-gen-sysl
 
 test:
-	protoc --example_out=. tests/serviceExample.proto
+	protoc --sysl_out=. tests/serviceExample.proto
 
 # This updates the code_generator_request.pb.bin for debugging
 tests:
-	protoc \
-      --plugin=debug_out=. \
-      --debug_out=".:." \
+	protoc --debug_out="tests/.:tests/." \
       ./tests/serviceExample.proto
 
 # This rebuilds the option protos

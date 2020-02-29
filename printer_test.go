@@ -12,7 +12,7 @@ import (
 )
 
 func TestModule(t *testing.T) {
-	req, err := os.Open("./code_generator_request.pb.bin")
+	req, err := os.Open("./tests/code_generator_request.pb.bin")
 	if err != nil {
 		t.Fatal(err)
 	}
