@@ -18,6 +18,13 @@ syntax = "proto3";
 
 package grpc.testing;
 
+import "google/protobuf/descriptor.proto";
+
+import "sysl.proto";
+
+extend google.protobuf.ServiceOptions {
+    sint64 service_opt1 = 7887650;
+}
 // The type of payload that should be returned.
 enum PayloadType {
     // Compressable text format.
@@ -162,11 +169,16 @@ message StreamingOutputCallResponse {
 // performance with various types of payload.
 service TestService {
     // One empty request followed by one empty response.
-//    rpc EmptyCall(Empty) returns (Empty);
+    //    rpc EmptyCall(Empty) returns (Empty);
 
     // One request followed by one response.
     // The server returns the client payload as-is.
-    rpc UnaryCall(SimpleRequest) returns (SimpleResponse);
+    rpc UnaryCall(SimpleRequest) returns (SimpleResponse){
+        option (sysl.option.calls) = {
+                service: "StreamingOutputCallRequest"
+                method: "Foobar"
+            };
+        }
 
     // One request followed by a sequence of responses (streamed download).
     // The server returns the payload with client desired type and sizes.
@@ -192,6 +204,10 @@ service TestService {
     returns (stream StreamingOutputCallResponse);
 }
 
+service Foo{
+    rpc Foobar(StreamingOutputCallRequest)
+    returns (StreamingOutputCallResponse);
+}
 // A simple service NOT implemented at servers so clients can test for
 // that case.
 //service UnimplementedService {

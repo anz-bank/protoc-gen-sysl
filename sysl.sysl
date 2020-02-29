@@ -1,3 +1,6 @@
+Foo:
+    Foobar(input <: Types.StreamingOutputCallRequest):
+        return StreamingOutputCallResponse
 TestService:
     FullDuplexCall(input <: Types.StreamingOutputCallRequest):
         return StreamingOutputCallResponse

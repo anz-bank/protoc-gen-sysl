@@ -1,5 +1,5 @@
 all: install test
-.PHONY: build install test tests
+.PHONY: build install test tests syslproto
 build:
 	go build -o=protoc-gen-example .
 
@@ -13,3 +13,6 @@ tests:
       --plugin=debug_out=. \
       --debug_out=".:." \
       ./tests/serviceExample.proto
+
+syslproto:
+	protoc --go_out=. sysl.proto

@@ -1,13 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"io"
+
+	"github.com/golang/protobuf/proto"
+	sysl_proto "github.com/joshcarp/protoc-gen-example/sysl/sysl.proto"
+
+	"bytes"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
 	printer "github.com/joshcarp/sysl-printer"
 	"github.com/sirupsen/logrus"
-
-	"bytes"
 
 	pgs "github.com/lyft/protoc-gen-star"
 )
@@ -34,6 +38,7 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	if p.Log == nil {
 		p.Log = logrus.New()
 	}
+
 	p.Module = &sysl.Module{
 		Apps: make(map[string]*sysl.Application, 0),
 	}
@@ -54,25 +59,6 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	return p.Artifacts()
 }
 
-func (p *PrinterModule) printFile(f pgs.File, buf *bytes.Buffer) {
-	p.Push(f.Name().String())
-	defer p.Pop()
-
-	buf.Reset()
-	v := p.initPrintVisitor(buf, "")
-	p.CheckErr(pgs.Walk(v, f), "unable to print AST tree")
-	out := buf.String()
-
-	if ok, _ := p.Parameters().Bool("log_tree"); ok {
-		p.Logf("Proto Tree:\n%s", out)
-	}
-
-	p.AddGeneratorFile(
-		f.InputPath().SetExt(".tree.txt").String(),
-		out,
-	)
-
-}
 func (p *PrinterModule) populateModule(f pgs.File, buf *bytes.Buffer) {
 	p.Push(f.Name().String())
 	defer p.Pop()
@@ -84,10 +70,6 @@ func (p *PrinterModule) populateModule(f pgs.File, buf *bytes.Buffer) {
 	if ok, _ := p.Parameters().Bool("log_tree"); ok {
 		p.Logf("Proto Tree:\n%s", out)
 	}
-	p.AddGeneratorFile(
-		f.InputPath().SetExt(".tree.txt").String(),
-		out,
-	)
 
 }
 
@@ -96,10 +78,6 @@ func (p *PrinterModule) initPrintVisitor(w io.Writer, prefix string) pgs.Visitor
 	p.Visitor = pgs.PassThroughVisitor(p)
 	p.w = w
 	return p
-}
-
-func (v PrinterModule) VisitFile(f pgs.File) (pgs.Visitor, error) {
-	return v, nil
 }
 
 func (v PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
@@ -121,21 +99,47 @@ func (v PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 	return v, nil
 }
 
-func (v PrinterModule) VisitEnum(e pgs.Enum) (pgs.Visitor, error) {
-	return v, nil
-}
-
 func (v PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
+
+	//for _, meth := range s.Methods() {
+	//	if proto.HasExtension(meth.Descriptor().Options, sysl_proto.E_Calls) {
+	//		this, _ := proto.GetExtension(meth.Descriptor().Options, sysl_proto.E_Calls)
+	//		call := this.([]*sysl_proto.CallRule)
+	//	}
+	//
+	//}
 	v.Module.Apps[s.Name().String()] = &sysl.Application{
 		Name:      &sysl.AppName{Part: []string{s.Name().String()}},
 		Endpoints: v.fillEndpoints(s.Methods()),
 	}
-	return v, nil
+	return nil, nil
 }
-
+func customOption(meth pgs.Method) []*sysl_proto.CallRule {
+	var call []*sysl_proto.CallRule
+	if proto.HasExtension(meth.Descriptor().Options, sysl_proto.E_Calls) {
+		this, _ := proto.GetExtension(meth.Descriptor().Options, sysl_proto.E_Calls)
+		call = this.([]*sysl_proto.CallRule)
+	}
+	return call
+}
 func (v PrinterModule) fillEndpoints(methods []pgs.Method) map[string]*sysl.Endpoint {
 	ep := make(map[string]*sysl.Endpoint, len(methods))
 	for _, method := range methods {
+		calls := customOption(method)
+		syslCalls := []*sysl.Statement{}
+		for _, call := range calls {
+			syslCalls = append(syslCalls, &sysl.Statement{
+				Stmt: &sysl.Statement_Call{
+					Call: &sysl.Call{
+						Target: &sysl.AppName{
+							Part: []string{call.Service},
+						},
+						Endpoint: call.Method,
+					},
+				},
+			},
+			)
+		}
 		ep[method.Name().String()] = &sysl.Endpoint{
 			Name:     method.Name().String(),
 			LongName: method.FullyQualifiedName(),
@@ -143,10 +147,11 @@ func (v PrinterModule) fillEndpoints(methods []pgs.Method) map[string]*sysl.Endp
 				Name: "input",
 				Type: messageToSysl(method.Input()),
 			}},
-			Stmt: []*sysl.Statement{{Stmt: &sysl.Statement_Ret{Ret: &sysl.Return{
+			Stmt: append(syslCalls, &sysl.Statement{Stmt: &sysl.Statement_Ret{Ret: &sysl.Return{
 				Payload: method.Output().Name().String(),
-			}}}},
+			}}}),
 		}
+
 	}
 	return ep
 }
@@ -160,5 +165,14 @@ func (v PrinterModule) VisitField(f pgs.Field) (pgs.Visitor, error) {
 }
 
 func (v PrinterModule) VisitMethod(m pgs.Method) (pgs.Visitor, error) {
+	fmt.Println("hello")
+	return nil, nil
+}
+
+func (v PrinterModule) VisitFile(f pgs.File) (pgs.Visitor, error) {
+	return v, nil
+}
+
+func (v PrinterModule) VisitEnum(e pgs.Enum) (pgs.Visitor, error) {
 	return nil, nil
 }
