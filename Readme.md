@@ -76,7 +76,7 @@ message Response {
 service Foo{
 -    rpc thisEndpoint(Request) returns(Response);
 +    rpc thisEndpoint(Request) returns(Response){
-+    option (sysl.calls) = {call: "Bar.AnotherEndpoint"};
++       option (sysl.calls) = {call: "Bar.AnotherEndpoint"};
     };
 }
 
