@@ -21,12 +21,9 @@ import "google/protobuf/descriptor.proto";
 option go_package = "/sysloption";
 
 extend google.protobuf.MethodOptions {
-    // See `HttpRule`.
     repeated CallRule calls = 72295728;
 }
 
 message CallRule{
-    string service = 1;
-    string method = 2;
-
+    string call = 1;
 }

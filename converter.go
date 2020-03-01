@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/golang/protobuf/proto"
-	"github.com/joshcarp/protoc-gen-sysl/sysloption"
 	"regexp"
 	"strings"
+
+	"github.com/golang/protobuf/proto"
+	"github.com/joshcarp/protoc-gen-sysl/sysloption"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
 	pgs "github.com/lyft/protoc-gen-star"
@@ -81,13 +82,14 @@ func endpointFromMethod(method pgs.Method) *sysl.Endpoint {
 	calls := customOption(method)
 	syslCalls := []*sysl.Statement{}
 	for _, call := range calls {
+		syslCallSplit := strings.Split(call.Call, ".")
 		syslCalls = append(syslCalls, &sysl.Statement{
 			Stmt: &sysl.Statement_Call{
 				Call: &sysl.Call{
 					Target: &sysl.AppName{
-						Part: []string{call.Service},
+						Part: []string{syslCallSplit[0]},
 					},
-					Endpoint: call.Method,
+					Endpoint: syslCallSplit[1],
 				},
 			},
 		},
@@ -107,7 +109,6 @@ func endpointFromMethod(method pgs.Method) *sysl.Endpoint {
 }
 
 // syslFilename converts replaces a .proto filename to .sysl, removing any paths
-func syslFilename(s string)string{
+func syslFilename(s string) string {
 	return strings.Replace(regexp.MustCompile(`(?m)\w*\.proto`).FindString(s), ".proto", "", -1)
 }
-

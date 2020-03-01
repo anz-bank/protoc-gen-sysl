@@ -24,12 +24,8 @@ use the option on a method:
 service Foo{
     rpc AnotherEnfdpoint(Request) returns (Response);
     rpc thisEndpoint(Request) returns(Response){
-        option (sysl.calls) = {
-                service: "Foo"
-                method: "AnotherEndpoint"
-            };
+        option (sysl.calls) = {call: "Bar.AnotherEndpoint"};
     };
-
 }
 ```
 and run
@@ -80,10 +76,7 @@ message Response {
 service Foo{
 -    rpc thisEndpoint(Request) returns(Response);
 +    rpc thisEndpoint(Request) returns(Response){
-+        option (sysl.calls) = {
-+                service: "Bar"
-+                method: "AnotherEndpoint"
-+            };
++    option (sysl.calls) = {call: "Bar.AnotherEndpoint"};
     };
 }
 
