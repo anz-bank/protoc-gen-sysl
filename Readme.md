@@ -22,7 +22,7 @@ import "sysloption.proto";
 use the option on a method:
 ```proto
 service Foo{
-    rpc AnotherEnfdpoint(Request) returns (Response);
+    rpc AnotherEndpoint(Request) returns (Response);
     rpc thisEndpoint(Request) returns(Response){
         option (sysl.calls) = {call: "Bar.AnotherEndpoint"};
     };
@@ -105,7 +105,7 @@ Types:
 
 ```
 
-Note the `Bar <- AnotherEndpoint` that was generated from the `sysl.option.calls`
+Note the `Bar <- AnotherEndpoint` that was generated from the `sysl.calls` Option
 
 Now we can generate a diagram for our grpc service:
 
