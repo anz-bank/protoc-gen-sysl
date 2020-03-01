@@ -112,7 +112,7 @@ Types:
 
 ```
 
-Note the `Bar <- AnotherEndpoint` that was generated from the `sysl.option.calls`
+Note the `Bar <- AnotherEndpoint` that was generated from the `sysl.calls` Option
 
 Now we can generate a diagram for our grpc service:
 
