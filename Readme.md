@@ -22,7 +22,7 @@ import "sysloption.proto";
 use the option on a method:
 ```proto
 service Foo{
-    rpc AnotherEnfdpoint(Request) returns (Response);
+    rpc AnotherEndpoint(Request) returns (Response);
     rpc thisEndpoint(Request) returns(Response){
         option (sysl.calls) = {
                 service: "Foo"
