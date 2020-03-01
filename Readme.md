@@ -10,8 +10,34 @@ Supports using sysls "call" syntax through proto options
 
 `go get github.com/joshcarp/protoc-gen-sysl`
 
+now add the [sysloption.proto](/sysloption/sysloption.proto) to your local project and import in your local proto file.
+
+
 ## Usage
+import the sysloption.proto into your current project:
+`
+import "sysloption.proto";
+`
+
+use the option on a method:
+```proto
+service Foo{
+    rpc AnotherEnfdpoint(Request) returns (Response);
+    rpc thisEndpoint(Request) returns(Response){
+        option (sysl.calls) = {
+                service: "Foo"
+                method: "AnotherEndpoint"
+            };
+    };
+
+}
+```
+and run
+
 `protoc --sysl_out=. input.proto`
+
+NOTE: Currently all sysl.calls need to refer to services that exist within the same proto file.
+
 
 ## Examples
 
