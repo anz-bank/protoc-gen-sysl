@@ -9,7 +9,7 @@ func main() {
 	pgs.Init(
 		pgs.DebugEnv("DEBUG"),
 	).RegisterModule(
-		ASTPrinter(),
+		SyslPrinter(),
 	).RegisterPostProcessor(
 		pgsgo.GoFmt(),
 	).Render()
