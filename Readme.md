@@ -8,7 +8,7 @@ Supports using sysls "call" syntax through proto options
 
 ## Installation
 
-`go get github.com/joshcarp/protoc-gen-star`
+`go get github.com/joshcarp/protoc-gen-sysl`
 
 ## Usage
 `protoc --sysl_out=. input.proto`
