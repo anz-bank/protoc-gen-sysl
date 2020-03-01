@@ -174,7 +174,7 @@ service TestService {
     // One request followed by one response.
     // The server returns the client payload as-is.
     rpc UnaryCall(SimpleRequest) returns (SimpleResponse){
-        option (sysl.option.calls) = {
+        option (sysl.calls) = {
                 service: "StreamingOutputCallRequest"
                 method: "Foobar"
             };

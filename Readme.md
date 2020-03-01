@@ -41,7 +41,7 @@ syntax = "proto3";
 
 package grpc.testing;
 
-import "sysloption.proto";
++import "sysloption.proto";
 
 message Request {
     string query = 1;
@@ -54,7 +54,7 @@ message Response {
 service Foo{
 -    rpc thisEndpoint(Request) returns(Response);
 +    rpc thisEndpoint(Request) returns(Response){
-+        option (sysl.option.calls) = {
++        option (sysl.calls) = {
 +                service: "Bar"
 +                method: "AnotherEndpoint"
 +            };

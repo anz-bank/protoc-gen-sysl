@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-package sysl.option;
+package sysl;
 
 import "google/protobuf/descriptor.proto";
 
@@ -28,9 +28,6 @@ extend google.protobuf.MethodOptions {
     // See `HttpRule`.
     repeated CallRule calls = 72295728;
 }
-//message Call {
-//    repeated Call Calls = 1;
-//}
 
 message CallRule{
     string service = 1;
