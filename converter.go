@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/golang/protobuf/proto"
 	"github.com/joshcarp/protoc-gen-sysl/sysloption"
+	"regexp"
 	"strings"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
@@ -65,6 +66,7 @@ func messageToSysl(e pgs.Message) *sysl.Type {
 	return syslType
 }
 
+// customOption converts a pgs method to a slice of the sysl CallRule
 func customOption(meth pgs.Method) []*sysloption.CallRule {
 	var call []*sysloption.CallRule
 	if proto.HasExtension(meth.Descriptor().Options, sysloption.E_Calls) {
@@ -73,3 +75,39 @@ func customOption(meth pgs.Method) []*sysloption.CallRule {
 	}
 	return call
 }
+
+// EndpointFromMethod converts a pgs Method to a sysl endpoint and fills in call and return statments
+func endpointFromMethod(method pgs.Method) *sysl.Endpoint {
+	calls := customOption(method)
+	syslCalls := []*sysl.Statement{}
+	for _, call := range calls {
+		syslCalls = append(syslCalls, &sysl.Statement{
+			Stmt: &sysl.Statement_Call{
+				Call: &sysl.Call{
+					Target: &sysl.AppName{
+						Part: []string{call.Service},
+					},
+					Endpoint: call.Method,
+				},
+			},
+		},
+		)
+	}
+	return &sysl.Endpoint{
+		Name:     method.Name().String(),
+		LongName: method.FullyQualifiedName(),
+		Param: []*sysl.Param{{
+			Name: "input",
+			Type: messageToSysl(method.Input()),
+		}},
+		Stmt: append(syslCalls, &sysl.Statement{Stmt: &sysl.Statement_Ret{Ret: &sysl.Return{
+			Payload: method.Output().Name().String(),
+		}}}),
+	}
+}
+
+// syslFilename converts replaces a .proto filename to .sysl, removing any paths
+func syslFilename(s string)string{
+	return strings.Replace(regexp.MustCompile(`(?m)\w*\.proto`).FindString(s), ".proto", "", -1)
+}
+

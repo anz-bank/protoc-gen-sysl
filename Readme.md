@@ -36,7 +36,7 @@ This isn't supported in proto files, as proto files primarily are only for API s
 
 This proto tool gives an option to add these interactions to proto source files:
 
-```proto
+```diff 
 syntax = "proto3";
 
 package grpc.testing;
@@ -52,11 +52,12 @@ message Response {
 }
 
 service Foo{
-    rpc thisEndpoint(Request) returns(Response){
-        option (sysl.option.calls) = {
-                service: "Bar"
-                method: "AnotherEndpoint"
-            };
+-    rpc thisEndpoint(Request) returns(Response);
++    rpc thisEndpoint(Request) returns(Response){
++        option (sysl.option.calls) = {
++                service: "Bar"
++                method: "AnotherEndpoint"
++            };
     };
 }
 

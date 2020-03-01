@@ -9,8 +9,7 @@ test:
 
 # This updates the code_generator_request.pb.bin for debugging
 tests:
-	protoc --debug_out="tests/.:tests/." \
-      ./tests/serviceExample.proto
+	protoc --debug_out="tests/.:tests/." ./tests/serviceExample.proto
 
 # This rebuilds the option protos
 syslproto:

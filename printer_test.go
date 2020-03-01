@@ -25,7 +25,7 @@ func TestModule(t *testing.T) {
 		pgs.ProtocOutput(res), // capture CodeGeneratorResponse
 		pgs.FileSystem(fs),    // capture any custom files written directly to disk
 	).RegisterModule(
-		ASTPrinter(),
+		SyslPrinter(),
 	).RegisterPostProcessor(
 		pgsgo.GoFmt(),
 	).Render()
