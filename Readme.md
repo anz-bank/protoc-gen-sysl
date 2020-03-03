@@ -1,4 +1,5 @@
 # proto-gen-sysl
+## Please see Issues for what isn't supported yet
 
 ## Features 
 Generate sysl source code from .proto files
