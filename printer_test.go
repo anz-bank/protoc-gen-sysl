@@ -16,9 +16,10 @@ import (
 )
 
 func TestPrinting(t *testing.T) {
-	_, fs := syslutil.WriteToMemOverlayFs("tests")
+	directory := "./tests/test/"
+	_, fs := syslutil.WriteToMemOverlayFs(directory)
 
-	GeneratorResponse, err := ConvertSyslToProto("./tests/test/code_generator_request.pb.bin")
+	GeneratorResponse, err := ConvertSyslToProto(directory + "code_generator_request.pb.bin")
 	assert.NoError(t, err)
 
 	golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
@@ -28,9 +29,9 @@ func TestPrinting(t *testing.T) {
 }
 
 func TestSimple(t *testing.T) {
-	_, fs := syslutil.WriteToMemOverlayFs("tests")
-
-	GeneratorResponse, err := ConvertSyslToProto("./tests/simple/code_generator_request.pb.bin")
+	directory := "./tests/simple/"
+	_, fs := syslutil.WriteToMemOverlayFs(directory)
+	GeneratorResponse, err := ConvertSyslToProto(directory + "code_generator_request.pb.bin")
 	assert.NoError(t, err)
 
 	golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
