@@ -1,2 +1,8 @@
-- name: golangci-lint
-  uses: actions-contrib/golangci-lint@v1
+name: golangci-lint
+on: [pull_request]
+jobs:
+  lint:
+     runs-on: ubuntu-latest
+     steps:
+        - name: golangci-lint
+          uses: actions-contrib/golangci-lint@v1
