@@ -14,3 +14,7 @@ tests:
 # This rebuilds the option protos
 syslproto:
 	protoc --go_out=. sysloption/sysloption.proto
+
+ci:
+	go test ./... -count=1
+	golangci-lint run

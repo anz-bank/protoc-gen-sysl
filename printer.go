@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"io"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
 	"github.com/joshcarp/protoc-gen-sysl/syslpopulate"
@@ -15,8 +14,6 @@ import (
 type PrinterModule struct {
 	*pgs.ModuleBase
 	pgs.Visitor
-	prefix string
-	w      io.Writer
 	Log    *logrus.Logger
 	Module *sysl.Module
 }
@@ -35,7 +32,7 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	}
 	for _, f := range targets {
 		p.Module = &sysl.Module{
-			Apps: make(map[string]*sysl.Application, 0),
+			Apps: make(map[string]*sysl.Application),
 		}
 		fileName := syslFilename(f.Name().String())
 		p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
@@ -45,25 +42,32 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	return p.Artifacts()
 }
 
-func (p PrinterModule) VisitFile(file pgs.File) (v pgs.Visitor, err error) {
+func (p *PrinterModule) VisitFile(file pgs.File) (v pgs.Visitor, err error) {
 	for _, s := range file.Services() {
-		p.VisitService(s)
+		if _, err := p.VisitService(s); err != nil {
+			return nil, err
+		}
 	}
 	// Initialise the "Type" application which will store all the types
 	p.Module.Apps[TypeApplication] = syslpopulate.NewApplication(TypeApplication)
 	for _, t := range file.Messages() {
-		p.VisitMessage(t)
+
+		if _, err := p.VisitMessage(t); err != nil {
+			return nil, err
+		}
 	}
 	return nil, nil
 }
 
 // VisitService converts to sysl and constructs endpoints from methods
 // service myservice{...} --> myservice:
-func (v PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
+func (p *PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 	name := s.Name().String()
-	v.Module.Apps[name] = syslpopulate.NewApplication(name)
+	p.Module.Apps[name] = syslpopulate.NewApplication(name)
 	for _, e := range s.Methods() {
-		v.VisitMethod(e)
+		if _, err := p.VisitMethod(e); err != nil {
+			return nil, err
+		}
 	}
 	return nil, nil
 }
@@ -71,7 +75,7 @@ func (v PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 // VisitMessage converts to sysl and constructs types from messages. All types are writen to the
 // TypeApplication (as in sysl types belong to applications but not in proto
 // message foo{...} --> !type foo:
-func (v PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
+func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 	attrDefs := make(map[string]*sysl.Type)
 	var fieldName string
 	var syslType *sysl.Type
@@ -79,21 +83,21 @@ func (v PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 		fieldName, syslType = fieldToSysl(e)
 		attrDefs[fieldName] = syslType
 	}
-	v.Module.Apps[TypeApplication].Types[m.Name().String()] = &sysl.Type{
+	p.Module.Apps[TypeApplication].Types[m.Name().String()] = &sysl.Type{
 		Type: &sysl.Type_Tuple_{
 			Tuple: &sysl.Type_Tuple{
 				AttrDefs: attrDefs,
 			},
 		},
 	}
-	return v, nil
+	return p, nil
 }
 
 // VisitMethod converts a message to a sysl endpoint and fills in calls to other functions
 // rpc thisEndpoint(InputType)returns(outputType) -->
 // thisEndpoint(input <: InputType):
 //     return ok <: outputType
-func (p PrinterModule) VisitMethod(m pgs.Method) (v pgs.Visitor, err error) {
+func (p *PrinterModule) VisitMethod(m pgs.Method) (v pgs.Visitor, err error) {
 	p.Module.Apps[m.Service().Name().String()].Endpoints[m.Name().String()] = endpointFromMethod(m)
 	return p, nil
 }
