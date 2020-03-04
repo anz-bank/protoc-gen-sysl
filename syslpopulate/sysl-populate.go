@@ -75,7 +75,7 @@ func SyslStruct(fieldType string) *sysl.Type {
 		Type: &sysl.Type_TypeRef{
 			TypeRef: &sysl.ScopedRef{
 				Ref: &sysl.Scope{
-					Appname: NewAppName("Types"),
+					Appname: NewAppName(TypeApplication),
 					Path:    []string{fieldType},
 				},
 			},

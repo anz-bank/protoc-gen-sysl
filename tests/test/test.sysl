@@ -1,16 +1,16 @@
 Foo:
-    Foobar(input <: Types.StreamingOutputCallRequest):
+    Foobar(input <: _types.StreamingOutputCallRequest):
         return StreamingOutputCallResponse
 TestService:
-    FullDuplexCall(input <: Types.StreamingOutputCallRequest):
+    FullDuplexCall(input <: _types.StreamingOutputCallRequest):
         return StreamingOutputCallResponse
-    HalfDuplexCall(input <: Types.StreamingOutputCallRequest):
+    HalfDuplexCall(input <: _types.StreamingOutputCallRequest):
         return StreamingOutputCallResponse
-    StreamingInputCall(input <: Types.StreamingInputCallRequest):
+    StreamingInputCall(input <: _types.StreamingInputCallRequest):
         return StreamingInputCallResponse
-    StreamingOutputCall(input <: Types.StreamingOutputCallRequest):
+    StreamingOutputCall(input <: _types.StreamingOutputCallRequest):
         return StreamingOutputCallResponse
-    UnaryCall(input <: Types.SimpleRequest):
+    UnaryCall(input <: _types.SimpleRequest):
         StreamingOutputCallRequest <- Foobar
         return SimpleResponse
 _types:
@@ -19,7 +19,7 @@ _types:
         message <: string
     !type Payload:
         body <: bytes
-        type <: Types.PayloadType
+        type <: _types.PayloadType
     !type ResponseParameters:
         interval_us <: int
         size <: int
@@ -28,24 +28,24 @@ _types:
         fill_oauth_scope <: bool
         fill_server_id <: bool
         fill_username <: bool
-        payload <: Types.Payload
+        payload <: _types.Payload
         response_size <: int
-        response_status <: Types.EchoStatus
-        response_type <: Types.PayloadType
+        response_status <: _types.EchoStatus
+        response_type <: _types.PayloadType
     !type SimpleResponse:
-        grpclb_route_type <: Types.GrpclbRouteType
+        grpclb_route_type <: _types.GrpclbRouteType
         oauth_scope <: string
-        payload <: Types.Payload
+        payload <: _types.Payload
         server_id <: string
         username <: string
     !type StreamingInputCallRequest:
-        payload <: Types.Payload
+        payload <: _types.Payload
     !type StreamingInputCallResponse:
         aggregated_payload_size <: int
     !type StreamingOutputCallRequest:
-        payload <: Types.Payload
-        response_parameters <: Types.ResponseParameters
-        response_status <: Types.EchoStatus
-        response_type <: Types.PayloadType
+        payload <: _types.Payload
+        response_parameters <: _types.ResponseParameters
+        response_status <: _types.EchoStatus
+        response_type <: _types.PayloadType
     !type StreamingOutputCallResponse:
-        payload <: Types.Payload
+        payload <: _types.Payload
