@@ -30,5 +30,3 @@ func TestModule(t *testing.T) {
 		pgsgo.GoFmt(),
 	).Render()
 }
-
-// check res and the fs for output
