@@ -5,7 +5,7 @@ install:
 	go install github.com/joshcarp/protoc-gen-sysl
 
 test:
-	protoc --sysl_out=. tests/serviceExample.proto
+	protoc --sysl_out=tests/ tests/serviceExample.proto
 
 # This updates the code_generator_request.pb.bin for debugging
 tests:
@@ -16,5 +16,5 @@ syslproto:
 	protoc --go_out=. sysloption/sysloption.proto
 
 ci:
-	go test ./... -count=1
+	go test -v ./... -count=1
 	golangci-lint run
