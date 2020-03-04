@@ -6,65 +6,34 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/joshcarp/protoc-gen-sysl/sysloption"
+	"github.com/joshcarp/protoc-gen-sysl/syslpopulate"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
 	pgs "github.com/lyft/protoc-gen-star"
 )
 
-// syslStruct converts a string to a sysl struct type
-func syslStruct(fieldType string) *sysl.Type {
-	//Path :=
-	return &sysl.Type{
-		Type: &sysl.Type_TypeRef{
-			TypeRef: &sysl.ScopedRef{
-				Ref: &sysl.Scope{
-					Appname: &sysl.AppName{
-						Part: []string{typeApplication},
-					},
-					Path: []string{fieldType},
-				},
-			},
-		},
-	}
-}
-
-// syslPrimitive converts a string to a sysl primitive type
-func syslPrimitive(fieldType string) *sysl.Type {
-	return &sysl.Type{
-		Type: &sysl.Type_Primitive_{
-			Primitive: TypeMapping[fieldType],
-		},
-	}
-}
-
 // fieldToString converts a field type to a string and returns name and type respectively
 func fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 	var fieldName, fieldType string
-	var syslType *sysl.Type
 	fieldName = e.Name().String()
 	if t := e.Descriptor(); t != nil && t.TypeName != nil {
 		fieldType = strings.ReplaceAll(*t.TypeName, e.Package().ProtoName().String(), "")
 		fieldType = strings.ReplaceAll(fieldType, ".", "")
-		syslType = syslStruct(fieldType)
 	} else {
 		fieldType = e.Type().ProtoType().String()
-		syslType = syslPrimitive(fieldType)
 	}
-	return fieldName, syslType
+	return fieldName, syslpopulate.NewType(fieldType)
+
 }
 
-// fieldToString converts a field type to a string and returns name and type respectively
-func messageToSysl(e pgs.Message) *sysl.Type {
+// messageToSysl converts a message to a sysl type
+func messageToSysl(e pgs.Message) string {
 	var fieldType string
-	var syslType *sysl.Type
 	if t := e.Descriptor(); t != nil && t.Name != nil {
 		fieldType = strings.ReplaceAll(*t.Name, e.Package().ProtoName().String(), "")
 		fieldType = strings.ReplaceAll(fieldType, ".", "")
-		syslType = syslStruct(fieldType)
-	} else {
-		syslType = syslPrimitive(fieldType)
 	}
-	return syslType
+	return fieldType
 }
 
 // customOption converts a pgs method to a slice of the sysl CallRule
@@ -83,29 +52,12 @@ func endpointFromMethod(method pgs.Method) *sysl.Endpoint {
 	syslCalls := []*sysl.Statement{}
 	for _, call := range calls {
 		syslCallSplit := strings.Split(call.Call, ".")
-		syslCalls = append(syslCalls, &sysl.Statement{
-			Stmt: &sysl.Statement_Call{
-				Call: &sysl.Call{
-					Target: &sysl.AppName{
-						Part: []string{syslCallSplit[0]},
-					},
-					Endpoint: syslCallSplit[1],
-				},
-			},
-		},
-		)
+		syslCalls = append(syslCalls, syslpopulate.NewCall(syslCallSplit[0], syslCallSplit[1]))
 	}
-	return &sysl.Endpoint{
-		Name:     method.Name().String(),
-		LongName: method.FullyQualifiedName(),
-		Param: []*sysl.Param{{
-			Name: "input",
-			Type: messageToSysl(method.Input()),
-		}},
-		Stmt: append(syslCalls, &sysl.Statement{Stmt: &sysl.Statement_Ret{Ret: &sysl.Return{
-			Payload: method.Output().Name().String(),
-		}}}),
-	}
+	endpoint := syslpopulate.NewEndpoint(method.Name().String())
+	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(messageToSysl(method.Input()))}
+	endpoint.Stmt = append(syslCalls, syslpopulate.NewReturn(method.Output().Name().String()))
+	return endpoint
 }
 
 // syslFilename converts replaces a .proto filename to .sysl, removing any paths

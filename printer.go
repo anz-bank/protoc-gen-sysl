@@ -2,11 +2,13 @@ package main
 
 import (
 	"bytes"
+	"io"
+
 	"github.com/anz-bank/sysl/pkg/sysl"
+	"github.com/joshcarp/protoc-gen-sysl/syslpopulate"
 	printer "github.com/joshcarp/sysl-printer"
 	pgs "github.com/lyft/protoc-gen-star"
 	"github.com/sirupsen/logrus"
-	"io"
 )
 
 // PrinterModule holds the sysl module that prints the sysl source code
@@ -19,18 +21,11 @@ type PrinterModule struct {
 	Module *sysl.Module
 }
 
-const typeApplication = "Types"
-
-var TypeMapping = map[string]sysl.Type_Primitive{
-	"TYPE_BYTES": sysl.Type_BYTES,
-	"TYPE_INT32": sysl.Type_INT,
-	"TYPE_STRING": sysl.Type_STRING,
-	"TYPE_BOOL": sysl.Type_BOOL,
-}
+const TypeApplication = "Types"
 
 func SyslPrinter() *PrinterModule { return &PrinterModule{ModuleBase: &pgs.ModuleBase{}} }
 
-func (p *PrinterModule) Name() string { return "printer"}
+func (p *PrinterModule) Name() string { return "printer" }
 
 func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string]pgs.Package) []pgs.Artifact {
 	buf := &bytes.Buffer{}
@@ -51,16 +46,12 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 }
 
 func (p PrinterModule) VisitFile(file pgs.File) (v pgs.Visitor, err error) {
-	for _, s := range file.Services(){
+	for _, s := range file.Services() {
 		p.VisitService(s)
 	}
 	// Initialise the "Type" application which will store all the types
-	p.Module.Apps[typeApplication] = &sysl.Application{
-		Name: &sysl.AppName{Part: []string{typeApplication}},
-	}
-	p.Module.Apps[typeApplication].Types = map[string]*sysl.Type{}
-
-	for _, t := range file.Messages(){
+	p.Module.Apps[TypeApplication] = syslpopulate.NewApplication(TypeApplication)
+	for _, t := range file.Messages() {
 		p.VisitMessage(t)
 	}
 	return nil, nil
@@ -70,18 +61,15 @@ func (p PrinterModule) VisitFile(file pgs.File) (v pgs.Visitor, err error) {
 // service myservice{...} --> myservice:
 func (v PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 	name := s.Name().String()
-	v.Module.Apps[name] = &sysl.Application{
-		Name:      &sysl.AppName{Part: []string{s.Name().String()}},
-		Endpoints: make(map[string]*sysl.Endpoint),
-	}
-	for _, e := range s.Methods(){
+	v.Module.Apps[name] = syslpopulate.NewApplication(name)
+	for _, e := range s.Methods() {
 		v.VisitMethod(e)
 	}
 	return nil, nil
 }
 
 // VisitMessage converts to sysl and constructs types from messages. All types are writen to the
-// typeApplication (as in sysl types belong to applications but not in proto
+// TypeApplication (as in sysl types belong to applications but not in proto
 // message foo{...} --> !type foo:
 func (v PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 	attrDefs := make(map[string]*sysl.Type)
@@ -91,7 +79,7 @@ func (v PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 		fieldName, syslType = fieldToSysl(e)
 		attrDefs[fieldName] = syslType
 	}
-	v.Module.Apps[typeApplication].Types[m.Name().String()] = &sysl.Type{
+	v.Module.Apps[TypeApplication].Types[m.Name().String()] = &sysl.Type{
 		Type: &sysl.Type_Tuple_{
 			Tuple: &sysl.Type_Tuple{
 				AttrDefs: attrDefs,
