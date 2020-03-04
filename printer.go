@@ -18,7 +18,7 @@ type PrinterModule struct {
 	Module *sysl.Module
 }
 
-const TypeApplication = "Types"
+const TypeApplication = "_types"
 
 func SyslPrinter() *PrinterModule { return &PrinterModule{ModuleBase: &pgs.ModuleBase{}} }
 
