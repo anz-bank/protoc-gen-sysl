@@ -9,7 +9,8 @@ var TypeMapping = map[string]sysl.Type_Primitive{
 	"TYPE_BOOL":   sysl.Type_BOOL,
 }
 
-const TypeApplication = "Types"
+// TypeApplication is the application that all of the proto messages get put in
+const TypeApplication = "_types"
 
 // NewApplication Initialises a Sysl application
 func NewApplication(appName string) *sysl.Application {
@@ -74,7 +75,7 @@ func SyslStruct(fieldType string) *sysl.Type {
 		Type: &sysl.Type_TypeRef{
 			TypeRef: &sysl.ScopedRef{
 				Ref: &sysl.Scope{
-					Appname: NewAppName("Types"),
+					Appname: NewAppName(TypeApplication),
 					Path:    []string{fieldType},
 				},
 			},

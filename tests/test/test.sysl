@@ -1,0 +1,51 @@
+Foo:
+    Foobar(input <: _types.StreamingOutputCallRequest):
+        return StreamingOutputCallResponse
+TestService:
+    FullDuplexCall(input <: _types.StreamingOutputCallRequest):
+        return StreamingOutputCallResponse
+    HalfDuplexCall(input <: _types.StreamingOutputCallRequest):
+        return StreamingOutputCallResponse
+    StreamingInputCall(input <: _types.StreamingInputCallRequest):
+        return StreamingInputCallResponse
+    StreamingOutputCall(input <: _types.StreamingOutputCallRequest):
+        return StreamingOutputCallResponse
+    UnaryCall(input <: _types.SimpleRequest):
+        StreamingOutputCallRequest <- Foobar
+        return SimpleResponse
+_types:
+    !type EchoStatus:
+        code <: int
+        message <: string
+    !type Payload:
+        body <: bytes
+        type <: _types.PayloadType
+    !type ResponseParameters:
+        interval_us <: int
+        size <: int
+    !type SimpleRequest:
+        fill_grpclb_route_type <: bool
+        fill_oauth_scope <: bool
+        fill_server_id <: bool
+        fill_username <: bool
+        payload <: _types.Payload
+        response_size <: int
+        response_status <: _types.EchoStatus
+        response_type <: _types.PayloadType
+    !type SimpleResponse:
+        grpclb_route_type <: _types.GrpclbRouteType
+        oauth_scope <: string
+        payload <: _types.Payload
+        server_id <: string
+        username <: string
+    !type StreamingInputCallRequest:
+        payload <: _types.Payload
+    !type StreamingInputCallResponse:
+        aggregated_payload_size <: int
+    !type StreamingOutputCallRequest:
+        payload <: _types.Payload
+        response_parameters <: _types.ResponseParameters
+        response_status <: _types.EchoStatus
+        response_type <: _types.PayloadType
+    !type StreamingOutputCallResponse:
+        payload <: _types.Payload

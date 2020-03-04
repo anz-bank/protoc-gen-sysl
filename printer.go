@@ -18,7 +18,7 @@ type PrinterModule struct {
 	Module *sysl.Module
 }
 
-const TypeApplication = "Types"
+const TypeApplication = "_types"
 
 func SyslPrinter() *PrinterModule { return &PrinterModule{ModuleBase: &pgs.ModuleBase{}} }
 
@@ -31,9 +31,8 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 		p.Log = logrus.New()
 	}
 	for _, f := range targets {
-		p.Module = &sysl.Module{
-			Apps: make(map[string]*sysl.Application),
-		}
+		buf.Reset()
+		p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
 		fileName := syslFilename(f.Name().String())
 		p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
 		printer.NewPrinter(buf).PrintModule(p.Module)
