@@ -2,7 +2,7 @@ all: install tests syslproto ci
 .PHONY: install test tests syslproto
 
 install:
-	go install github.com/joshcarp/protoc-gen-sysl
+	go install github.com/anz-bank/protoc-gen-sysl
 
 test:
 	protoc --sysl_out=tests/ tests/test.proto

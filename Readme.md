@@ -9,7 +9,7 @@ Supports using sysls "call" syntax through proto options
 
 ## Installation
 
-`go get github.com/joshcarp/protoc-gen-sysl`
+`go get github.com/anz-bank/protoc-gen-sysl`
 
 now add the [sysloption.proto](/sysloption/sysloption.proto) to your local project and import in your local proto file.
 

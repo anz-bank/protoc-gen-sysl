@@ -1,4 +1,4 @@
-module github.com/joshcarp/protoc-gen-sysl
+module github.com/anz-bank/protoc-gen-sysl
 
 go 1.13
 

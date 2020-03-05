@@ -4,7 +4,7 @@ import (
 	"bytes"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
-	"github.com/joshcarp/protoc-gen-sysl/syslpopulate"
+	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
 	printer "github.com/joshcarp/sysl-printer"
 	pgs "github.com/lyft/protoc-gen-star"
 	"github.com/sirupsen/logrus"

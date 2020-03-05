@@ -4,9 +4,9 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/anz-bank/protoc-gen-sysl/sysloption"
+	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
 	"github.com/golang/protobuf/proto"
-	"github.com/joshcarp/protoc-gen-sysl/sysloption"
-	"github.com/joshcarp/protoc-gen-sysl/syslpopulate"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
 	pgs "github.com/lyft/protoc-gen-star"
