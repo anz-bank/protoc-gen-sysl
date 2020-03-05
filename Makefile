@@ -4,8 +4,9 @@ all: install tests syslproto ci
 install:
 	go install github.com/anz-bank/protoc-gen-sysl
 
-test:
-	protoc --sysl_out=tests/ tests/test.proto
+tests:
+	protoc --sysl_out=tests/simple/ tests/simple/simple.proto
+	protoc --sysl_out=tests/test/ tests/test/test.proto
 
 # This updates the code_generator_request.pb.bin for debugging
 generator:
