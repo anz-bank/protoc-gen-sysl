@@ -62,7 +62,7 @@ func endpointFromMethod(method pgs.Method) *sysl.Endpoint {
 	}
 	endpoint := syslpopulate.NewEndpoint(method.Name().String())
 	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(messageToSysl(method.Input()), application)}
-	endpoint.Stmt = append(syslCalls, syslpopulate.NewReturn(method.Output().Name().String()))
+	endpoint.Stmt = append(syslCalls, syslpopulate.NewReturn(syslPackageName(method.Output())+"."+method.Output().Name().String()))
 	return endpoint
 }
 

@@ -1,6 +1,6 @@
 Foo:
     Foobar(input <: GrpcTesting.StreamingOutputCallRequest):
-        return StreamingOutputCallResponse
+        return ok <: GrpcTesting.StreamingOutputCallResponse
 GrpcTesting:
     !type EchoStatus:
         code <: int
@@ -39,13 +39,13 @@ GrpcTesting:
         payload <: GrpcTesting.Payload
 TestService:
     FullDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
-        return StreamingOutputCallResponse
+        return ok <: GrpcTesting.StreamingOutputCallResponse
     HalfDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
-        return StreamingOutputCallResponse
+        return ok <: GrpcTesting.StreamingOutputCallResponse
     StreamingInputCall(input <: GrpcTesting.StreamingInputCallRequest):
-        return StreamingInputCallResponse
+        return ok <: GrpcTesting.StreamingInputCallResponse
     StreamingOutputCall(input <: GrpcTesting.StreamingOutputCallRequest):
-        return StreamingOutputCallResponse
+        return ok <: GrpcTesting.StreamingOutputCallResponse
     UnaryCall(input <: GrpcTesting.SimpleRequest):
         StreamingOutputCallRequest <- Foobar
-        return SimpleResponse
+        return ok <: GrpcTesting.SimpleResponse

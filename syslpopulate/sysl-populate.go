@@ -1,6 +1,10 @@
 package syslpopulate
 
-import "github.com/anz-bank/sysl/pkg/sysl"
+import (
+	"strings"
+
+	"github.com/anz-bank/sysl/pkg/sysl"
+)
 
 var TypeMapping = map[string]sysl.Type_Primitive{
 	"TYPE_BYTES":  sysl.Type_BYTES,
@@ -40,9 +44,10 @@ func NewType(name, application string) *sysl.Type {
 }
 
 // NewReturn Initialises a return statement and wraps it in a sysl statement
-func NewReturn(name string) *sysl.Statement {
+// payloads will be concatenated and seperated by dots "."
+func NewReturn(payload ...string) *sysl.Statement {
 	return &sysl.Statement{Stmt: &sysl.Statement_Ret{Ret: &sysl.Return{
-		Payload: name}}}
+		Payload: "ok <: " + strings.Join(payload, ".")}}}
 }
 
 // NewCall Initialises a call statement and wraps it in a sysl statement

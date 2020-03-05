@@ -1,10 +1,10 @@
 Bar:
     AnotherEndpoint(input <: GrpcTesting.Request):
-        return Response
+        return ok <: GrpcTesting.Response
 Foo:
     thisEndpoint(input <: GrpcTesting.Request):
         Bar <- AnotherEndpoint
-        return Response
+        return ok <: GrpcTesting.Response
 GrpcTesting:
     !type Request:
         query <: string
