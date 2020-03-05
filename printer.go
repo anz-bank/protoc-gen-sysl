@@ -3,8 +3,8 @@ package main
 import (
 	"bytes"
 
-	"github.com/anz-bank/sysl/pkg/sysl"
 	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
+	"github.com/anz-bank/sysl/pkg/sysl"
 	printer "github.com/joshcarp/sysl-printer"
 	pgs "github.com/lyft/protoc-gen-star"
 	"github.com/sirupsen/logrus"
@@ -17,8 +17,6 @@ type PrinterModule struct {
 	Log    *logrus.Logger
 	Module *sysl.Module
 }
-
-const TypeApplication = "_types"
 
 func SyslPrinter() *PrinterModule { return &PrinterModule{ModuleBase: &pgs.ModuleBase{}} }
 
@@ -47,8 +45,9 @@ func (p *PrinterModule) VisitFile(file pgs.File) (v pgs.Visitor, err error) {
 			return nil, err
 		}
 	}
+
 	// Initialise the "Type" application which will store all the types
-	p.Module.Apps[TypeApplication] = syslpopulate.NewApplication(TypeApplication)
+	p.Module.Apps[syslPackageName(file)] = syslpopulate.NewApplication(syslPackageName(file))
 	for _, t := range file.Messages() {
 
 		if _, err := p.VisitMessage(t); err != nil {
@@ -76,13 +75,14 @@ func (p *PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 // message foo{...} --> !type foo:
 func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 	attrDefs := make(map[string]*sysl.Type)
+	var packageName = syslPackageName(m)
 	var fieldName string
 	var syslType *sysl.Type
 	for _, e := range m.Fields() {
 		fieldName, syslType = fieldToSysl(e)
 		attrDefs[fieldName] = syslType
 	}
-	p.Module.Apps[TypeApplication].Types[m.Name().String()] = &sysl.Type{
+	p.Module.Apps[packageName].Types[m.Name().String()] = &sysl.Type{
 		Type: &sysl.Type_Tuple_{
 			Tuple: &sysl.Type_Tuple{
 				AttrDefs: attrDefs,

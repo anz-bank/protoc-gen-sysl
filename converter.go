@@ -12,9 +12,14 @@ import (
 	pgs "github.com/lyft/protoc-gen-star"
 )
 
+func syslPackageName(m pgs.Entity) string {
+	return m.Package().ProtoName().UpperCamelCase().String()
+}
+
 // fieldToString converts a field type to a string and returns name and type respectively
 func fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 	var fieldName, fieldType string
+	application := syslPackageName(e)
 	fieldName = e.Name().String()
 	if t := e.Descriptor(); t != nil && t.TypeName != nil {
 		fieldType = strings.ReplaceAll(*t.TypeName, e.Package().ProtoName().String(), "")
@@ -22,7 +27,7 @@ func fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 	} else {
 		fieldType = e.Type().ProtoType().String()
 	}
-	return fieldName, syslpopulate.NewType(fieldType)
+	return fieldName, syslpopulate.NewType(fieldType, application)
 
 }
 
@@ -30,7 +35,7 @@ func fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 func messageToSysl(e pgs.Message) string {
 	var fieldType string
 	if t := e.Descriptor(); t != nil && t.Name != nil {
-		fieldType = strings.ReplaceAll(*t.Name, e.Package().ProtoName().String(), "")
+		fieldType = strings.ReplaceAll(*t.Name, syslPackageName(e), "")
 		fieldType = strings.ReplaceAll(fieldType, ".", "")
 	}
 	return fieldType
@@ -50,12 +55,13 @@ func customOption(meth pgs.Method) []*sysloption.CallRule {
 func endpointFromMethod(method pgs.Method) *sysl.Endpoint {
 	calls := customOption(method)
 	syslCalls := []*sysl.Statement{}
+	application := syslPackageName(method)
 	for _, call := range calls {
 		syslCallSplit := strings.Split(call.Call, ".")
 		syslCalls = append(syslCalls, syslpopulate.NewCall(syslCallSplit[0], syslCallSplit[1]))
 	}
 	endpoint := syslpopulate.NewEndpoint(method.Name().String())
-	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(messageToSysl(method.Input()))}
+	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(messageToSysl(method.Input()), application)}
 	endpoint.Stmt = append(syslCalls, syslpopulate.NewReturn(method.Output().Name().String()))
 	return endpoint
 }

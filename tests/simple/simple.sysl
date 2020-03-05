@@ -1,11 +1,11 @@
 Bar:
-    AnotherEndpoint(input <: _types.Request):
+    AnotherEndpoint(input <: GrpcTesting.Request):
         return Response
 Foo:
-    thisEndpoint(input <: _types.Request):
+    thisEndpoint(input <: GrpcTesting.Request):
         Bar <- AnotherEndpoint
         return Response
-_types:
+GrpcTesting:
     !type Request:
         query <: string
     !type Response:

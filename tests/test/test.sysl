@@ -1,25 +1,13 @@
 Foo:
-    Foobar(input <: _types.StreamingOutputCallRequest):
+    Foobar(input <: GrpcTesting.StreamingOutputCallRequest):
         return StreamingOutputCallResponse
-TestService:
-    FullDuplexCall(input <: _types.StreamingOutputCallRequest):
-        return StreamingOutputCallResponse
-    HalfDuplexCall(input <: _types.StreamingOutputCallRequest):
-        return StreamingOutputCallResponse
-    StreamingInputCall(input <: _types.StreamingInputCallRequest):
-        return StreamingInputCallResponse
-    StreamingOutputCall(input <: _types.StreamingOutputCallRequest):
-        return StreamingOutputCallResponse
-    UnaryCall(input <: _types.SimpleRequest):
-        StreamingOutputCallRequest <- Foobar
-        return SimpleResponse
-_types:
+GrpcTesting:
     !type EchoStatus:
         code <: int
         message <: string
     !type Payload:
         body <: bytes
-        type <: _types.PayloadType
+        type <: GrpcTesting.PayloadType
     !type ResponseParameters:
         interval_us <: int
         size <: int
@@ -28,24 +16,36 @@ _types:
         fill_oauth_scope <: bool
         fill_server_id <: bool
         fill_username <: bool
-        payload <: _types.Payload
+        payload <: GrpcTesting.Payload
         response_size <: int
-        response_status <: _types.EchoStatus
-        response_type <: _types.PayloadType
+        response_status <: GrpcTesting.EchoStatus
+        response_type <: GrpcTesting.PayloadType
     !type SimpleResponse:
-        grpclb_route_type <: _types.GrpclbRouteType
+        grpclb_route_type <: GrpcTesting.GrpclbRouteType
         oauth_scope <: string
-        payload <: _types.Payload
+        payload <: GrpcTesting.Payload
         server_id <: string
         username <: string
     !type StreamingInputCallRequest:
-        payload <: _types.Payload
+        payload <: GrpcTesting.Payload
     !type StreamingInputCallResponse:
         aggregated_payload_size <: int
     !type StreamingOutputCallRequest:
-        payload <: _types.Payload
-        response_parameters <: _types.ResponseParameters
-        response_status <: _types.EchoStatus
-        response_type <: _types.PayloadType
+        payload <: GrpcTesting.Payload
+        response_parameters <: GrpcTesting.ResponseParameters
+        response_status <: GrpcTesting.EchoStatus
+        response_type <: GrpcTesting.PayloadType
     !type StreamingOutputCallResponse:
-        payload <: _types.Payload
+        payload <: GrpcTesting.Payload
+TestService:
+    FullDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
+        return StreamingOutputCallResponse
+    HalfDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
+        return StreamingOutputCallResponse
+    StreamingInputCall(input <: GrpcTesting.StreamingInputCallRequest):
+        return StreamingInputCallResponse
+    StreamingOutputCall(input <: GrpcTesting.StreamingOutputCallRequest):
+        return StreamingOutputCallResponse
+    UnaryCall(input <: GrpcTesting.SimpleRequest):
+        StreamingOutputCallRequest <- Foobar
+        return SimpleResponse

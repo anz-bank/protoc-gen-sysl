@@ -9,9 +9,6 @@ var TypeMapping = map[string]sysl.Type_Primitive{
 	"TYPE_BOOL":   sysl.Type_BOOL,
 }
 
-// TypeApplication is the application that all of the proto messages get put in
-const TypeApplication = "_types"
-
 // NewApplication Initialises a Sysl application
 func NewApplication(appName string) *sysl.Application {
 	return &sysl.Application{
@@ -27,19 +24,19 @@ func NewEndpoint(name string) *sysl.Endpoint {
 }
 
 // NewParameter Initialises a Sysl Parameter input
-func NewParameter(name string) *sysl.Param {
+func NewParameter(name, application string) *sysl.Param {
 	return &sysl.Param{
 		Name: "input",
-		Type: NewType(name),
+		Type: NewType(name, application),
 	}
 }
 
 // NewType Initialises a Sysl type from string
-func NewType(name string) *sysl.Type {
+func NewType(name, application string) *sysl.Type {
 	if fieldType, ok := TypeMapping[name]; ok {
 		return SyslPrimitive(fieldType)
 	}
-	return SyslStruct(name)
+	return SyslStruct(name, application)
 }
 
 // NewReturn Initialises a return statement and wraps it in a sysl statement
@@ -70,12 +67,12 @@ func SyslPrimitive(fieldType sysl.Type_Primitive) *sysl.Type {
 }
 
 // SyslStruct converts a string to a sysl struct type
-func SyslStruct(fieldType string) *sysl.Type {
+func SyslStruct(fieldType, application string) *sysl.Type {
 	return &sysl.Type{
 		Type: &sysl.Type_TypeRef{
 			TypeRef: &sysl.ScopedRef{
 				Ref: &sysl.Scope{
-					Appname: NewAppName(TypeApplication),
+					Appname: NewAppName(application),
 					Path:    []string{fieldType},
 				},
 			},
