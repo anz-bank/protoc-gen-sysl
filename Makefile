@@ -1,4 +1,4 @@
-all: install tests syslproto ci
+all: install syslproto ci
 .PHONY: install test tests syslproto
 
 install:
@@ -7,6 +7,7 @@ install:
 tests:
 	protoc --sysl_out=tests/simple/ tests/simple/simple.proto
 	protoc --sysl_out=tests/test/ tests/test/test.proto
+	protoc --sysl_out=tests/enum/ tests/enum/enum.proto
 
 # This updates the code_generator_request.pb.bin for debugging
 generator:

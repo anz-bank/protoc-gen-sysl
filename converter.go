@@ -70,3 +70,14 @@ func endpointFromMethod(method pgs.Method) *sysl.Endpoint {
 func syslFilename(s string) string {
 	return strings.Replace(regexp.MustCompile(`(?m)\w*\.proto`).FindString(s), ".proto", "", -1)
 }
+
+// enumToSysl converts an Enum to a sysl enum
+func enumToSysl(e pgs.Enum) map[string]int64 {
+	values := make(map[string]int64)
+	if t := e.Descriptor(); t != nil && t.Name != nil {
+		for _, val := range t.Value {
+			values[*val.Name] = int64(*val.Number)
+		}
+	}
+	return values
+}

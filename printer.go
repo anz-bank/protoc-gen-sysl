@@ -49,8 +49,12 @@ func (p *PrinterModule) VisitFile(file pgs.File) (v pgs.Visitor, err error) {
 	// Initialise the "Type" application which will store all the types
 	p.Module.Apps[syslPackageName(file)] = syslpopulate.NewApplication(syslPackageName(file))
 	for _, t := range file.Messages() {
-
 		if _, err := p.VisitMessage(t); err != nil {
+			return nil, err
+		}
+	}
+	for _, e := range file.Enums() {
+		if _, err := p.VisitEnum(e); err != nil {
 			return nil, err
 		}
 	}
@@ -99,4 +103,19 @@ func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 func (p *PrinterModule) VisitMethod(m pgs.Method) (v pgs.Visitor, err error) {
 	p.Module.Apps[m.Service().Name().String()].Endpoints[m.Name().String()] = endpointFromMethod(m)
 	return p, nil
+}
+
+// VisitEnumValue converts to sysl enums. All types are writen to the
+// Currently this sysl syntax is unsupported, but enums exist within the sysl data object
+// enum foo{...} --> !enum foo:
+func (p *PrinterModule) VisitEnum(e pgs.Enum) (v pgs.Visitor, err error) {
+	var packageName = syslPackageName(e)
+	p.Module.Apps[packageName].Types[e.Name().String()] = &sysl.Type{
+		Type: &sysl.Type_Enum_{
+			Enum: &sysl.Type_Enum{
+				Items: enumToSysl(e),
+			},
+		},
+	}
+	return v, nil
 }
