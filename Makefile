@@ -8,11 +8,14 @@ tests:
 	protoc --sysl_out=tests/simple/ tests/simple/simple.proto
 	protoc --sysl_out=tests/test/ tests/test/test.proto
 	protoc --sysl_out=tests/enum/ tests/enum/enum.proto
+	protoc --sysl_out=tests/multiplefiles/ tests/multiplefiles/services.proto
 
 # This updates the code_generator_request.pb.bin for debugging
 generator:
 	protoc --debug_out="tests/test:tests/." ./tests/test/test.proto
 	protoc --debug_out="tests/simple:tests/." ./tests/simple/simple.proto
+	protoc --debug_out="tests/test:tests/." ./tests/test/test.proto
+	protoc --debug_out="tests/multiplefiles:tests/." ./tests/multiplefiles/services.proto
 
 # This rebuilds the option protos
 syslproto:

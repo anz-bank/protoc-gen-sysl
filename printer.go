@@ -30,15 +30,17 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 		p.Log = logrus.New()
 	}
 	indexFile := bytes.Buffer{}
-	for _, f := range targets {
-		buf.Reset()
-		buf.Write([]byte("import index.sysl\n"))
-		p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
-		fileName := syslFilename(f.Name().String()) + ".sysl"
-		p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
-		printer.NewPrinter(buf).PrintModule(p.Module)
-		indexFile.Write([]byte(fmt.Sprintf("import %s\n", fileName)))
-		p.AddGeneratorFile(fileName, buf.String())
+	for _, targerfile := range targets {
+		for _, f := range targerfile.Package().Files() {
+			buf.Reset()
+			buf.Write([]byte("import index.sysl\n"))
+			p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
+			fileName := syslFilename(f.Name().String()) + ".sysl"
+			p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
+			printer.NewPrinter(buf).PrintModule(p.Module)
+			indexFile.Write([]byte(fmt.Sprintf("import %s\n", fileName)))
+			p.AddGeneratorFile(fileName, buf.String())
+		}
 	}
 	p.AddGeneratorFile("index.sysl", indexFile.String())
 	return p.Artifacts()
@@ -50,10 +52,11 @@ func (p *PrinterModule) VisitFile(file pgs.File) (v pgs.Visitor, err error) {
 			return nil, err
 		}
 	}
-
-	// Initialise the "Type" application which will store all the types
-	p.Module.Apps[syslPackageName(file)] = syslpopulate.NewApplication(syslPackageName(file))
 	for _, t := range file.Messages() {
+		if _, ok := p.Module.Apps[syslPackageName(file)]; !ok {
+			p.Module.Apps[syslPackageName(file)] = syslpopulate.NewApplication(syslPackageName(file))
+		}
+
 		if _, err := p.VisitMessage(t); err != nil {
 			return nil, err
 		}
@@ -114,8 +117,14 @@ func (p *PrinterModule) VisitMethod(m pgs.Method) (v pgs.Visitor, err error) {
 // Currently this sysl syntax is unsupported, but enums exist within the sysl data object
 // enum foo{...} --> !enum foo:
 func (p *PrinterModule) VisitEnum(e pgs.Enum) (v pgs.Visitor, err error) {
-	var packageName = syslPackageName(e)
-	p.Module.Apps[packageName].Types[e.Name().String()] = &sysl.Type{
+	packageName := syslPackageName(e)
+	typeName := e.Name().String()
+
+	if _, ok := p.Module.Apps[packageName]; !ok {
+		p.Module.Apps[packageName] = syslpopulate.NewApplication(packageName)
+	}
+
+	p.Module.Apps[packageName].Types[typeName] = &sysl.Type{
 		Type: &sysl.Type_Enum_{
 			Enum: &sysl.Type_Enum{
 				Items: enumToSysl(e),

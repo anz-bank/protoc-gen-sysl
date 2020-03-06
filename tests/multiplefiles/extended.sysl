@@ -1,0 +1,8 @@
+import index.sysl
+GrpcTesting:
+    # enum is not currently implemented in sysl
+    !type Currency:
+        ...
+    # !enum Currency:
+    # AUD = 0
+    # USD = 1

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package grpc.testing;
+
+import "tests/multiplefiles/extended.proto";
+
+message Request {
+    string query = 1;
+    Currency currency_code = 2;
+}
+
+message Response {
+    string query = 1;
+}
