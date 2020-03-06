@@ -62,11 +62,22 @@ func endpointFromMethod(method pgs.Method) *sysl.Endpoint {
 	}
 	endpoint := syslpopulate.NewEndpoint(method.Name().String())
 	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(messageToSysl(method.Input()), application)}
-	endpoint.Stmt = append(syslCalls, syslpopulate.NewReturn(method.Output().Name().String()))
+	endpoint.Stmt = append(syslCalls, syslpopulate.NewReturn(syslPackageName(method.Output())+"."+method.Output().Name().String()))
 	return endpoint
 }
 
 // syslFilename converts replaces a .proto filename to .sysl, removing any paths
 func syslFilename(s string) string {
 	return strings.Replace(regexp.MustCompile(`(?m)\w*\.proto`).FindString(s), ".proto", "", -1)
+}
+
+// enumToSysl converts an Enum to a sysl enum
+func enumToSysl(e pgs.Enum) map[string]int64 {
+	values := make(map[string]int64)
+	if t := e.Descriptor(); t != nil && t.Name != nil {
+		for _, val := range t.Value {
+			values[*val.Name] = int64(*val.Number)
+		}
+	}
+	return values
 }

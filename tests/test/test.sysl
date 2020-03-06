@@ -1,13 +1,27 @@
 Foo:
     Foobar(input <: GrpcTesting.StreamingOutputCallRequest):
-        return StreamingOutputCallResponse
+        return ok <: GrpcTesting.StreamingOutputCallResponse
 GrpcTesting:
     !type EchoStatus:
         code <: int
         message <: string
+    # enum is not currently implemented in sysl
+    !type GrpclbRouteType:
+        ...
+    # !enum GrpclbRouteType:
+    # GRPCLB_ROUTE_TYPE_BACKEND = 2
+    # GRPCLB_ROUTE_TYPE_FALLBACK = 1
+    # GRPCLB_ROUTE_TYPE_UNKNOWN = 0
     !type Payload:
         body <: bytes
         type <: GrpcTesting.PayloadType
+    # enum is not currently implemented in sysl
+    !type PayloadType:
+        ...
+    # !enum PayloadType:
+    # COMPRESSABLE = 0
+    # RANDOM = 2
+    # UNCOMPRESSABLE = 1
     !type ResponseParameters:
         interval_us <: int
         size <: int
@@ -39,13 +53,13 @@ GrpcTesting:
         payload <: GrpcTesting.Payload
 TestService:
     FullDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
-        return StreamingOutputCallResponse
+        return ok <: GrpcTesting.StreamingOutputCallResponse
     HalfDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
-        return StreamingOutputCallResponse
+        return ok <: GrpcTesting.StreamingOutputCallResponse
     StreamingInputCall(input <: GrpcTesting.StreamingInputCallRequest):
-        return StreamingInputCallResponse
+        return ok <: GrpcTesting.StreamingInputCallResponse
     StreamingOutputCall(input <: GrpcTesting.StreamingOutputCallRequest):
-        return StreamingOutputCallResponse
+        return ok <: GrpcTesting.StreamingOutputCallResponse
     UnaryCall(input <: GrpcTesting.SimpleRequest):
         StreamingOutputCallRequest <- Foobar
-        return SimpleResponse
+        return ok <: GrpcTesting.SimpleResponse
