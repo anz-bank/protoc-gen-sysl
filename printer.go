@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
 	"github.com/anz-bank/sysl/pkg/sysl"
@@ -28,14 +29,18 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	if p.Log == nil {
 		p.Log = logrus.New()
 	}
+	indexFile := bytes.Buffer{}
 	for _, f := range targets {
 		buf.Reset()
+		buf.Write([]byte("import index.sysl\n"))
 		p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
-		fileName := syslFilename(f.Name().String())
+		fileName := syslFilename(f.Name().String()) + ".sysl"
 		p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
 		printer.NewPrinter(buf).PrintModule(p.Module)
-		p.AddGeneratorFile(fileName+".sysl", buf.String())
+		indexFile.Write([]byte(fmt.Sprintf("import %s\n", fileName)))
+		p.AddGeneratorFile(fileName, buf.String())
 	}
+	p.AddGeneratorFile("index.sysl", indexFile.String())
 	return p.Artifacts()
 }
 

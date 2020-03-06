@@ -1,3 +1,4 @@
+import index.sysl
 Bar:
     AnotherEndpoint(input <: GrpcTesting.Request):
         return ok <: GrpcTesting.Response
