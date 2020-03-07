@@ -11,11 +11,12 @@ tests:
 	protoc --sysl_out=tests/multiplefiles/ tests/multiplefiles/services.proto
 
 # This updates the code_generator_request.pb.bin for debugging
-generator:
+update-tests:
 	protoc --debug_out="tests/test:tests/." ./tests/test/test.proto
 	protoc --debug_out="tests/simple:tests/." ./tests/simple/simple.proto
-	protoc --debug_out="tests/test:tests/." ./tests/test/test.proto
 	protoc --debug_out="tests/multiplefiles:tests/." ./tests/multiplefiles/services.proto
+	protoc --debug_out="tests/enum:tests/." ./tests/enum/enum.proto
+
 
 # This rebuilds the option protos
 syslproto:

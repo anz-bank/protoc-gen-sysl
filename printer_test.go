@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
@@ -15,17 +16,29 @@ import (
 	"github.com/spf13/afero"
 )
 
+var tests = []string{
+	"test",
+	"simple/",
+	"multiplefiles/",
+	"enum/"}
+
+const testDir = "./tests"
+
 func TestPrinting(t *testing.T) {
-	directory := "./tests/test/"
-	_, fs := syslutil.WriteToMemOverlayFs(directory)
+	for _, test := range tests {
+		test = filepath.Join(testDir, test)
 
-	GeneratorResponse, err := ConvertSyslToProto(directory + "code_generator_request.pb.bin")
-	assert.NoError(t, err)
+		_, fs := syslutil.WriteToMemOverlayFs(test)
 
-	golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
-	assert.NoError(t, err)
+		GeneratorResponse, err := ConvertSyslToProto(filepath.Join(test, "code_generator_request.pb.bin"))
+		assert.NoError(t, err)
+		t.Log(filepath.Join("Passed", test, *GeneratorResponse.File[0].Name))
 
-	assert.Equal(t, *GeneratorResponse.File[0].Content, string(golden))
+		golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
+		assert.NoError(t, err)
+
+		assert.Equal(t, *GeneratorResponse.File[0].Content, string(golden))
+	}
 }
 
 func TestSimple(t *testing.T) {
