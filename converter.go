@@ -28,7 +28,6 @@ func fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 		fieldType = e.Type().ProtoType().String()
 	}
 	return fieldName, syslpopulate.NewType(fieldType, application)
-
 }
 
 // messageToSysl converts a message to a sysl type
