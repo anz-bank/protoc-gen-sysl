@@ -1,4 +1,5 @@
 import index.sysl
+
 Foo:
     Foobar(input <: GrpcTesting.StreamingOutputCallRequest):
         return ok <: GrpcTesting.StreamingOutputCallResponse

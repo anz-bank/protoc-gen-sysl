@@ -1,4 +1,5 @@
 import index.sysl
+
 GrpcTesting:
     !type Request:
         currency_code <: GrpcTesting.Currency

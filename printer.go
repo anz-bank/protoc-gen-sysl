@@ -33,7 +33,7 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	for _, targerfile := range targets {
 		for _, f := range targerfile.Package().Files() {
 			buf.Reset()
-			buf.Write([]byte("import index.sysl\n"))
+			buf.Write([]byte("import index.sysl\n\n"))
 			p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
 			fileName := syslFilename(f.Name().String()) + ".sysl"
 			p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
