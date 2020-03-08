@@ -1,15 +1,17 @@
 import index.sysl
 
+
 Foo:
     Foobar(input <: GrpcTesting.StreamingOutputCallRequest):
         return ok <: GrpcTesting.StreamingOutputCallResponse
+
 GrpcTesting:
     !type EchoStatus:
         code <: int
         message <: string
-    # enum is not currently implemented in sysl
     !type GrpclbRouteType:
         ...
+    # enum is not currently implemented in sysl
     # !enum GrpclbRouteType:
     # GRPCLB_ROUTE_TYPE_BACKEND = 2
     # GRPCLB_ROUTE_TYPE_FALLBACK = 1
@@ -17,9 +19,9 @@ GrpcTesting:
     !type Payload:
         body <: bytes
         type <: GrpcTesting.PayloadType
-    # enum is not currently implemented in sysl
     !type PayloadType:
         ...
+    # enum is not currently implemented in sysl
     # !enum PayloadType:
     # COMPRESSABLE = 0
     # RANDOM = 2
@@ -53,6 +55,7 @@ GrpcTesting:
         response_type <: GrpcTesting.PayloadType
     !type StreamingOutputCallResponse:
         payload <: GrpcTesting.Payload
+
 TestService:
     FullDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
         return ok <: GrpcTesting.StreamingOutputCallResponse
