@@ -1,0 +1,10 @@
+import index.sysl
+
+Bar:
+    AnotherEndpoint(input <: GrpcTesting.Request):
+        return ok <: GrpcTesting.Response
+GrpcTesting:
+    !type Request:
+        query <: string
+    !type Response:
+        query <: string
