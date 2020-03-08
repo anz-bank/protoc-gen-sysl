@@ -25,20 +25,21 @@ func (p *PrinterModule) Name() string { return "printer" }
 
 func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string]pgs.Package) []pgs.Artifact {
 	buf := &bytes.Buffer{}
-
+	indexFile := bytes.Buffer{}
 	if p.Log == nil {
 		p.Log = logrus.New()
 	}
-	indexFile := bytes.Buffer{}
-	for _, targerfile := range targets {
-		for _, f := range targerfile.Package().Files() {
+
+	for _, targetFile := range targets {
+		for _, f := range targetFile.Package().Files() {
 			buf.Reset()
 			buf.Write([]byte("import index.sysl\n\n"))
-			p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
 			fileName := syslFilename(f.Name().String()) + ".sysl"
+			indexFile.Write([]byte(fmt.Sprintf("import %s\n", fileName)))
+			p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
 			p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
 			printer.NewPrinter(buf).PrintModule(p.Module)
-			indexFile.Write([]byte(fmt.Sprintf("import %s\n", fileName)))
+
 			p.AddGeneratorFile(fileName, buf.String())
 		}
 	}
@@ -57,7 +58,6 @@ func (p *PrinterModule) VisitFile(file pgs.File) (v pgs.Visitor, err error) {
 		if _, ok := p.Module.Apps[syslPackageName(file)]; !ok {
 			p.Module.Apps[syslPackageName(file)] = syslpopulate.NewApplication(syslPackageName(file))
 		}
-
 		if _, err := p.VisitMessage(t); err != nil {
 			return nil, err
 		}
@@ -87,10 +87,10 @@ func (p *PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 // TypeApplication (as in sysl types belong to applications but not in proto
 // message foo{...} --> !type foo:
 func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
-	attrDefs := make(map[string]*sysl.Type)
-	var packageName = syslPackageName(m)
 	var fieldName string
 	var syslType *sysl.Type
+	attrDefs := make(map[string]*sysl.Type)
+	packageName := syslPackageName(m)
 	for _, e := range m.Fields() {
 		fieldName, syslType = fieldToSysl(e)
 		attrDefs[fieldName] = syslType
@@ -120,11 +120,9 @@ func (p *PrinterModule) VisitMethod(m pgs.Method) (v pgs.Visitor, err error) {
 func (p *PrinterModule) VisitEnum(e pgs.Enum) (v pgs.Visitor, err error) {
 	packageName := syslPackageName(e)
 	typeName := e.Name().String()
-
 	if _, ok := p.Module.Apps[packageName]; !ok {
 		p.Module.Apps[packageName] = syslpopulate.NewApplication(packageName)
 	}
-
 	p.Module.Apps[packageName].Types[typeName] = &sysl.Type{
 		Type: &sysl.Type_Enum_{
 			Enum: &sysl.Type_Enum{
