@@ -1,4 +1,4 @@
-all: install test diagrams
+all: test diagrams
 
 install:
 	go install github.com/anz-bank/protoc-gen-sysl

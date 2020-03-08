@@ -1,5 +1,5 @@
 all: ci install syslproto
-.PHONY: install test tests
+.PHONY: install test tests demo
 
 help:			## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
@@ -27,6 +27,9 @@ validate:
 syslproto:		## Rebuilds the `option protos` to go and keeps the demo directory in sync
 	protoc --go_out=. sysloption/sysloption.proto
 	rm demo/sysloption.proto && cp sysloption/sysloption.proto demo/
+
+demo:			## Makes sure the demo directory still builds and compiles
+	cd demo && make
 
 ci:				## Runs the same ci that is on master.
 	go test -v ./... -count=1

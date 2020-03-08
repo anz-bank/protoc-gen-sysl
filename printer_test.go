@@ -21,42 +21,28 @@ var tests = []string{
 	"simple/",
 	"multiplefiles/",
 	"otheroption/",
-	"enum/"}
+	"enum/",
+}
 
 const testDir = "./tests"
 
 func TestPrinting(t *testing.T) {
 	for _, test := range tests {
 		test = filepath.Join(testDir, test)
+		_, fs := syslutil.WriteToMemOverlayFs(test)
+		GeneratorResponse, err := ConvertSyslToProto(filepath.Join(test, "code_generator_request.pb.bin"))
 
 		t.Run(test, func(t *testing.T) {
-
-			_, fs := syslutil.WriteToMemOverlayFs(test)
-
-			GeneratorResponse, err := ConvertSyslToProto(filepath.Join(test, "code_generator_request.pb.bin"))
 			assert.NoError(t, err)
 			t.Log(filepath.Join("Passed", test, *GeneratorResponse.File[0].Name))
-
 			golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
 			assert.NoError(t, err)
-
 			assert.Equal(t, *GeneratorResponse.File[0].Content, string(golden))
 		})
 	}
 }
 
-func TestSimple(t *testing.T) {
-	directory := "./tests/simple/"
-	_, fs := syslutil.WriteToMemOverlayFs(directory)
-	GeneratorResponse, err := ConvertSyslToProto(directory + "code_generator_request.pb.bin")
-	assert.NoError(t, err)
-
-	golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
-	assert.NoError(t, err)
-
-	assert.Equal(t, *GeneratorResponse.File[0].Content, string(golden))
-}
-
+// ConvertSyslToProto opens a sysl filename and returns the CodeGeneratorResponse for the test cases.
 func ConvertSyslToProto(filename string) (*plugin_go.CodeGeneratorResponse, error) {
 	req, err := os.Open(filename)
 	if err != nil {

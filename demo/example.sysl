@@ -1,11 +1,15 @@
+import index.sysl
+
 Bar:
-    AnotherEndpoint(input <: Types.Request):
-        return Response
+    AnotherEndpoint(input <: GrpcTesting.Request):
+        return ok <: GrpcTesting.Response
+
 Foo:
-    thisEndpoint(input <: Types.Request):
+    thisEndpoint(input <: GrpcTesting.Request):
         Bar <- AnotherEndpoint
-        return Response
-Types:
+        return ok <: GrpcTesting.Response
+
+GrpcTesting:
     !type Request:
         query <: string
     !type Response:
