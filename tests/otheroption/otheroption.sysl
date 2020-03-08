@@ -6,14 +6,7 @@ Bar:
         return ok <: GrpcTesting.Response
 
 GrpcTesting:
-    !type Currency:
-        ...
-    # enum is not currently implemented in sysl
-    # !enum Currency:
-    # AUD = 0
-    # USD = 1
     !type Request:
-        currency_code <: GrpcTesting.Currency
         query <: string
     !type Response:
         query <: string

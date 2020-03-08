@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package foobar;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "foobar";
+
+extend google.protobuf.MethodOptions {
+    repeated barRule bars = 72297728;
+}
+
+message barRule{
+    string bar = 1;
+}
