@@ -20,6 +20,7 @@ var tests = []string{
 	"test",
 	"simple/",
 	"multiplefiles/",
+	"otheroption/",
 	"enum/"}
 
 const testDir = "./tests"
@@ -28,16 +29,19 @@ func TestPrinting(t *testing.T) {
 	for _, test := range tests {
 		test = filepath.Join(testDir, test)
 
-		_, fs := syslutil.WriteToMemOverlayFs(test)
+		t.Run(test, func(t *testing.T) {
 
-		GeneratorResponse, err := ConvertSyslToProto(filepath.Join(test, "code_generator_request.pb.bin"))
-		assert.NoError(t, err)
-		t.Log(filepath.Join("Passed", test, *GeneratorResponse.File[0].Name))
+			_, fs := syslutil.WriteToMemOverlayFs(test)
 
-		golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
-		assert.NoError(t, err)
+			GeneratorResponse, err := ConvertSyslToProto(filepath.Join(test, "code_generator_request.pb.bin"))
+			assert.NoError(t, err)
+			t.Log(filepath.Join("Passed", test, *GeneratorResponse.File[0].Name))
 
-		assert.Equal(t, *GeneratorResponse.File[0].Content, string(golden))
+			golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
+			assert.NoError(t, err)
+
+			assert.Equal(t, *GeneratorResponse.File[0].Content, string(golden))
+		})
 	}
 }
 
