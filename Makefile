@@ -1,5 +1,5 @@
 all: ci install syslproto
-.PHONY: install test tests syslproto
+.PHONY: install test tests
 
 install:
 	go install github.com/anz-bank/protoc-gen-sysl
@@ -20,9 +20,10 @@ update-tests:
 	protoc --debug_out="tests/otheroption:tests/." ./tests/otheroption/otheroption.proto
 
 
-# This rebuilds the option protos
-syslproto:
+# This rebuilds the option protos and keeps the demo directory in sync
+syslproto: sysloption/sysloption.proto
 	protoc --go_out=. sysloption/sysloption.proto
+	rm demo/sysloption.proto && cp sysloption/sysloption.proto demo/
 
 ci:
 	go test -v ./... -count=1
