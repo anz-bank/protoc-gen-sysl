@@ -26,21 +26,24 @@ func (p *PrinterModule) Name() string { return "printer" }
 func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string]pgs.Package) []pgs.Artifact {
 	buf := &bytes.Buffer{}
 	indexFile := bytes.Buffer{}
+	generatedFileSet := make(map[string]struct{})
 	if p.Log == nil {
 		p.Log = logrus.New()
 	}
 
 	for _, targetFile := range targets {
-		for _, f := range targetFile.Package().Files() {
-			buf.Reset()
-			buf.Write([]byte("import index.sysl\n\n"))
+		for _, f := range packages[targetFile.Package().ProtoName().String()].Files() {
 			fileName := syslFilename(f.Name().String()) + ".sysl"
-			indexFile.Write([]byte(fmt.Sprintf("import %s\n", fileName)))
-			p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
-			p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
-			printer.NewPrinter(buf).PrintModule(p.Module)
-
-			p.AddGeneratorFile(fileName, buf.String())
+			if _, ok := generatedFileSet[fileName]; !ok {
+				generatedFileSet[fileName] = struct{}{}
+				buf.Reset()
+				buf.Write([]byte("import index.sysl\n\n"))
+				indexFile.Write([]byte(fmt.Sprintf("import %s\n", fileName)))
+				p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
+				p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
+				printer.NewPrinter(buf).PrintModule(p.Module)
+				p.AddGeneratorFile(fileName, buf.String())
+			}
 		}
 	}
 	indexFile.Write([]byte("\n_:\n    ...\n"))

@@ -22,6 +22,7 @@ var tests = []string{
 	"multiplefiles/",
 	"otheroption/",
 	"enum/",
+	"disconnectedimport/",
 }
 
 const testDir = "./tests"
