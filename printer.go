@@ -42,6 +42,7 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 			p.AddGeneratorFile(fileName, buf.String())
 		}
 	}
+	indexFile.Write([]byte("\n_:\n    ...\n"))
 	p.AddGeneratorFile("index.sysl", indexFile.String())
 	return p.Artifacts()
 }

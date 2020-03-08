@@ -1,1 +1,4 @@
 import enum.sysl
+
+_:
+    ...

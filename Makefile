@@ -21,6 +21,9 @@ update-tests:		## Updates the code_generator_request.pb.bin for the go test case
 	protoc --debug_out="tests/enum:tests/." ./tests/enum/enum.proto
 	protoc --debug_out="tests/otheroption:tests/." ./tests/otheroption/otheroption.proto
 
+validate:
+	sysl validate
+
 syslproto:		## Rebuilds the `option protos` to go and keeps the demo directory in sync
 	protoc --go_out=. sysloption/sysloption.proto
 	rm demo/sysloption.proto && cp sysloption/sysloption.proto demo/
