@@ -51,18 +51,22 @@ func customOption(meth pgs.Method) []*sysloption.CallRule {
 }
 
 // EndpointFromMethod converts a pgs Method to a sysl endpoint and fills in call and return statments
-func endpointFromMethod(method pgs.Method) *sysl.Endpoint {
-	calls := customOption(method)
+func endpointFromMethod(method pgs.Method) (*sysl.Endpoint, map[string]string) {
+	callOption := customOption(method)
 	syslCalls := []*sysl.Statement{}
+	stringCalls := make(map[string]string)
 	application := syslPackageName(method)
-	for _, call := range calls {
-		syslCallSplit := strings.Split(call.Call, ".")
-		syslCalls = append(syslCalls, syslpopulate.NewCall(syslCallSplit[0], syslCallSplit[1]))
+	for _, calls := range callOption {
+		for _, call := range calls.Call {
+			syslCallSplit := strings.Split(call, ".")
+			syslCalls = append(syslCalls, syslpopulate.NewCall(syslCallSplit[0], syslCallSplit[1]))
+			stringCalls[syslCallSplit[0]] = syslCallSplit[1]
+		}
 	}
 	endpoint := syslpopulate.NewEndpoint(method.Name().String())
 	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(messageToSysl(method.Input()), application)}
 	endpoint.Stmt = append(syslCalls, syslpopulate.NewReturn(syslPackageName(method.Output())+"."+method.Output().Name().String()))
-	return endpoint
+	return endpoint, stringCalls
 }
 
 // syslFilename converts replaces a .proto filename to .sysl, removing any paths

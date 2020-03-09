@@ -8,6 +8,7 @@ Bar:
 Foo:
     thisEndpoint(input <: GrpcTesting.Request):
         Bar <- AnotherEndpoint
+        ThisApp <- DoesntExist
         return ok <: GrpcTesting.Response
 
 GrpcTesting:
@@ -15,3 +16,7 @@ GrpcTesting:
         query <: string
     !type Response:
         query <: string
+
+ThisApp:
+    DoesntExist:
+        ...

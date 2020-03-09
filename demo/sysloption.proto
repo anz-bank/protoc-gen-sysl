@@ -11,5 +11,5 @@ extend google.protobuf.MethodOptions {
 }
 
 message CallRule{
-    string call = 1;
+    repeated string call = 1;
 }

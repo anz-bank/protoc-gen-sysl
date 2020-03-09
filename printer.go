@@ -113,7 +113,19 @@ func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 // thisEndpoint(input <: InputType):
 //     return ok <: outputType
 func (p *PrinterModule) VisitMethod(m pgs.Method) (v pgs.Visitor, err error) {
-	p.Module.Apps[m.Service().Name().String()].Endpoints[m.Name().String()] = endpointFromMethod(m)
+	var Calls map[string]string
+	appName := m.Service().Name().String()
+	endpointName := m.Name().String()
+	p.Module.Apps[appName].Endpoints[endpointName], Calls = endpointFromMethod(m)
+
+	for app, endpoint := range Calls {
+		if _, ok := p.Module.Apps[app]; !ok {
+			p.Module.Apps[app] = syslpopulate.NewApplication(app)
+		}
+		if _, ok := p.Module.Apps[app].Endpoints[endpoint]; !ok {
+			p.Module.Apps[app].Endpoints[endpoint] = syslpopulate.NewEndpoint(endpoint)
+		}
+	}
 	return p, nil
 }
 
