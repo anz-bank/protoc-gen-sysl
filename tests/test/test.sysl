@@ -56,6 +56,10 @@ GrpcTesting:
     !type StreamingOutputCallResponse:
         payload <: GrpcTesting.Payload
 
+StreamingOutputCallRequest:
+    Foobar:
+        ...
+
 TestService:
     FullDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
         return ok <: GrpcTesting.StreamingOutputCallResponse
