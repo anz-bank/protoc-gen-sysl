@@ -9,23 +9,17 @@ GrpcTesting:
     !type EchoStatus:
         code <: int
         message <: string
-    !type GrpclbRouteType:
-        ...
-    # enum is not currently implemented in sysl
-    # !enum GrpclbRouteType:
-    # GRPCLB_ROUTE_TYPE_BACKEND = 2
-    # GRPCLB_ROUTE_TYPE_FALLBACK = 1
-    # GRPCLB_ROUTE_TYPE_UNKNOWN = 0
+    !enum GrpclbRouteType:
+        GRPCLB_ROUTE_TYPE_BACKEND: 2
+        GRPCLB_ROUTE_TYPE_FALLBACK: 1
+        GRPCLB_ROUTE_TYPE_UNKNOWN: 0
     !type Payload:
         body <: bytes
         type <: GrpcTesting.PayloadType
-    !type PayloadType:
-        ...
-    # enum is not currently implemented in sysl
-    # !enum PayloadType:
-    # COMPRESSABLE = 0
-    # RANDOM = 2
-    # UNCOMPRESSABLE = 1
+    !enum PayloadType:
+        COMPRESSABLE: 0
+        RANDOM: 2
+        UNCOMPRESSABLE: 1
     !type ResponseParameters:
         interval_us <: int
         size <: int
