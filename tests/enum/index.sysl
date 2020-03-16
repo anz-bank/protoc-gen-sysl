@@ -1,4 +1,4 @@
 import enum.sysl
 
-_:
+_[~ignore]:
     ...
