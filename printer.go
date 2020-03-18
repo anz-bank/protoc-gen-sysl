@@ -60,6 +60,7 @@ func (p *PrinterModule) VisitFile(file pgs.File) (v pgs.Visitor, err error) {
 	for _, t := range file.Messages() {
 		if _, ok := p.Module.Apps[syslPackageName(file)]; !ok {
 			p.Module.Apps[syslPackageName(file)] = syslpopulate.NewApplication(syslPackageName(file))
+			p.Module.Apps[syslPackageName(file)].Attrs["package"] = syslpopulate.NewAttribute(syslPackageName(file))
 		}
 		if _, err := p.VisitMessage(t); err != nil {
 			return nil, err
@@ -78,6 +79,7 @@ func (p *PrinterModule) VisitFile(file pgs.File) (v pgs.Visitor, err error) {
 func (p *PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 	name := s.Name().String()
 	p.Module.Apps[name] = syslpopulate.NewApplication(name)
+	p.Module.Apps[name].Attrs["package"] = syslpopulate.NewAttribute(syslPackageName(s))
 	for _, e := range s.Methods() {
 		if _, err := p.VisitMethod(e); err != nil {
 			return nil, err

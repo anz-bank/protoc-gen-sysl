@@ -19,6 +19,7 @@ func NewApplication(appName string) *sysl.Application {
 		Name:      NewAppName(appName),
 		Endpoints: map[string]*sysl.Endpoint{},
 		Types:     map[string]*sysl.Type{},
+		Attrs:     map[string]*sysl.Attribute{},
 	}
 }
 
@@ -32,6 +33,13 @@ func NewParameter(name, application string) *sysl.Param {
 	return &sysl.Param{
 		Name: "input",
 		Type: NewType(name, application),
+	}
+}
+
+// NewAttribute Initialises a Sysl Attribute
+func NewAttribute(value string) *sysl.Attribute {
+	return &sysl.Attribute{
+		Attribute: &sysl.Attribute_S{S: value},
 	}
 }
 
