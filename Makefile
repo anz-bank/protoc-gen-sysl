@@ -1,11 +1,16 @@
 all: ci install syslproto
-.PHONY: install test tests demo
+.PHONY: install test tests demo update-sysl update-tests
+
+
+update: install update-sysl update-tests ## Update tests and debug
 
 help:			## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
 install:		## Installs this project as a binary in your go binary directory.
 	go install github.com/anz-bank/protoc-gen-sysl
+
+
 
 update-sysl:		## Updates the expected sysl files by compiling with the current protoc-gen-sysl installation.
 	protoc --sysl_out=tests/simple/ tests/simple/simple.proto

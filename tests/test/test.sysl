@@ -2,10 +2,12 @@ import index.sysl
 
 
 Foo:
+    @package="GrpcTesting"
     Foobar(input <: GrpcTesting.StreamingOutputCallRequest):
         return ok <: GrpcTesting.StreamingOutputCallResponse
 
 GrpcTesting:
+    @package="GrpcTesting"
     !type EchoStatus:
         code <: int
         message <: string
@@ -55,6 +57,7 @@ StreamingOutputCallRequest:
         ...
 
 TestService:
+    @package="GrpcTesting"
     FullDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
         return ok <: GrpcTesting.StreamingOutputCallResponse
     HalfDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
