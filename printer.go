@@ -35,12 +35,15 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 		for _, f := range packages[targetFile.Package().ProtoName().String()].Files() {
 			fileName := syslFilename(f.Name().String()) + ".sysl"
 			if _, ok := generatedFileSet[fileName]; !ok {
+				p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
+				p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
+				if len(p.Module.Apps) == 0 {
+					continue
+				}
 				generatedFileSet[fileName] = struct{}{}
 				buf.Reset()
 				buf.Write([]byte("import index.sysl\n\n"))
 				indexFile.Write([]byte(fmt.Sprintf("import %s\n", fileName)))
-				p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
-				p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
 				printer.NewPrinter(buf).PrintModule(p.Module)
 				p.AddGeneratorFile(fileName, buf.String())
 			}
@@ -58,10 +61,6 @@ func (p *PrinterModule) VisitFile(file pgs.File) (v pgs.Visitor, err error) {
 		}
 	}
 	for _, t := range file.Messages() {
-		if _, ok := p.Module.Apps[syslPackageName(file)]; !ok {
-			p.Module.Apps[syslPackageName(file)] = syslpopulate.NewApplication(syslPackageName(file))
-			p.Module.Apps[syslPackageName(file)].Attrs["package"] = syslpopulate.NewAttribute(syslPackageName(file))
-		}
 		if _, err := p.VisitMessage(t); err != nil {
 			return nil, err
 		}
@@ -99,6 +98,10 @@ func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 	for _, e := range m.Fields() {
 		fieldName, syslType = fieldToSysl(e)
 		attrDefs[fieldName] = syslType
+	}
+	if _, ok := p.Module.Apps[packageName]; !ok {
+		p.Module.Apps[packageName] = syslpopulate.NewApplication(packageName)
+		p.Module.Apps[packageName].Attrs["package"] = syslpopulate.NewAttribute(packageName)
 	}
 	p.Module.Apps[packageName].Types[m.Name().String()] = &sysl.Type{
 		Type: &sysl.Type_Tuple_{

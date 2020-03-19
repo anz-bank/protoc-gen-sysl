@@ -4,10 +4,10 @@ go 1.13
 
 require (
 	github.com/alecthomas/assert v0.0.0-20170929043011-405dbfeb8e38
-	github.com/anz-bank/sysl v0.8.0
+	github.com/anz-bank/sysl v0.10.0
 	github.com/gogo/protobuf v1.2.1
 	github.com/golang/protobuf v1.3.5
-	github.com/joshcarp/sysl-printer v0.0.0-20200316025222-c10d6b6e6c6b
+	github.com/joshcarp/sysl-printer v0.0.0-20200319000156-6569d64263ab
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/lyft/protoc-gen-star v0.4.14
 	github.com/sirupsen/logrus v1.4.2

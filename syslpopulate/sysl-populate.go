@@ -66,6 +66,16 @@ func NewCall(app, endpoint string) *sysl.Statement {
 			Endpoint: endpoint}}}
 }
 
+// NewStringStatement Initialises a call statement and wraps it in a sysl statement
+func NewStringStatement(value string) *sysl.Statement {
+	return &sysl.Statement{Stmt: &sysl.Statement_Action{
+		Action: &sysl.Action{
+			Action: value,
+		},
+	},
+	}
+}
+
 func NewAppName(name string) *sysl.AppName {
 	return &sysl.AppName{Part: []string{name}}
 }

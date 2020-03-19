@@ -1,0 +1,7 @@
+import index.sysl
+
+
+GrpcTesting:
+    @package="GrpcTesting"
+    !type Response:
+        ...
