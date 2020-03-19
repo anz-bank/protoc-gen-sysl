@@ -19,6 +19,7 @@ update-sysl:		## Updates the expected sysl files by compiling with the current p
 	protoc --sysl_out=tests/multiplefiles/ tests/multiplefiles/services.proto
 	protoc --sysl_out=tests/otheroption/ tests/otheroption/otheroption.proto
 	protoc --sysl_out=tests/disconnectedimport/ tests/disconnectedimport/*.proto
+	protoc --sysl_out=tests/date/ tests/date/*.proto
 
 update-tests:		## Updates the code_generator_request.pb.bin for the go test cases.
 	protoc --debug_out="tests/test:tests/." ./tests/test/test.proto
@@ -27,6 +28,11 @@ update-tests:		## Updates the code_generator_request.pb.bin for the go test case
 	protoc --debug_out="tests/enum:tests/." ./tests/enum/enum.proto
 	protoc --debug_out="tests/otheroption:tests/." ./tests/otheroption/otheroption.proto
 	protoc --debug_out="tests/disconnectedimport:tests/." ./tests/disconnectedimport/*.proto
+	protoc --debug_out="tests/empty:tests/." ./tests/empty/*.proto
+	protoc --debug_out="tests/date:tests/." ./tests/date/*.proto
+
+
+
 
 validate:
 	sysl validate

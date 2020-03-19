@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package grpc.testing;
+
+import "tests/empty/type.proto";
+
+service Bar{
+    rpc AnotherEndpoint(Response) returns(Response);
+}

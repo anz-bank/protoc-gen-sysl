@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package grpc.testing;
+
+service Bar{
+    rpc AnotherEndpoint(date) returns(date);
+}
+
+message date {
+    string this = 1;
+}

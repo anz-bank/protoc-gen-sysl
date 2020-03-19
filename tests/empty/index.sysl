@@ -1,0 +1,5 @@
+import type.sysl
+import empty.sysl
+
+_[~ignore]:
+    ...

@@ -15,3 +15,10 @@ Each folder holds 3 files:
     - Avoiding clashes when proto file has other options used (grpc-gateway for example)
 - enum
     - enums that aren't yet a part of sysl (stubbed out with !type)
+- disconnectedimports
+    - When not all imports are imported together;
+        but everything is still in the same package (currently requires you to have a wildcard on protoc)
+- empty
+    - tests the creation of empty types in sysl
+- date
+    - tests mapping of `date` to `date_` in sysl as `date` is a special identifier in sysl

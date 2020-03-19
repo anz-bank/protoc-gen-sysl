@@ -13,6 +13,8 @@ var TypeMapping = map[string]sysl.Type_Primitive{
 	"TYPE_BOOL":   sysl.Type_BOOL,
 }
 
+var specialMappings = map[string]string{"date": "date__"}
+
 // NewApplication Initialises a Sysl application
 func NewApplication(appName string) *sysl.Application {
 	return &sysl.Application{
@@ -53,9 +55,12 @@ func NewType(name, application string) *sysl.Type {
 
 // NewReturn Initialises a return statement and wraps it in a sysl statement
 // payloads will be concatenated and seperated by dots "."
-func NewReturn(payload ...string) *sysl.Statement {
+func NewReturn(payloads ...string) *sysl.Statement {
+	for i := range payloads {
+		payloads[i] = SanitiseTypeName(payloads[i])
+	}
 	return &sysl.Statement{Stmt: &sysl.Statement_Ret{Ret: &sysl.Return{
-		Payload: "ok <: " + strings.Join(payload, ".")}}}
+		Payload: "ok <: " + strings.Join(payloads, ".")}}}
 }
 
 // NewCall Initialises a call statement and wraps it in a sysl statement
@@ -64,6 +69,16 @@ func NewCall(app, endpoint string) *sysl.Statement {
 		Call: &sysl.Call{
 			Target:   NewAppName(app),
 			Endpoint: endpoint}}}
+}
+
+// NewStringStatement Initialises a call statement and wraps it in a sysl statement
+func NewStringStatement(value string) *sysl.Statement {
+	return &sysl.Statement{Stmt: &sysl.Statement_Action{
+		Action: &sysl.Action{
+			Action: value,
+		},
+	},
+	}
 }
 
 func NewAppName(name string) *sysl.AppName {
@@ -91,4 +106,11 @@ func SyslStruct(fieldType, application string) *sysl.Type {
 			},
 		},
 	}
+}
+
+func SanitiseTypeName(name string) string {
+	if _, ok := specialMappings[name]; ok {
+		return specialMappings[name]
+	}
+	return name
 }
