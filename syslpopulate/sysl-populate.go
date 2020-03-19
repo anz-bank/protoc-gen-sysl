@@ -81,8 +81,9 @@ func NewStringStatement(value string) *sysl.Statement {
 	}
 }
 
-func NewAppName(name string) *sysl.AppName {
-	return &sysl.AppName{Part: []string{name}}
+// AppName returns an appname from the inputs
+func NewAppName(name ...string) *sysl.AppName {
+	return &sysl.AppName{Part: name}
 }
 
 // SyslPrimitive converts a string to a sysl primitive type (parameter must be in sysl type)
@@ -108,6 +109,7 @@ func SyslStruct(fieldType, application string) *sysl.Type {
 	}
 }
 
+// SanitiseTypeName returns names that aren't identifiers within sysl. eg. date gets converted to date__
 func SanitiseTypeName(name string) string {
 	if _, ok := specialMappings[name]; ok {
 		return specialMappings[name]
