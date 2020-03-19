@@ -2,13 +2,5 @@ syntax = "proto3";
 
 package grpc.testing;
 
-option go_package = "commandcentre/v1alpha1;commandcentre";
-option csharp_namespace = "Fabric.Service.Commandcentre";
-option java_multiple_files = true;
-option java_outer_classname = "CommandcentreApiProto";
-option java_package = "com.fabric.service.commandcentre";
-option objc_class_prefix = "FSCC";
-option swift_prefix = "CommandcentreAPI";
-
 message Response {
 }
