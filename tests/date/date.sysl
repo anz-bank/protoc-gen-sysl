@@ -1,0 +1,12 @@
+import index.sysl
+
+
+Bar:
+    @package="GrpcTesting"
+    AnotherEndpoint(input <: GrpcTesting.date__):
+        return ok <: GrpcTesting.date__
+
+GrpcTesting:
+    @package="GrpcTesting"
+    !type date__:
+        this <: string

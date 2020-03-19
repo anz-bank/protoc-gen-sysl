@@ -97,13 +97,15 @@ func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 	packageName := syslPackageName(m)
 	for _, e := range m.Fields() {
 		fieldName, syslType = fieldToSysl(e)
+		fieldName = syslpopulate.SanitiseTypeName(fieldName)
 		attrDefs[fieldName] = syslType
 	}
 	if _, ok := p.Module.Apps[packageName]; !ok {
 		p.Module.Apps[packageName] = syslpopulate.NewApplication(packageName)
 		p.Module.Apps[packageName].Attrs["package"] = syslpopulate.NewAttribute(packageName)
 	}
-	p.Module.Apps[packageName].Types[m.Name().String()] = &sysl.Type{
+	typeName := syslpopulate.SanitiseTypeName(m.Name().String())
+	p.Module.Apps[packageName].Types[typeName] = &sysl.Type{
 		Type: &sysl.Type_Tuple_{
 			Tuple: &sysl.Type_Tuple{
 				AttrDefs: attrDefs,

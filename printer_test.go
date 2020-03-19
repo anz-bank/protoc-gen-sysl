@@ -24,6 +24,7 @@ var tests = []string{
 	"enum/",
 	"disconnectedimport/",
 	"empty/",
+	"date/",
 }
 
 const testDir = "./tests"

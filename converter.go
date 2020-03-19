@@ -36,6 +36,7 @@ func messageToSysl(e pgs.Message) string {
 	if t := e.Descriptor(); t != nil && t.Name != nil {
 		fieldType = strings.ReplaceAll(*t.Name, syslPackageName(e), "")
 		fieldType = strings.ReplaceAll(fieldType, ".", "")
+		fieldType = syslpopulate.SanitiseTypeName(fieldType)
 	}
 	return fieldType
 }
@@ -65,7 +66,7 @@ func endpointFromMethod(method pgs.Method) (*sysl.Endpoint, map[string]string) {
 	}
 	endpoint := syslpopulate.NewEndpoint(method.Name().String())
 	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(messageToSysl(method.Input()), application)}
-	endpoint.Stmt = append(syslCalls, syslpopulate.NewReturn(syslPackageName(method.Output())+"."+method.Output().Name().String()))
+	endpoint.Stmt = append(syslCalls, syslpopulate.NewReturn(syslPackageName(method.Output()), method.Output().Name().String()))
 	return endpoint, stringCalls
 }
 
