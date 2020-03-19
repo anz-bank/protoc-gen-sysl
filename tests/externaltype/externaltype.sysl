@@ -9,4 +9,4 @@ Bar:
 grpctesting:
     @package="grpctesting"
     !type date__:
-        this <: string
+        foobar <: googleprotobuf.Timestamp

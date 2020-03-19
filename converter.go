@@ -13,7 +13,7 @@ import (
 )
 
 func syslPackageName(m pgs.Entity) string {
-	return m.Package().ProtoName().UpperCamelCase().String()
+	return strings.ReplaceAll(m.Package().ProtoName().String(), ".", "")
 }
 
 // fieldToString converts a field type to a string and returns name and type respectively
@@ -22,8 +22,13 @@ func fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 	application := syslPackageName(e)
 	fieldName = e.Name().String()
 	if t := e.Descriptor(); t != nil && t.TypeName != nil {
-		fieldType = strings.ReplaceAll(*t.TypeName, e.Package().ProtoName().String(), "")
-		fieldType = strings.ReplaceAll(fieldType, ".", "")
+		if arr := strings.Split(*t.TypeName, "."); len(arr) > 1 {
+			application = strings.Join(arr[:len(arr)-1], "")
+			fieldType = arr[len(arr)-1]
+		} else {
+			fieldType = strings.ReplaceAll(*t.TypeName, e.Package().ProtoName().String(), "")
+			fieldType = strings.ReplaceAll(fieldType, ".", "")
+		}
 	} else {
 		fieldType = e.Type().ProtoType().String()
 	}

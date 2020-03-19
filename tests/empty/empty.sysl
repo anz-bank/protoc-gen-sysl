@@ -2,6 +2,6 @@ import index.sysl
 
 
 Bar:
-    @package="GrpcTesting"
-    AnotherEndpoint(input <: GrpcTesting.Response):
-        return ok <: GrpcTesting.Response
+    @package="grpctesting"
+    AnotherEndpoint(input <: grpctesting.Response):
+        return ok <: grpctesting.Response

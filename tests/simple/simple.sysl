@@ -2,24 +2,24 @@ import index.sysl
 
 
 Bar:
-    @package="GrpcTesting"
-    AnotherEndpoint(input <: GrpcTesting.Request):
-        return ok <: GrpcTesting.Response
+    @package="grpctesting"
+    AnotherEndpoint(input <: grpctesting.Request):
+        return ok <: grpctesting.Response
 
 Foo:
-    @package="GrpcTesting"
-    thisEndpoint(input <: GrpcTesting.Request):
+    @package="grpctesting"
+    thisEndpoint(input <: grpctesting.Request):
         Bar <- AnotherEndpoint
         ThisApp <- DoesntExist
-        return ok <: GrpcTesting.Response
-
-GrpcTesting:
-    @package="GrpcTesting"
-    !type Request:
-        query <: string
-    !type Response:
-        query <: string
+        return ok <: grpctesting.Response
 
 ThisApp:
     DoesntExist:
         ...
+
+grpctesting:
+    @package="grpctesting"
+    !type Request:
+        query <: string
+    !type Response:
+        query <: string

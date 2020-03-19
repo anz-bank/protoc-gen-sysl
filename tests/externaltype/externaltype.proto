@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package grpc.testing;
+
+import "google/protobuf/timestamp.proto";
+
+service Bar{
+    rpc AnotherEndpoint(date) returns(date);
+}
+
+message date {
+    google.protobuf.Timestamp foobar = 1;
+}
