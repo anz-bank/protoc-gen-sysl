@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 
 	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
 	"github.com/anz-bank/sysl/pkg/sysl"
@@ -33,24 +32,27 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 
 	for _, targetFile := range targets {
 		for _, f := range packages[targetFile.Package().ProtoName().String()].Files() {
-			fileName := syslFilename(f.Name().String()) + ".sysl"
-			if _, ok := generatedFileSet[fileName]; !ok {
-				p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
+			filename := f.Name().String()
+			//syslFilename(f.Name().String()) + ".sysl"
+			if _, ok := generatedFileSet[filename]; !ok {
+				if p.Module == nil {
+					p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
+				}
 				p.CheckErr(pgs.Walk(p, f), "unable to print AST tree")
 				if len(p.Module.Apps) == 0 {
 					continue
 				}
-				generatedFileSet[fileName] = struct{}{}
-				buf.Reset()
-				buf.Write([]byte("import index.sysl\n\n"))
-				indexFile.Write([]byte(fmt.Sprintf("import %s\n", fileName)))
-				printer.NewPrinter(buf).PrintModule(p.Module)
-				p.AddGeneratorFile(fileName, buf.String())
+				generatedFileSet[filename] = struct{}{}
 			}
 		}
 	}
+	buf.Reset()
+	//buf.Write([]byte("import index.sysl\n\n"))
+	//indexFile.Write([]byte(fmt.Sprintf("import %s\n", fileName)))
+	printer.NewPrinter(buf).PrintModule(p.Module)
 	indexFile.Write([]byte("\n_[~ignore]:\n    ...\n"))
-	p.AddGeneratorFile("index.sysl", indexFile.String())
+	p.AddGeneratorFile("index.sysl", buf.String())
+	//p.AddGeneratorFile("index.sysl", indexFile.String())
 	return p.Artifacts()
 }
 
@@ -96,7 +98,7 @@ func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 	attrDefs := make(map[string]*sysl.Type)
 	packageName := syslPackageName(m)
 	for _, e := range m.Fields() {
-		fieldName, syslType = fieldToSysl(e)
+		fieldName, syslType = p.fieldToSysl(e)
 		fieldName = syslpopulate.SanitiseTypeName(fieldName)
 		attrDefs[fieldName] = syslType
 	}

@@ -16,10 +16,3 @@ Foo:
 ThisApp:
     DoesntExist:
         ...
-
-grpctesting:
-    @package="grpctesting"
-    !type Request:
-        query <: string
-    !type Response:
-        query <: string

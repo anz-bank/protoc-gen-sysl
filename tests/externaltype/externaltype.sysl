@@ -6,7 +6,6 @@ Bar:
     AnotherEndpoint(input <: grpctesting.date__):
         return ok <: grpctesting.date__
 
-grpctesting:
-    @package="grpctesting"
-    !type date__:
-        foobar <: googleprotobuf.Timestamp
+googleprotobuf:
+    !type Timestamp:
+        ...

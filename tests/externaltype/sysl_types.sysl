@@ -1,0 +1,7 @@
+import index.sysl
+
+
+grpctesting:
+    @package="grpctesting"
+    !type date__:
+        foobar <: googleprotobuf.Timestamp

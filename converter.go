@@ -1,7 +1,6 @@
 package main
 
 import (
-	"regexp"
 	"strings"
 
 	"github.com/anz-bank/protoc-gen-sysl/sysloption"
@@ -17,7 +16,7 @@ func syslPackageName(m pgs.Entity) string {
 }
 
 // fieldToString converts a field type to a string and returns name and type respectively
-func fieldToSysl(e pgs.Field) (string, *sysl.Type) {
+func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 	var fieldName, fieldType string
 	application := syslPackageName(e)
 	fieldName = e.Name().String()
@@ -25,6 +24,14 @@ func fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 		if arr := strings.Split(*t.TypeName, "."); len(arr) > 1 {
 			application = strings.Join(arr[:len(arr)-1], "")
 			fieldType = arr[len(arr)-1]
+			if _, ok := p.Module.Apps[application]; !ok {
+				p.Module.Apps[application] = syslpopulate.NewApplication(application)
+			}
+			if _, ok := p.Module.Apps[application].Types[fieldType]; !ok {
+				p.Log.Error(application)
+				p.Module.Apps[application].Types[fieldType] = syslpopulate.NewType(fieldType, application)
+			}
+
 		} else {
 			fieldType = strings.ReplaceAll(*t.TypeName, e.Package().ProtoName().String(), "")
 			fieldType = strings.ReplaceAll(fieldType, ".", "")
@@ -76,9 +83,9 @@ func endpointFromMethod(method pgs.Method) (*sysl.Endpoint, map[string]string) {
 }
 
 // syslFilename converts replaces a .proto filename to .sysl, removing any paths
-func syslFilename(s string) string {
-	return strings.Replace(regexp.MustCompile(`(?m)\w*\.proto`).FindString(s), ".proto", "", -1)
-}
+//func syslFilename(s string) string {
+//	return strings.Replace(regexp.MustCompile(`(?m)\w*\.proto`).FindString(s), ".proto", "", -1)
+//}
 
 // enumToSysl converts an Enum to a sysl enum
 func enumToSysl(e pgs.Enum) map[string]int64 {

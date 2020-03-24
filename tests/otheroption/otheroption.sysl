@@ -5,10 +5,3 @@ Bar:
     @package="grpctesting"
     AnotherEndpoint(input <: grpctesting.Request):
         return ok <: grpctesting.Response
-
-grpctesting:
-    @package="grpctesting"
-    !type Request:
-        query <: string
-    !type Response:
-        query <: string

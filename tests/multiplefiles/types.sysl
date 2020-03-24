@@ -2,9 +2,5 @@ import index.sysl
 
 
 grpctesting:
-    @package="grpctesting"
-    !type Request:
-        currency_code <: grpctesting.Currency
-        query <: string
-    !type Response:
-        query <: string
+    !type Currency:
+        ...

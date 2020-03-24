@@ -1,6 +1,15 @@
-import disconnectedimport.sysl
-import types.sysl
-import services.sysl
 
-_[~ignore]:
-    ...
+Bar:
+    @package="grpctesting"
+    AnotherEndpoint(input <: grpctesting.Request):
+        return ok <: grpctesting.Response
+
+grpctesting:
+    !enum Currency:
+        AUD: 0
+        USD: 1
+    !type Request:
+        currency_code <: grpctesting.Currency
+        query <: string
+    !type Response:
+        query <: string
