@@ -1,42 +1,14 @@
+import index.sysl
 
-Foo:
-    @package="grpctesting"
-    Foobar(input <: grpctesting.StreamingOutputCallRequest):
-        return ok <: grpctesting.StreamingOutputCallResponse
-
-StreamingOutputCallRequest:
-    Foobar:
-        ...
-
-TestService:
-    @package="grpctesting"
-    FullDuplexCall(input <: grpctesting.StreamingOutputCallRequest):
-        return ok <: grpctesting.StreamingOutputCallResponse
-    HalfDuplexCall(input <: grpctesting.StreamingOutputCallRequest):
-        return ok <: grpctesting.StreamingOutputCallResponse
-    StreamingInputCall(input <: grpctesting.StreamingInputCallRequest):
-        return ok <: grpctesting.StreamingInputCallResponse
-    StreamingOutputCall(input <: grpctesting.StreamingOutputCallRequest):
-        return ok <: grpctesting.StreamingOutputCallResponse
-    UnaryCall(input <: grpctesting.SimpleRequest):
-        StreamingOutputCallRequest <- Foobar
-        return ok <: grpctesting.SimpleResponse
 
 grpctesting:
+    @package="grpctesting"
     !type EchoStatus:
         code <: int
         message <: string
-    !enum GrpclbRouteType:
-        GRPCLB_ROUTE_TYPE_BACKEND: 2
-        GRPCLB_ROUTE_TYPE_FALLBACK: 1
-        GRPCLB_ROUTE_TYPE_UNKNOWN: 0
     !type Payload:
         body <: bytes
         type <: grpctesting.PayloadType
-    !enum PayloadType:
-        COMPRESSABLE: 0
-        RANDOM: 2
-        UNCOMPRESSABLE: 1
     !type ResponseParameters:
         interval_us <: int
         size <: int

@@ -1,10 +1,11 @@
+import index.sysl
+
 
 Bar:
     @package="grpctesting"
     AnotherEndpoint(input <: grpctesting.date__):
         return ok <: grpctesting.date__
 
-grpctesting:
-    @package="grpctesting"
-    !type date__:
-        this <: string
+googleprotobuf:
+    !type Timestamp:
+        ...

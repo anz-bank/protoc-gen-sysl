@@ -2,70 +2,34 @@ import index.sysl
 
 
 Foo:
-    @package="GrpcTesting"
-    Foobar(input <: GrpcTesting.StreamingOutputCallRequest):
-        return ok <: GrpcTesting.StreamingOutputCallResponse
-
-GrpcTesting:
-    @package="GrpcTesting"
-    !type EchoStatus:
-        code <: int
-        message <: string
-    !enum GrpclbRouteType:
-        GRPCLB_ROUTE_TYPE_BACKEND: 2
-        GRPCLB_ROUTE_TYPE_FALLBACK: 1
-        GRPCLB_ROUTE_TYPE_UNKNOWN: 0
-    !type Payload:
-        body <: bytes
-        type <: GrpcTesting.PayloadType
-    !enum PayloadType:
-        COMPRESSABLE: 0
-        RANDOM: 2
-        UNCOMPRESSABLE: 1
-    !type ResponseParameters:
-        interval_us <: int
-        size <: int
-    !type SimpleRequest:
-        fill_grpclb_route_type <: bool
-        fill_oauth_scope <: bool
-        fill_server_id <: bool
-        fill_username <: bool
-        payload <: GrpcTesting.Payload
-        response_size <: int
-        response_status <: GrpcTesting.EchoStatus
-        response_type <: GrpcTesting.PayloadType
-    !type SimpleResponse:
-        grpclb_route_type <: GrpcTesting.GrpclbRouteType
-        oauth_scope <: string
-        payload <: GrpcTesting.Payload
-        server_id <: string
-        username <: string
-    !type StreamingInputCallRequest:
-        payload <: GrpcTesting.Payload
-    !type StreamingInputCallResponse:
-        aggregated_payload_size <: int
-    !type StreamingOutputCallRequest:
-        payload <: GrpcTesting.Payload
-        response_parameters <: GrpcTesting.ResponseParameters
-        response_status <: GrpcTesting.EchoStatus
-        response_type <: GrpcTesting.PayloadType
-    !type StreamingOutputCallResponse:
-        payload <: GrpcTesting.Payload
+    @package="grpctesting"
+    Foobar(input <: grpctesting.StreamingOutputCallRequest):
+        return ok <: grpctesting.StreamingOutputCallResponse
 
 StreamingOutputCallRequest:
     Foobar:
         ...
 
 TestService:
-    @package="GrpcTesting"
-    FullDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
-        return ok <: GrpcTesting.StreamingOutputCallResponse
-    HalfDuplexCall(input <: GrpcTesting.StreamingOutputCallRequest):
-        return ok <: GrpcTesting.StreamingOutputCallResponse
-    StreamingInputCall(input <: GrpcTesting.StreamingInputCallRequest):
-        return ok <: GrpcTesting.StreamingInputCallResponse
-    StreamingOutputCall(input <: GrpcTesting.StreamingOutputCallRequest):
-        return ok <: GrpcTesting.StreamingOutputCallResponse
-    UnaryCall(input <: GrpcTesting.SimpleRequest):
+    @package="grpctesting"
+    FullDuplexCall(input <: grpctesting.StreamingOutputCallRequest):
+        return ok <: grpctesting.StreamingOutputCallResponse
+    HalfDuplexCall(input <: grpctesting.StreamingOutputCallRequest):
+        return ok <: grpctesting.StreamingOutputCallResponse
+    StreamingInputCall(input <: grpctesting.StreamingInputCallRequest):
+        return ok <: grpctesting.StreamingInputCallResponse
+    StreamingOutputCall(input <: grpctesting.StreamingOutputCallRequest):
+        return ok <: grpctesting.StreamingOutputCallResponse
+    UnaryCall(input <: grpctesting.SimpleRequest):
         StreamingOutputCallRequest <- Foobar
-        return ok <: GrpcTesting.SimpleResponse
+        return ok <: grpctesting.SimpleResponse
+
+grpctesting:
+    !enum GrpclbRouteType:
+        GRPCLB_ROUTE_TYPE_BACKEND: 2
+        GRPCLB_ROUTE_TYPE_FALLBACK: 1
+        GRPCLB_ROUTE_TYPE_UNKNOWN: 0
+    !enum PayloadType:
+        COMPRESSABLE: 0
+        RANDOM: 2
+        UNCOMPRESSABLE: 1

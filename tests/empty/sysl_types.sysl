@@ -1,7 +1,7 @@
 import index.sysl
 
 
-GrpcTesting:
-    @package="GrpcTesting"
+grpctesting:
+    @package="grpctesting"
     !type Response:
         ...

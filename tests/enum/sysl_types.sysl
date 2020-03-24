@@ -1,12 +1,10 @@
+import index.sysl
 
-Bar:
-    @package="grpctesting"
-    AnotherEndpoint(input <: grpctesting.Request):
-        return ok <: grpctesting.Response
 
 grpctesting:
     @package="grpctesting"
     !type Request:
+        currency_code <: grpctesting.Currency
         query <: string
     !type Response:
         query <: string

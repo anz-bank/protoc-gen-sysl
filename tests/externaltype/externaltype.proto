@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package grpc.testing.what;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+
+service Bar{
+    rpc AnotherEndpoint(date) returns(date);
+}
+
+message date {
+    google.protobuf.Timestamp foobar = 1;
+}
+
+message foo {
+    google.protobuf.Empty foobar = 1;
+}
+
+message this{
+    That foobar = 1;
+    message That{
+        string ohno = 1;
+
+    }
+}
+
+
+
+service Car{
+    rpc AnotherEndpoint(this) returns(this);
+}
+

@@ -1,0 +1,29 @@
+
+Bar:
+    @package="grpctestingwhat"
+    AnotherEndpoint(input <: grpctestingwhat.date__):
+        return ok <: grpctestingwhat.date__
+
+Car:
+    @package="grpctestingwhat"
+    AnotherEndpoint(input <: grpctestingwhat.this):
+        return ok <: grpctestingwhat.this
+
+googleprotobuf:
+    !type Empty:
+        ...
+    !type Timestamp:
+        ...
+
+grpctestingwhat:
+    @package="grpctestingwhat"
+    !type date__:
+        foobar <: googleprotobuf.Timestamp
+    !type foo:
+        foobar <: googleprotobuf.Empty
+    !type this:
+        foobar <: grpctestingwhatthis.That
+
+grpctestingwhatthis:
+    !type That:
+        ...

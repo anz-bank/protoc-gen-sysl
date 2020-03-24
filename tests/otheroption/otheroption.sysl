@@ -2,13 +2,6 @@ import index.sysl
 
 
 Bar:
-    @package="GrpcTesting"
-    AnotherEndpoint(input <: GrpcTesting.Request):
-        return ok <: GrpcTesting.Response
-
-GrpcTesting:
-    @package="GrpcTesting"
-    !type Request:
-        query <: string
-    !type Response:
-        query <: string
+    @package="grpctesting"
+    AnotherEndpoint(input <: grpctesting.Request):
+        return ok <: grpctesting.Response

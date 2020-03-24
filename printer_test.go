@@ -17,6 +17,7 @@ import (
 )
 
 var tests = []string{
+	"externaltype/",
 	"test",
 	"simple/",
 	"multiplefiles/",
