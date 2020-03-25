@@ -17,6 +17,9 @@ ThisApp:
 
 grpctesting:
     @package="grpctesting"
+    !type Money:
+        nanos <: int
+        units <: int
     !type Request:
         query <: string
     !type Response:

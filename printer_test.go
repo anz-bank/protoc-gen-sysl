@@ -17,9 +17,9 @@ import (
 )
 
 var tests = []string{
+	"simple/",
 	"externaltype/",
 	"test",
-	"simple/",
 	"multiplefiles/",
 	"otheroption/",
 	"enum/",

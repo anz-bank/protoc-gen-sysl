@@ -10,10 +10,6 @@ Car:
         return ok <: grpctestingwhat.this
 
 googleprotobuf:
-    !type Empty:
-        ...
-    !type Timestamp:
-        ...
 
 grpctestingwhat:
     @package="grpctestingwhat"
@@ -25,5 +21,3 @@ grpctestingwhat:
         foobar <: grpctestingwhatthis.That
 
 grpctestingwhatthis:
-    !type That:
-        ...

@@ -27,10 +27,10 @@ func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 			if _, ok := p.Module.Apps[application]; !ok {
 				p.Module.Apps[application] = syslpopulate.NewApplication(application)
 			}
-			if _, ok := p.Module.Apps[application].Types[fieldType]; !ok {
-				p.Log.Error(application)
-				p.Module.Apps[application].Types[fieldType] = syslpopulate.NewType(fieldType, application)
-			}
+			//if _, ok := p.Module.Apps[application].Types[fieldType]; !ok {
+			//	p.Log.Error(application)
+			//	p.Module.Apps[application].Types[fieldType] = syslpopulate.NewType(fieldType, application)
+			//}
 
 		} else {
 			fieldType = strings.ReplaceAll(*t.TypeName, e.Package().ProtoName().String(), "")

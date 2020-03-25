@@ -1,9 +1,0 @@
-import index.sysl
-
-
-grpctesting:
-    @package="grpctesting"
-    !type Request:
-        query <: string
-    !type Response:
-        query <: string
