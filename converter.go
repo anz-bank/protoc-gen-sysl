@@ -24,9 +24,9 @@ func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 		if arr := strings.Split(*t.TypeName, "."); len(arr) > 1 {
 			application = strings.Join(arr[:len(arr)-1], "")
 			fieldType = arr[len(arr)-1]
-			if _, ok := p.Module.Apps[application]; !ok {
-				p.Module.Apps[application] = syslpopulate.NewApplication(application)
-			}
+			//if _, ok := p.Module.Apps[application]; !ok {
+			//	p.Module.Apps[application] = syslpopulate.NewApplication(application)
+			//}
 			//if _, ok := p.Module.Apps[application].Types[fieldType]; !ok {
 			//	p.Log.Error(application)
 			//	p.Module.Apps[application].Types[fieldType] = syslpopulate.NewType(fieldType, application)
