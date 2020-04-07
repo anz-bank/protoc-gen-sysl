@@ -17,15 +17,16 @@ import (
 )
 
 var tests = []string{
-	"simple/",
-	"externaltype/",
-	"test",
-	"multiplefiles/",
-	"otheroption/",
-	"enum/",
-	"disconnectedimport/",
-	"empty/",
-	"date/",
+	"messageinmessage/",
+	//"simple/",
+	//"externaltype/",
+	//"test",
+	//"multiplefiles/",
+	//"otheroption/",
+	//"enum/",
+	//"disconnectedimport/",
+	//"empty/",
+	//"date/",
 }
 
 const testDir = "./tests"

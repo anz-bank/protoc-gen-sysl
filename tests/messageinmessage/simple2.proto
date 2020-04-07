@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package grpc.testing2;
+
+message Request {
+    Type bar = 9;
+    enum Type {
+        UNKNOWN = 0;
+        ACCOUNT = 1;
+        CARD = 2;
+    }
+}

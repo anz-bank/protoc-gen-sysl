@@ -9,15 +9,13 @@ Car:
     AnotherEndpoint(input <: grpctestingwhat.this):
         return ok <: grpctestingwhat.this
 
-googleprotobuf:
-
 grpctestingwhat:
     @package="grpctestingwhat"
+    !type That:
+        ohno <: string
     !type date__:
         foobar <: googleprotobuf.Timestamp
     !type foo:
         foobar <: googleprotobuf.Empty
     !type this:
-        foobar <: grpctestingwhatthis.That
-
-grpctestingwhatthis:
+        foobar <: grpctestingwhat.That

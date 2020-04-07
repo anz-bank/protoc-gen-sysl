@@ -21,9 +21,16 @@ func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 	application := syslPackageName(e)
 	fieldName = e.Name().String()
 	if t := e.Descriptor(); t != nil && t.TypeName != nil {
-		if arr := strings.Split(*t.TypeName, "."); len(arr) > 1 {
-			application = strings.Join(arr[:len(arr)-1], "")
+		if arr := NoEmptyStrings(strings.Split(*t.TypeName, ".")); len(arr) > 1 {
+			if len(e.Message().Messages()) > 0 {
+				application = strings.Join(arr[:len(arr)-2], "")
+				//fieldType = strings.Join(arr[len(arr)-2:], "")
+
+			} else {
+				application = strings.Join(arr[:len(arr)-1], "")
+			}
 			fieldType = arr[len(arr)-1]
+			//application = e.Message().Name().String()
 			//if _, ok := p.Module.Apps[application]; !ok {
 			//	p.Module.Apps[application] = syslpopulate.NewApplication(application)
 			//}
@@ -40,6 +47,15 @@ func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 		fieldType = e.Type().ProtoType().String()
 	}
 	return fieldName, syslpopulate.NewType(fieldType, application)
+}
+func NoEmptyStrings(in []string) []string {
+	out := make([]string, 0, len(in))
+	for _, element := range in {
+		if element != "" {
+			out = append(out, element)
+		}
+	}
+	return out
 }
 
 // messageToSysl converts a message to a sysl type

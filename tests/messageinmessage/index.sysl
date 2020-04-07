@@ -1,0 +1,8 @@
+
+grpctesting2:
+    !type Request:
+        bar <: grpctesting2Request.Type
+    !enum Type:
+        ACCOUNT: 1
+        CARD: 2
+        UNKNOWN: 0

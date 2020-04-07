@@ -113,6 +113,12 @@ func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 		fieldName = syslpopulate.SanitiseTypeName(fieldName)
 		attrDefs[fieldName] = syslType
 	}
+	for _, e := range m.Messages() {
+		p.VisitMessage(e)
+	}
+	for _, e := range m.Enums() {
+		p.VisitEnum(e)
+	}
 	if _, ok := p.Module.Apps[packageName]; !ok {
 		p.Module.Apps[packageName] = syslpopulate.NewApplication(packageName)
 		p.Module.Apps[packageName].Attrs["package"] = syslpopulate.NewAttribute(packageName)
