@@ -10,3 +10,12 @@ message Request {
         CARD = 2;
     }
 }
+enum Type2 {
+    UNKNOWN = 0;
+    ACCOUNT = 1;
+    CARD = 2;
+}
+message foo {
+    Request.Type foobar = 1;
+    Type2 qwerty = 8;
+}

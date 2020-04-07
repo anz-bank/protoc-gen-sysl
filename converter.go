@@ -22,23 +22,20 @@ func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 	fieldName = e.Name().String()
 	if t := e.Descriptor(); t != nil && t.TypeName != nil {
 		if arr := NoEmptyStrings(strings.Split(*t.TypeName, ".")); len(arr) > 1 {
-			if len(e.Message().Messages()) > 0 {
-				application = strings.Join(arr[:len(arr)-2], "")
-				//fieldType = strings.Join(arr[len(arr)-2:], "")
 
-			} else {
-				application = strings.Join(arr[:len(arr)-1], "")
-			}
+			// This is some wack logic to process messages and enums that are defined in other messages
 			fieldType = arr[len(arr)-1]
-			//application = e.Message().Name().String()
-			//if _, ok := p.Module.Apps[application]; !ok {
-			//	p.Module.Apps[application] = syslpopulate.NewApplication(application)
-			//}
-			//if _, ok := p.Module.Apps[application].Types[fieldType]; !ok {
-			//	p.Log.Error(application)
-			//	p.Module.Apps[application].Types[fieldType] = syslpopulate.NewType(fieldType, application)
-			//}
+			remove := strings.ReplaceAll(e.Message().FullyQualifiedName(), e.Message().Parent().FullyQualifiedName(), "")
+			remove = strings.ReplaceAll(remove, ".", "")
+			application = strings.ReplaceAll(strings.Join(arr[:len(arr)-1], ""), remove, "")
+			if enum := e.Type().Enum(); enum != nil {
+				remove = strings.ReplaceAll(enum.FullyQualifiedName(), e.Message().Parent().FullyQualifiedName(), "")
+				remove = strings.ReplaceAll(remove, fieldType, "")
+				remove = strings.ReplaceAll(remove, ".", "")
 
+				application = strings.ReplaceAll(application, remove, "")
+
+			}
 		} else {
 			fieldType = strings.ReplaceAll(*t.TypeName, e.Package().ProtoName().String(), "")
 			fieldType = strings.ReplaceAll(fieldType, ".", "")

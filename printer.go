@@ -33,7 +33,6 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	for _, targetFile := range targets {
 		for _, f := range packages[targetFile.Package().ProtoName().String()].Files() {
 			filename := f.Name().String()
-			//syslFilename(f.Name().String()) + ".sysl"
 			if _, ok := generatedFileSet[filename]; !ok {
 				if p.Module == nil {
 					p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
@@ -114,10 +113,14 @@ func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 		attrDefs[fieldName] = syslType
 	}
 	for _, e := range m.Messages() {
-		p.VisitMessage(e)
+		if _, err := p.VisitMessage(e); err != nil {
+			return nil, err
+		}
 	}
 	for _, e := range m.Enums() {
-		p.VisitEnum(e)
+		if _, err := p.VisitEnum(e); err != nil {
+			return nil, err
+		}
 	}
 	if _, ok := p.Module.Apps[packageName]; !ok {
 		p.Module.Apps[packageName] = syslpopulate.NewApplication(packageName)
