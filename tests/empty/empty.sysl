@@ -1,7 +1,0 @@
-import index.sysl
-
-
-Bar:
-    @package="grpctesting"
-    AnotherEndpoint(input <: grpctesting.Response):
-        return ok <: grpctesting.Response

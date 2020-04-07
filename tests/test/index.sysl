@@ -23,6 +23,7 @@ TestService:
         return ok <: grpctesting.SimpleResponse
 
 grpctesting:
+    @package="grpctesting"
     !type EchoStatus:
         code <: int
         message <: string

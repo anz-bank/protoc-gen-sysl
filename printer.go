@@ -33,7 +33,6 @@ func (p *PrinterModule) Execute(targets map[string]pgs.File, packages map[string
 	for _, targetFile := range targets {
 		for _, f := range packages[targetFile.Package().ProtoName().String()].Files() {
 			filename := f.Name().String()
-			//syslFilename(f.Name().String()) + ".sysl"
 			if _, ok := generatedFileSet[filename]; !ok {
 				if p.Module == nil {
 					p.Module = &sysl.Module{Apps: make(map[string]*sysl.Application)}
@@ -95,19 +94,42 @@ func (p *PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 	var fieldName string
 	var syslType *sysl.Type
+	pattenAttributes := make(map[string]*sysl.Attribute)
 	attrDefs := make(map[string]*sysl.Type)
 	packageName := syslPackageName(m)
+	if len(m.Fields()) == 0 {
+		pattenAttributes["patterns"] = &sysl.Attribute{Attribute: &sysl.Attribute_A{A: &sysl.Attribute_Array{
+			Elt: []*sysl.Attribute{&sysl.Attribute{
+				Attribute: &sysl.Attribute_S{S: "empty"},
+			},
+			},
+		},
+		},
+		}
+	}
 	for _, e := range m.Fields() {
 		fieldName, syslType = p.fieldToSysl(e)
 		fieldName = syslpopulate.SanitiseTypeName(fieldName)
 		attrDefs[fieldName] = syslType
 	}
+	for _, e := range m.Messages() {
+		if _, err := p.VisitMessage(e); err != nil {
+			return nil, err
+		}
+	}
+	for _, e := range m.Enums() {
+		if _, err := p.VisitEnum(e); err != nil {
+			return nil, err
+		}
+	}
 	if _, ok := p.Module.Apps[packageName]; !ok {
 		p.Module.Apps[packageName] = syslpopulate.NewApplication(packageName)
 		p.Module.Apps[packageName].Attrs["package"] = syslpopulate.NewAttribute(packageName)
 	}
+
 	typeName := syslpopulate.SanitiseTypeName(m.Name().String())
 	p.Module.Apps[packageName].Types[typeName] = &sysl.Type{
+		Attrs: pattenAttributes,
 		Type: &sysl.Type_Tuple_{
 			Tuple: &sysl.Type_Tuple{
 				AttrDefs: attrDefs,

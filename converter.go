@@ -21,17 +21,21 @@ func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 	application := syslPackageName(e)
 	fieldName = e.Name().String()
 	if t := e.Descriptor(); t != nil && t.TypeName != nil {
-		if arr := strings.Split(*t.TypeName, "."); len(arr) > 1 {
-			application = strings.Join(arr[:len(arr)-1], "")
-			fieldType = arr[len(arr)-1]
-			if _, ok := p.Module.Apps[application]; !ok {
-				p.Module.Apps[application] = syslpopulate.NewApplication(application)
-			}
-			if _, ok := p.Module.Apps[application].Types[fieldType]; !ok {
-				p.Log.Error(application)
-				p.Module.Apps[application].Types[fieldType] = syslpopulate.NewType(fieldType, application)
-			}
+		if arr := NoEmptyStrings(strings.Split(*t.TypeName, ".")); len(arr) > 1 {
 
+			// This is some wack logic to process messages and enums that are defined in other messages
+			fieldType = arr[len(arr)-1]
+			remove := strings.ReplaceAll(e.Message().FullyQualifiedName(), e.Message().Parent().FullyQualifiedName(), "")
+			remove = strings.ReplaceAll(remove, ".", "")
+			application = strings.ReplaceAll(strings.Join(arr[:len(arr)-1], ""), remove, "")
+			if enum := e.Type().Enum(); enum != nil {
+				remove = strings.ReplaceAll(enum.FullyQualifiedName(), e.Message().Parent().FullyQualifiedName(), "")
+				remove = strings.ReplaceAll(remove, fieldType, "")
+				remove = strings.ReplaceAll(remove, ".", "")
+
+				application = strings.ReplaceAll(application, remove, "")
+
+			}
 		} else {
 			fieldType = strings.ReplaceAll(*t.TypeName, e.Package().ProtoName().String(), "")
 			fieldType = strings.ReplaceAll(fieldType, ".", "")
@@ -40,6 +44,15 @@ func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 		fieldType = e.Type().ProtoType().String()
 	}
 	return fieldName, syslpopulate.NewType(fieldType, application)
+}
+func NoEmptyStrings(in []string) []string {
+	out := make([]string, 0, len(in))
+	for _, element := range in {
+		if element != "" {
+			out = append(out, element)
+		}
+	}
+	return out
 }
 
 // messageToSysl converts a message to a sysl type

@@ -5,6 +5,7 @@ Bar:
         return ok <: grpctesting.Response
 
 grpctesting:
+    @package="grpctesting"
     !enum Currency:
         AUD: 0
         USD: 1

@@ -6,5 +6,5 @@ Bar:
 
 grpctesting:
     @package="grpctesting"
-    !type Response:
+    !type Response[~empty]:
         ...

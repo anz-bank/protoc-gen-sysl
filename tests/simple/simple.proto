@@ -12,6 +12,11 @@ message Response {
     string query = 1;
 }
 
+message Money {
+    int64 units = 2;
+    int32 nanos = 3;
+}
+
 service Foo{
     rpc thisEndpoint(Request) returns(Response){
         option (sysl.calls) = {call: "Bar.AnotherEndpoint" call: "ThisApp.DoesntExist"};
