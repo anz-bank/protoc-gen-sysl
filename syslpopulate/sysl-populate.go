@@ -10,8 +10,12 @@ var TypeMapping = map[string]sysl.Type_Primitive{
 	"TYPE_BYTES":  sysl.Type_BYTES,
 	"TYPE_INT32":  sysl.Type_INT,
 	"TYPE_INT64":  sysl.Type_INT,
+	"TYPE_UINT32": sysl.Type_INT,
+	"TYPE_UINT64": sysl.Type_INT,
 	"TYPE_STRING": sysl.Type_STRING,
 	"TYPE_BOOL":   sysl.Type_BOOL,
+	"TYPE_DOUBLE": sysl.Type_FLOAT,
+	"TYPE_FLOAT":  sysl.Type_FLOAT,
 }
 
 var specialMappings = map[string]string{"date": "date__"}

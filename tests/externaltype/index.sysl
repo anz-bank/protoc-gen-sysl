@@ -1,16 +1,20 @@
 
 Bar:
-    @package="grpctestingwhat"
+    @description = ""
+    @package = "grpctestingwhat"
     AnotherEndpoint(input <: grpctestingwhat.date__):
+        @description = ""
         return ok <: grpctestingwhat.date__
 
 Car:
-    @package="grpctestingwhat"
+    @description = ""
+    @package = "grpctestingwhat"
     AnotherEndpoint(input <: grpctestingwhat.this):
+        @description = ""
         return ok <: grpctestingwhat.this
 
 grpctestingwhat:
-    @package="grpctestingwhat"
+    @package = "grpctestingwhat"
     !type That:
         ohno <: string
     !type date__:

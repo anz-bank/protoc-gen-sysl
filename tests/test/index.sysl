@@ -1,7 +1,9 @@
 
 Foo:
-    @package="grpctesting"
+    @description = ""
+    @package = "grpctesting"
     Foobar(input <: grpctesting.StreamingOutputCallRequest):
+        @description = ""
         return ok <: grpctesting.StreamingOutputCallResponse
 
 StreamingOutputCallRequest:
@@ -9,21 +11,44 @@ StreamingOutputCallRequest:
         ...
 
 TestService:
-    @package="grpctesting"
+    @description =:
+        | A simple service to test the various types of RPCs and experiment with
+        | performance with various types of payload.
+        | One empty request followed by one empty response.
+        |    rpc EmptyCall(Empty) returns (Empty);
+    @package = "grpctesting"
     FullDuplexCall(input <: grpctesting.StreamingOutputCallRequest):
+        @description =:
+            | A sequence of requests with each request served by the server immediately.
+            | As one request could lead to multiple responses, this interface
+            | demonstrates the idea of full duplexing.
         return ok <: grpctesting.StreamingOutputCallResponse
     HalfDuplexCall(input <: grpctesting.StreamingOutputCallRequest):
+        @description =:
+            | A sequence of requests followed by a sequence of responses.
+            | The server buffers all the client requests and then serves them in order. A
+            | stream of responses are returned to the client when the server starts with
+            | first request.
         return ok <: grpctesting.StreamingOutputCallResponse
     StreamingInputCall(input <: grpctesting.StreamingInputCallRequest):
+        @description =:
+            | A sequence of requests followed by one response (streamed upload).
+            | The server returns the aggregated size of client payload as the result.
         return ok <: grpctesting.StreamingInputCallResponse
     StreamingOutputCall(input <: grpctesting.StreamingOutputCallRequest):
+        @description =:
+            | One request followed by a sequence of responses (streamed download).
+            | The server returns the payload with client desired type and sizes.
         return ok <: grpctesting.StreamingOutputCallResponse
     UnaryCall(input <: grpctesting.SimpleRequest):
+        @description =:
+            | One request followed by one response.
+            | The server returns the client payload as-is.
         StreamingOutputCallRequest <- Foobar
         return ok <: grpctesting.SimpleResponse
 
 grpctesting:
-    @package="grpctesting"
+    @package = "grpctesting"
     !type EchoStatus:
         code <: int
         message <: string
