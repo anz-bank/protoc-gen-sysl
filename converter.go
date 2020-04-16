@@ -12,7 +12,7 @@ import (
 )
 
 func syslPackageName(m pgs.Entity) string {
-	return strings.ReplaceAll(m.Package().ProtoName().String(), ".", "")
+	return strings.ReplaceAll(strings.Title(strings.ReplaceAll(m.Package().ProtoName().String(), ".", " ")), " ", "")
 }
 
 // fieldToString converts a field type to a string and returns name and type respectively
