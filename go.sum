@@ -61,6 +61,8 @@ github.com/anz-bank/sysl v0.8.0 h1:FmO3P25eyRBv1STSHntjMbE4rajumgYG5qeEC/adlCw=
 github.com/anz-bank/sysl v0.8.0/go.mod h1:8xObVLjsOdMmAT9avuKCE/Aj+2hLxe/pn0dIZds31LM=
 github.com/anz-bank/sysl v0.57.0 h1:LKKngA7US0G+KEpjXPPKIX3az20kqgeN1IibHxBi0DM=
 github.com/anz-bank/sysl v0.57.0/go.mod h1:2pND3J4WkH9UMP4wZ8zkZ9XAc1TfJ8vrKDgGbOQWmNw=
+github.com/anz-bank/sysl v0.60.0 h1:WP4A1eiBx1Rt3H9ODvWLWs68UiKQHTRym8aMDsCniZI=
+github.com/anz-bank/sysl v0.60.0/go.mod h1:2pND3J4WkH9UMP4wZ8zkZ9XAc1TfJ8vrKDgGbOQWmNw=
 github.com/anz-bank/sysl-go v0.0.0-20200325045908-46c4ce0a2736/go.mod h1:Jvn9Prqi9lVOaDTTPaU84If2C8MUcB7gOKOtQWqD/Hc=
 github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6/go.mod h1:grANhF5doyWs3UAsr3K4I6qtAmlQcZDesFNEHPZAzj8=
 github.com/arr-ai/frozen v0.13.0/go.mod h1:YEr4TubkrAoA3f9U1R4PcEVB5ocBUdiS3NKh03cbVts=
@@ -275,6 +277,8 @@ github.com/jhump/protoreflect v1.6.0/go.mod h1:eaTn3RZAmMBcV0fifFvlm6VHNz3wSkYyX
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 github.com/joshcarp/sysl-printer v0.0.0-20200414075453-a9b5c8914bb3 h1:05d1tSt6lMCxeKEV74NbqYYS2VWkO7a5FuorS6F0DKo=
 github.com/joshcarp/sysl-printer v0.0.0-20200414075453-a9b5c8914bb3/go.mod h1:RynShTmcDDWXSS8gFQQ1MEXGnLEOqyOyqpZDcHHJzvQ=
+github.com/joshcarp/sysl-printer v0.0.0-20200417103907-e4ba6f372f32 h1:ki9hNxi6cJAwFOFDC08egXSZLk9BUKHHHXjpkcbOitQ=
+github.com/joshcarp/sysl-printer v0.0.0-20200417103907-e4ba6f372f32/go.mod h1:RynShTmcDDWXSS8gFQQ1MEXGnLEOqyOyqpZDcHHJzvQ=
 github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1:6v2b51hI/fHJwM22ozAgKL4VKDeJcHhJFhtBdhmNjmU=
 github.com/jstemmer/go-junit-report v0.9.1/go.mod h1:Brl9GWCQeLvo8nXZwPNNblvFj/XSXhF0NWZEnDohbsk=
 github.com/karrick/godirwalk v1.8.0/go.mod h1:H5KPZjojv4lE+QYImBI8xVtrBRgYrIVsaRPx4tDPEn4=

@@ -87,7 +87,7 @@ grpctesting:
         aggregated_payload_size <: int
     !type StreamingOutputCallRequest:
         payload <: grpctesting.Payload
-        response_parameters <: grpctesting.ResponseParameters
+        response_parameters <: sequence of grpctesting.ResponseParameters
         response_status <: grpctesting.EchoStatus
         response_type <: grpctesting.PayloadType
     !type StreamingOutputCallResponse:

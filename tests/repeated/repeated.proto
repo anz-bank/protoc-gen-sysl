@@ -2,8 +2,12 @@ syntax = "proto3";
 
 package grpc.testing;
 
-import "sysloption/sysloption.proto";
 
 message Request {
     repeated string query = 1;
+    repeated Whatever q = 2;
+}
+
+message Whatever{
+    string query = 1;
 }

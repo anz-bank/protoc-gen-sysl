@@ -3,6 +3,8 @@ package main
 import (
 	"strings"
 
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+
 	"github.com/anz-bank/protoc-gen-sysl/sysloption"
 	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
 	"github.com/golang/protobuf/proto"
@@ -42,6 +44,13 @@ func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 		}
 	} else {
 		fieldType = e.Type().ProtoType().String()
+	}
+	if *e.Descriptor().Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+		return fieldName, &sysl.Type{
+			Type: &sysl.Type_Sequence{
+				Sequence: syslpopulate.NewType(fieldType, application),
+			},
+		}
 	}
 	return fieldName, syslpopulate.NewType(fieldType, application)
 }
