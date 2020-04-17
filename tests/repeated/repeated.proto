@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package grpc.testing;
+
+import "sysloption/sysloption.proto";
+
+message Request {
+    repeated string query = 1;
+}

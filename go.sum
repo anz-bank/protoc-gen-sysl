@@ -59,12 +59,6 @@ github.com/antlr/antlr4 v0.0.0-20200309161749-1284814c2112 h1:7NI4dc3NNTe5UyN+4U
 github.com/antlr/antlr4 v0.0.0-20200309161749-1284814c2112/go.mod h1:T7PbCXFs94rrTttyxjbyT5+/1V8T2TYDejxUfHJjw1Y=
 github.com/anz-bank/sysl v0.8.0 h1:FmO3P25eyRBv1STSHntjMbE4rajumgYG5qeEC/adlCw=
 github.com/anz-bank/sysl v0.8.0/go.mod h1:8xObVLjsOdMmAT9avuKCE/Aj+2hLxe/pn0dIZds31LM=
-github.com/anz-bank/sysl v0.10.0 h1:2p/zQZ53q6uodwv6ilxNpd24ezs921btAys/zLhRZzc=
-github.com/anz-bank/sysl v0.10.0/go.mod h1:0B+Ya26itKvy41hikE+ldEgfcLI5YpUprf4jDSCLEBA=
-github.com/anz-bank/sysl v0.12.0 h1:u4TRcLxa04Vc5mMg8OEHdnUJzEpCI8UFSsNGAXex9zg=
-github.com/anz-bank/sysl v0.12.0/go.mod h1:0B+Ya26itKvy41hikE+ldEgfcLI5YpUprf4jDSCLEBA=
-github.com/anz-bank/sysl v0.23.0 h1:T5WtSgmHN/VwCOYOIB9YV6ch2r3pBa39ce1z0HN4EIk=
-github.com/anz-bank/sysl v0.23.0/go.mod h1:0B+Ya26itKvy41hikE+ldEgfcLI5YpUprf4jDSCLEBA=
 github.com/anz-bank/sysl v0.57.0 h1:LKKngA7US0G+KEpjXPPKIX3az20kqgeN1IibHxBi0DM=
 github.com/anz-bank/sysl v0.57.0/go.mod h1:2pND3J4WkH9UMP4wZ8zkZ9XAc1TfJ8vrKDgGbOQWmNw=
 github.com/anz-bank/sysl-go v0.0.0-20200325045908-46c4ce0a2736/go.mod h1:Jvn9Prqi9lVOaDTTPaU84If2C8MUcB7gOKOtQWqD/Hc=
@@ -110,7 +104,6 @@ github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymF
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
-github.com/envoyproxy/protoc-gen-validate v0.3.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/fullstorydev/grpcui v0.2.1/go.mod h1:GmjekePsrhFLIB6j2t3ih4u/88Q8IU6JhVlAFUWMP8E=
 github.com/fullstorydev/grpcurl v1.3.2/go.mod h1:kvk8xPCXOrwVd9zYdjy+xSOT4YWm6kyth4Y9NMfBns4=
@@ -118,6 +111,7 @@ github.com/fullstorydev/grpcurl v1.4.0/go.mod h1:kvk8xPCXOrwVd9zYdjy+xSOT4YWm6ky
 github.com/fullstorydev/grpcurl v1.5.0/go.mod h1:fBzJMv8zhFPeNhr4OAc/97pYPQfvGDsEdNB36oNsnbs=
 github.com/getkin/kin-openapi v0.2.1-0.20191216082429-70fbea30aeb8 h1:PYAaNpYjjX1YcO6YC3wbH3EKeTaqBTpILmuWMk+nJts=
 github.com/getkin/kin-openapi v0.2.1-0.20191216082429-70fbea30aeb8/go.mod h1:8hr1ZT9XxXHCLcD+I0ow6wOKn6ljqk04N+xEMS2BILY=
+github.com/getkin/kin-openapi v0.3.0 h1:xsQ4mA20YJDMgIHdHqMKZ66QUe6/hi+x6yLsTTz8xyQ=
 github.com/getkin/kin-openapi v0.3.0/go.mod h1:W8dhxZgpE84ciM+VIItFqkmZ4eHtuomrdIHtASQIqi0=
 github.com/ghodss/yaml v1.0.0 h1:wQHKEahhL6wmXdzwWG11gIVCkOv05bNOh+Rxn0yngAk=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
@@ -250,6 +244,7 @@ github.com/google/btree v1.0.0/go.mod h1:lNA+9X1NB3Zf8V7Ke586lFgjr2dZNuvo3lPJSGZ
 github.com/google/go-cmp v0.2.0/go.mod h1:oXzfMopK8JAjlY9xF4vHSVASa0yLyX7SntLO5aqRK0M=
 github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
+github.com/google/go-cmp v0.4.0 h1:xsAVV57WRhGj6kEIi8ReJzQlHHqcBYCElAvkovg3B/4=
 github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/martian v2.1.0+incompatible/go.mod h1:9I4somxYTbIHy5NJKHRl3wXiIaQGbYVAs8BPL6v8lEs=
 github.com/google/pprof v0.0.0-20181206194817-3ea8567a2e57/go.mod h1:zfwlbNMJ+OItoe0UupaVj+oy1omPYYDuagoSzA8v9mc=
@@ -278,16 +273,6 @@ github.com/jessevdk/go-flags v1.4.0/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJS
 github.com/jhump/protoreflect v1.5.0/go.mod h1:eaTn3RZAmMBcV0fifFvlm6VHNz3wSkYyXYWUh7ymB74=
 github.com/jhump/protoreflect v1.6.0/go.mod h1:eaTn3RZAmMBcV0fifFvlm6VHNz3wSkYyXYWUh7ymB74=
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
-github.com/joshcarp/sysl-printer v0.0.0-20200316025222-c10d6b6e6c6b h1:xUZdRQHBW1PuTZCSv4IeR7CyZ6liPpzmySieNt+XUUk=
-github.com/joshcarp/sysl-printer v0.0.0-20200316025222-c10d6b6e6c6b/go.mod h1:RynShTmcDDWXSS8gFQQ1MEXGnLEOqyOyqpZDcHHJzvQ=
-github.com/joshcarp/sysl-printer v0.0.0-20200319000156-6569d64263ab h1:0xrWOouMzHlOp9YDONzhu2ILAIsmAqeAt5h1D7A1YXQ=
-github.com/joshcarp/sysl-printer v0.0.0-20200319000156-6569d64263ab/go.mod h1:RynShTmcDDWXSS8gFQQ1MEXGnLEOqyOyqpZDcHHJzvQ=
-github.com/joshcarp/sysl-printer v0.0.0-20200319234123-2bde4a0678ed h1:O3XF8Ag/5ztZfBxrWNaLAGsQM7pwspAzwaclGo6q2nk=
-github.com/joshcarp/sysl-printer v0.0.0-20200319234123-2bde4a0678ed/go.mod h1:RynShTmcDDWXSS8gFQQ1MEXGnLEOqyOyqpZDcHHJzvQ=
-github.com/joshcarp/sysl-printer v0.0.0-20200325052607-4d2ccb404ea4 h1:fPpYPJyRxY9ufP523QcIDJi38dq1IsghxjoN2nPxr+A=
-github.com/joshcarp/sysl-printer v0.0.0-20200325052607-4d2ccb404ea4/go.mod h1:RynShTmcDDWXSS8gFQQ1MEXGnLEOqyOyqpZDcHHJzvQ=
-github.com/joshcarp/sysl-printer v0.0.0-20200414072059-72a79d4f746a h1:JpMoIQImmceiW/ZE0pvSI1eVlp+T4PSFLGu4W6TtfN0=
-github.com/joshcarp/sysl-printer v0.0.0-20200414072059-72a79d4f746a/go.mod h1:RynShTmcDDWXSS8gFQQ1MEXGnLEOqyOyqpZDcHHJzvQ=
 github.com/joshcarp/sysl-printer v0.0.0-20200414075453-a9b5c8914bb3 h1:05d1tSt6lMCxeKEV74NbqYYS2VWkO7a5FuorS6F0DKo=
 github.com/joshcarp/sysl-printer v0.0.0-20200414075453-a9b5c8914bb3/go.mod h1:RynShTmcDDWXSS8gFQQ1MEXGnLEOqyOyqpZDcHHJzvQ=
 github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1:6v2b51hI/fHJwM22ozAgKL4VKDeJcHhJFhtBdhmNjmU=
@@ -303,6 +288,7 @@ github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxv
 github.com/konsorten/go-windows-terminal-sequences v1.0.2 h1:DB17ag19krx9CFsz4o3enTrPXyIXCl+2iCXH/aMAp9s=
 github.com/konsorten/go-windows-terminal-sequences v1.0.2/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
+github.com/kr/pretty v0.2.0 h1:s5hAObm+yFO5uHYt5dYjxi2rXrsnmRpJx4OYvIWUaQs=
 github.com/kr/pretty v0.2.0/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfnI=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/pty v1.1.5/go.mod h1:9r2w37qlBe7rQ6e1fg1S/9xpWHSnaqNdHD3WcMdbPDA=
@@ -517,8 +503,6 @@ golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527 h1:uYVVQ9WP/Ds2ROhcaGPeIdVq0
 golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200317113312-5766fd39f98d h1:62ap6LNOjDU6uGmKXHJbSfciMoV+FeI1sRXx/pLDL44=
 golang.org/x/sys v0.0.0-20200317113312-5766fd39f98d/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
-golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd h1:xhmwyvizuTgC2qz7ZlMluP20uW+C3Rm0FD/WLDX8884=
-golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200413165638-669c56c373c4 h1:opSr2sbRXk5X5/givKrrKj9HXxFpW2sdCiP8MJSKLQY=
 golang.org/x/sys v0.0.0-20200413165638-669c56c373c4/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
@@ -572,6 +556,7 @@ golang.org/x/tools v0.0.0-20200224181240-023911ca70b2/go.mod h1:TB2adYChydJhpapK
 golang.org/x/tools v0.0.0-20200317043434-63da46f3035e/go.mod h1:Sl4aGygMT6LrqrWclx+PTx3U+LnKx/seiNR+3G19Ar8=
 golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 golang.org/x/xerrors v0.0.0-20191011141410-1b5146add898/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
+golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 h1:E7g+9GITq07hpfrRu66IVDexMakfv52eLZ2CXBWiKr4=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 google.golang.org/api v0.4.0/go.mod h1:8k5glujaEP+g9n7WNsDg8QP6cUVNI86fCNMcbazEtwE=
 google.golang.org/api v0.7.0/go.mod h1:WtwebWUNSVBH/HAw79HIFXZNqEvBhG+Ra+ax0hx3E3M=

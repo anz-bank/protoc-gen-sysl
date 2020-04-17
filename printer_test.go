@@ -17,6 +17,7 @@ import (
 )
 
 var tests = []string{
+	"repeated/",
 	"simple/",
 	"messageinmessage/",
 	"externaltype/",
