@@ -80,6 +80,7 @@ func (p *PrinterModule) VisitService(s pgs.Service) (pgs.Visitor, error) {
 	name := s.Name().String()
 	p.Module.Apps[name] = syslpopulate.NewApplication(name)
 	p.Module.Apps[name].Attrs["package"] = syslpopulate.NewAttribute(syslPackageName(s))
+	p.Module.Apps[name].Attrs["description"] = syslpopulate.NewAttribute(s.SourceCodeInfo().LeadingComments() + s.SourceCodeInfo().TrailingComments())
 	for _, e := range s.Methods() {
 		if _, err := p.VisitMethod(e); err != nil {
 			return nil, err
@@ -148,7 +149,8 @@ func (p *PrinterModule) VisitMethod(m pgs.Method) (v pgs.Visitor, err error) {
 	appName := m.Service().Name().String()
 	endpointName := m.Name().String()
 	p.Module.Apps[appName].Endpoints[endpointName], Calls = endpointFromMethod(m)
-
+	p.Module.Apps[appName].Endpoints[endpointName].Attrs = make(map[string]*sysl.Attribute)
+	p.Module.Apps[appName].Endpoints[endpointName].Attrs["description"] = syslpopulate.NewAttribute(m.SourceCodeInfo().LeadingComments() + m.SourceCodeInfo().TrailingComments())
 	for app, endpoint := range Calls {
 		if _, ok := p.Module.Apps[app]; !ok {
 			p.Module.Apps[app] = syslpopulate.NewApplication(app)

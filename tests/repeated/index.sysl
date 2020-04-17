@@ -1,0 +1,8 @@
+
+grpctesting:
+    @package = "grpctesting"
+    !type Request:
+        q <: sequence of grpctesting.Whatever
+        query <: sequence of string
+    !type Whatever:
+        query <: string
