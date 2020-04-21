@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "google/protobuf/any.proto";
+package grpc.testing;
+
+service Bar{
+    rpc AnotherEndpoint(This) returns(This);
+}
+
+message This{
+    google.protobuf.Any grpc_request = 1;
+}
