@@ -45,6 +45,7 @@ func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 	} else {
 		fieldType = e.Type().ProtoType().String()
 	}
+	fieldType = syslpopulate.SanitiseTypeName(fieldType)
 	if *e.Descriptor().Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
 		return fieldName, &sysl.Type{
 			Type: &sysl.Type_Sequence{

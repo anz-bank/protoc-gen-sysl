@@ -1,0 +1,12 @@
+
+Bar:
+    @description = ""
+    @package = "grpctesting"
+    AnotherEndpoint(input <: grpctesting.This):
+        @description = ""
+        return ok <: grpctesting.This
+
+grpctesting:
+    @package = "grpctesting"
+    !type This:
+        grpc_request <: googleprotobuf.Any__

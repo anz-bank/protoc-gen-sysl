@@ -24,6 +24,7 @@ update-sysl:		## Updates the expected sysl files by compiling with the current p
 	protoc --sysl_out=tests/empty/ tests/empty/*.proto
 	protoc --sysl_out=tests/messageinmessage/ tests/messageinmessage/*.proto
 	protoc --sysl_out=tests/repeated/ tests/repeated/*.proto
+	protoc --sysl_out=tests/any/ tests/any/*.proto
 
 update-tests:		## Updates the code_generator_request.pb.bin for the go test cases.
 	protoc --debug_out="tests/test:tests/." ./tests/test/test.proto
@@ -37,6 +38,7 @@ update-tests:		## Updates the code_generator_request.pb.bin for the go test case
 	protoc --debug_out="tests/externaltype:tests/." ./tests/externaltype/*.proto
 	protoc --debug_out="tests/messageinmessage:tests/." ./tests/messageinmessage/*.proto
 	protoc --debug_out="tests/repeated:tests/." ./tests/repeated/*.proto
+	protoc --debug_out="tests/any:tests/." ./tests/any/*.proto
 
 
 

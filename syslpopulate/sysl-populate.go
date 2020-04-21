@@ -18,7 +18,7 @@ var TypeMapping = map[string]sysl.Type_Primitive{
 	"TYPE_FLOAT":  sysl.Type_FLOAT,
 }
 
-var specialMappings = map[string]string{"date": "date__"}
+var specialMappings = map[string]string{"date": "date__", "Any": "Any__", "any": "any_"}
 
 // NewApplication Initialises a Sysl application
 func NewApplication(appName string) *sysl.Application {
@@ -116,8 +116,14 @@ func SyslStruct(fieldType, application string) *sysl.Type {
 
 // SanitiseTypeName returns names that aren't identifiers within sysl. eg. date gets converted to date__
 func SanitiseTypeName(name string) string {
-	if _, ok := specialMappings[name]; ok {
-		return specialMappings[name]
+	parts := strings.Split(name, ".")
+	typeName := parts[len(parts)-1]
+	if _, ok := specialMappings[typeName]; ok {
+		typeName = specialMappings[name]
+		if len(parts) > 1 {
+			typeName = parts[0] + typeName
+		}
+		return typeName
 	}
 	return name
 }
