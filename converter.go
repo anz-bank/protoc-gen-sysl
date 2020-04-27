@@ -3,11 +3,10 @@ package main
 import (
 	"strings"
 
-	"github.com/golang/protobuf/protoc-gen-go/descriptor"
-
 	"github.com/anz-bank/protoc-gen-sysl/sysloption"
 	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/descriptorpb"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
 	pgs "github.com/lyft/protoc-gen-star"
@@ -46,7 +45,7 @@ func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 		fieldType = e.Type().ProtoType().String()
 	}
 	fieldType = syslpopulate.SanitiseTypeName(fieldType)
-	if *e.Descriptor().Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+	if *e.Descriptor().Label == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
 		return fieldName, &sysl.Type{
 			Type: &sysl.Type_Sequence{
 				Sequence: syslpopulate.NewType(fieldType, application),
@@ -80,7 +79,7 @@ func messageToSysl(e pgs.Message) string {
 func customOption(meth pgs.Method) []*sysloption.CallRule {
 	var call []*sysloption.CallRule
 	if proto.HasExtension(meth.Descriptor().Options, sysloption.E_Calls) {
-		this, _ := proto.GetExtension(meth.Descriptor().Options, sysloption.E_Calls)
+		this := proto.GetExtension(meth.Descriptor().Options, sysloption.E_Calls)
 		call = this.([]*sysloption.CallRule)
 	}
 	return call
