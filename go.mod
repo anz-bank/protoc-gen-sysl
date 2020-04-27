@@ -13,5 +13,5 @@ require (
 	github.com/sirupsen/logrus v1.5.0
 	github.com/spf13/afero v1.2.2
 	golang.org/x/sys v0.0.0-20200413165638-669c56c373c4 // indirect
-	google.golang.org/appengine v1.6.5
+	google.golang.org/protobuf v1.21.0
 )

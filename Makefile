@@ -10,8 +10,6 @@ help:			## Show this help.
 install:		## Installs this project as a binary in your go binary directory.
 	go install github.com/anz-bank/protoc-gen-sysl
 
-
-
 update-sysl:		## Updates the expected sysl files by compiling with the current protoc-gen-sysl installation.
 	protoc --sysl_out=tests/simple/ tests/simple/simple.proto
 	protoc --sysl_out=tests/test/ tests/test/test.proto
@@ -39,11 +37,6 @@ update-tests:		## Updates the code_generator_request.pb.bin for the go test case
 	protoc --debug_out="tests/messageinmessage:tests/." ./tests/messageinmessage/*.proto
 	protoc --debug_out="tests/repeated:tests/." ./tests/repeated/*.proto
 	protoc --debug_out="tests/any:tests/." ./tests/any/*.proto
-
-
-
-validate:
-	sysl validate
 
 syslproto:		## Rebuilds the `option protos` to go and keeps the demo directory in sync
 	protoc --go_out=. sysloption/sysloption.proto
