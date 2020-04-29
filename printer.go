@@ -108,6 +108,9 @@ func (p *PrinterModule) VisitMessage(m pgs.Message) (pgs.Visitor, error) {
 		},
 		}
 	}
+	if description := m.SourceCodeInfo().LeadingComments() + m.SourceCodeInfo().TrailingComments(); description != "" {
+		pattenAttributes["description"] = syslpopulate.NewAttribute(description)
+	}
 	for _, e := range m.Fields() {
 		fieldName, syslType = p.fieldToSysl(e)
 		fieldName = syslpopulate.SanitiseTypeName(fieldName)

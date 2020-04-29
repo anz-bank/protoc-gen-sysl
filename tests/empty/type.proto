@@ -2,5 +2,6 @@ syntax = "proto3";
 
 package grpc.testing;
 
+// Hello world
 message Response {
 }

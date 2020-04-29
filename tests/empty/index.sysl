@@ -9,4 +9,6 @@ Bar:
 grpctesting:
     @package = "grpctesting"
     !type Response[~empty]:
+        @description =:
+            | Hello world
         ...
