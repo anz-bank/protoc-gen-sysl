@@ -1,8 +1,7 @@
 syntax = "proto3";
 
 package grpc.testing;
-
-import "sysloption/sysloption.proto";
+option go_package = "tests/simple;whatever";
 
 message Request {
     string query = 1;
@@ -19,9 +18,7 @@ message Money {
 
 // This is a comment before Foo
 service Foo{
-    rpc thisEndpoint(Request) returns(Response){
-        option (sysl.calls) = {call: "Bar.AnotherEndpoint" call: "ThisApp.DoesntExist"};
-    };
+    rpc thisEndpoint(Request) returns(Response){};
 }
 
 // This is a comment before Bar

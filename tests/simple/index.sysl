@@ -1,33 +1,24 @@
 
 Bar:
     @description =:
-        | This is a comment before Bar
-    @package = "grpctesting"
-    AnotherEndpoint(input <: grpctesting.Request):
+        |// This is a comment before Bar
+    @package = "whatever"
+    AnotherEndpoint(input <: testing.):
+        ...
         @description =:
-            | this is a comment before Bar.AnotherEndpoint
-        return ok <: grpctesting.Response
+            |// this is a comment before Bar.AnotherEndpoint
 
 Foo:
     @description =:
-        | This is a comment before Foo
-    @package = "grpctesting"
-    thisEndpoint(input <: grpctesting.Request):
-        @description = ""
-        Bar <- AnotherEndpoint
-        ThisApp <- DoesntExist
-        return ok <: grpctesting.Response
-
-ThisApp:
-    DoesntExist:
+        |// This is a comment before Foo
+    @package = "whatever"
+    ThisEndpoint(input <: testing.):
         ...
+        @description = ""
 
-grpctesting:
-    @package = "grpctesting"
-    !type Money:
-        nanos <: int
-        units <: int
-    !type Request:
-        query <: string
-    !type Response:
-        query <: string
+testing:
+    @package = "testing"
+    !type testing:
+        Nanos <: testing.nanos
+        Units <: testing.units
+

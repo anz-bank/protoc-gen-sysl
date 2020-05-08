@@ -3,6 +3,7 @@ module github.com/anz-bank/protoc-gen-sysl
 go 1.13
 
 require (
+	github.com/Joshcarp/sysl v0.5.1
 	github.com/alecthomas/assert v0.0.0-20170929043011-405dbfeb8e38
 	github.com/anz-bank/sysl v0.70.0
 	github.com/gogo/protobuf v1.2.1

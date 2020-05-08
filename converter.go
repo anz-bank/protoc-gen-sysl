@@ -54,15 +54,6 @@ func (p *PrinterModule) fieldToSysl(e pgs.Field) (string, *sysl.Type) {
 	}
 	return fieldName, syslpopulate.NewType(fieldType, application)
 }
-func NoEmptyStrings(in []string) []string {
-	out := make([]string, 0, len(in))
-	for _, element := range in {
-		if element != "" {
-			out = append(out, element)
-		}
-	}
-	return out
-}
 
 // messageToSysl converts a message to a sysl type
 func messageToSysl(e pgs.Message) string {
@@ -118,4 +109,14 @@ func enumToSysl(e pgs.Enum) map[string]int64 {
 		}
 	}
 	return values
+}
+
+func NoEmptyStrings(in []string) []string {
+	out := make([]string, 0, len(in))
+	for _, element := range in {
+		if element != "" {
+			out = append(out, element)
+		}
+	}
+	return out
 }
