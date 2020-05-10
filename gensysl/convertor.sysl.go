@@ -26,8 +26,10 @@ func (p *PrinterModule) endpointFromMethod(m *protogen.Method) (*sysl.Endpoint, 
 // messageToSysl converts a message to a sysl type
 func (p *PrinterModule) messageToSysl(m *protogen.Message) string {
 	var fieldType string
-	m.Desc.Parent().ParentFile().Package().Name()
-	if t := m.Desc; t != nil && t.Name != nil {
+
+	if t := m.Desc; t != nil {
+		fieldType = m.GoIdent.GoName
+		//string(m.Desc.Parent().ParentFile().Package().Name())
 		//fieldType = strings.ReplaceAll(string(t.Name()), p.PackageName, "")
 		fieldType = strings.ReplaceAll(fieldType, ".", "")
 		fieldType = syslpopulate.SanitiseTypeName(fieldType)

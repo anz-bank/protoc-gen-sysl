@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -49,6 +50,9 @@ func TestPrinting(t *testing.T) {
 			assert.NoError(t, err)
 			golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
 			assert.NoError(t, err)
+			if *GeneratorResponse.File[0].Content != string(golden) {
+				fmt.Println(*GeneratorResponse.File[0].Content)
+			}
 			assert.Equal(t, *GeneratorResponse.File[0].Content, string(golden))
 		})
 	}

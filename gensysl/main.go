@@ -4,9 +4,8 @@ import (
 	"bytes"
 	"strings"
 
-	printer "github.com/joshcarp/sysl-printer"
-
 	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
+	"github.com/anz-bank/sysl/pkg/printer"
 	"github.com/anz-bank/sysl/pkg/sysl"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/compiler/protogen"
@@ -24,7 +23,6 @@ func syslPackageName(m string) string {
 
 // GenerateFile generates the contents of a .pb.go file.
 func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile {
-	//filename := file.GeneratedFilenamePrefix + "index.sysl"
 	filename := "index.sysl"
 	g := gen.NewGeneratedFile(filename, file.GoImportPath)
 
@@ -34,7 +32,7 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 	}
 	p.VisitFile(file)
 	var buf bytes.Buffer
-	printer.NewPrinter(&buf).PrintModule(p.Module)
+	printer.Module(&buf, p.Module)
 	g.P(buf.String())
 	return g
 }
@@ -56,7 +54,6 @@ func (p *PrinterModule) VisitFile(file *protogen.File) (err error) {
 			return nil
 		}
 	}
-	//return nil, nil
 	return nil
 }
 
@@ -139,7 +136,7 @@ func (p *PrinterModule) VisitMessage(m *protogen.Message) error {
 		p.Module.Apps[packageName].Attrs["package"] = syslpopulate.NewAttribute(packageName)
 	}
 
-	typeName := syslpopulate.SanitiseTypeName(string(m.Desc.Parent().ParentFile().Package().Name()))
+	typeName := syslpopulate.SanitiseTypeName(m.GoIdent.GoName)
 	p.Module.Apps[packageName].Types[typeName] = &sysl.Type{
 		Attrs: pattenAttributes,
 		Type: &sysl.Type_Tuple_{
