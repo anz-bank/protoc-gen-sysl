@@ -17,6 +17,7 @@ import (
 )
 
 var tests = []string{
+	"empty/",
 	"any/",
 	"repeated/",
 	"simple/",
@@ -27,7 +28,6 @@ var tests = []string{
 	"otheroption/",
 	"enum/",
 	"disconnectedimport/",
-	"empty/",
 	"date/",
 }
 
@@ -41,10 +41,10 @@ func TestPrinting(t *testing.T) {
 
 		t.Run(test, func(t *testing.T) {
 			assert.NoError(t, err)
-			t.Log(filepath.Join("Passed", test, *GeneratorResponse.File[0].Name))
 			golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
 			assert.NoError(t, err)
 			assert.Equal(t, *GeneratorResponse.File[0].Content, string(golden))
+			t.Log(filepath.Join("Passed", test, *GeneratorResponse.File[0].Name))
 		})
 	}
 }
