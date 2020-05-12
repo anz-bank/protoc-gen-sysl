@@ -9,6 +9,8 @@ import (
 
 	"google.golang.org/protobuf/types/descriptorpb"
 
+	"google.golang.org/protobuf/reflect/protoreflect"
+
 	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
 	"github.com/anz-bank/sysl/pkg/printer"
 	"github.com/anz-bank/sysl/pkg/sysl"
@@ -17,9 +19,8 @@ import (
 )
 
 type PrinterModule struct {
-	Log         *logrus.Logger
-	Module      *sysl.Module
-	PackageName string
+	Log    *logrus.Logger
+	Module *sysl.Module
 }
 
 func syslPackageName(m string) string {
@@ -46,14 +47,13 @@ func GenerateFiles(gen *protogen.Plugin) error {
 }
 
 func (p *PrinterModule) VisitFile(file *protogen.File) (err error) {
-	p.PackageName = string(file.GoPackageName)
 	for _, s := range file.Services {
-		if err := p.VisitService(s); err != nil {
+		if err := p.VisitService(file, s); err != nil {
 			return err
 		}
 	}
 	for _, t := range file.Messages {
-		if err := p.VisitMessage(t); err != nil {
+		if err := p.VisitMessage(file, t); err != nil {
 			return err
 		}
 	}
@@ -67,10 +67,11 @@ func (p *PrinterModule) VisitFile(file *protogen.File) (err error) {
 
 // VisitService converts to sysl and constructs endpoints from methods
 // service myservice{...} --> myservice:
-func (p *PrinterModule) VisitService(s *protogen.Service) error {
+func (p *PrinterModule) VisitService(file *protogen.File, s *protogen.Service) error {
 	name := s.GoName
 	p.Module.Apps[name] = syslpopulate.NewApplication(name)
-	p.Module.Apps[name].Attrs["package"] = syslpopulate.NewAttribute(p.PackageName)
+	pkgName, _ := goPackageOptionRaw(string(file.GoImportPath))
+	p.Module.Apps[name].Attrs["package"] = syslpopulate.NewAttribute(pkgName)
 	p.Module.Apps[name].Attrs["description"] = syslpopulate.NewAttribute(s.Comments.Leading.String() + s.Comments.Trailing.String())
 	for _, e := range s.Methods {
 		if err := p.VisitMethod(s, e); err != nil {
@@ -105,11 +106,11 @@ func (p *PrinterModule) VisitMethod(s *protogen.Service, m *protogen.Method) (er
 // VisitMessage converts to sysl and constructs types from messages. All types are writen to the
 // TypeApplication (as in sysl types belong to applications but not in proto
 // message foo{...} --> !type foo:
-func (p *PrinterModule) VisitMessage(m *protogen.Message) error {
+func (p *PrinterModule) VisitMessage(file *protogen.File, m *protogen.Message) error {
 	var fieldName string
 	pattenAttributes := make(map[string]*sysl.Attribute)
 	attrDefs := make(map[string]*sysl.Type)
-	packageName := syslPackageName(p.PackageName)
+	packageName, _ := goPackageOptionRaw(string(m.GoIdent.GoImportPath))
 	if len(m.Fields) == 0 {
 		pattenAttributes["patterns"] = &sysl.Attribute{Attribute: &sysl.Attribute_A{A: &sysl.Attribute_Array{
 			Elt: []*sysl.Attribute{&sysl.Attribute{
@@ -125,10 +126,10 @@ func (p *PrinterModule) VisitMessage(m *protogen.Message) error {
 	}
 	for _, e := range m.Fields {
 		fieldName = e.GoName
-		attrDefs[fieldName] = fieldGoType(e)
+		attrDefs[fieldName] = fieldGoType(file, e)
 	}
 	for _, e := range m.Messages {
-		if err := p.VisitMessage(e); err != nil {
+		if err := p.VisitMessage(file, e); err != nil {
 			return err
 		}
 	}
@@ -168,7 +169,7 @@ func NoEmptyStrings(in []string) []string {
 // Currently this sysl syntax is unsupported, but enums exist within the sysl data object
 // enum foo{...} --> !enum foo:
 func (p *PrinterModule) VisitEnum(e *protogen.Enum) error {
-	packageName := syslPackageName(string(e.Desc.Parent().ParentFile().Package().Name()))
+	packageName, _ := goPackageOptionRaw(string(e.GoIdent.GoImportPath))
 	typeName := e.GoIdent.GoName
 	if _, ok := p.Module.Apps[packageName]; !ok {
 		p.Module.Apps[packageName] = syslpopulate.NewApplication(packageName)
@@ -191,8 +192,12 @@ func (p *PrinterModule) VisitEnum(e *protogen.Enum) error {
 //	GetOptions() *descriptorpb.FileOptions
 //}
 
-func goPackageOption(optDesc *descriptorpb.FileOptions) (pkg string, impPath string) {
-	opt := optDesc.GetGoPackage()
+func goPackageOption(optDesc protoreflect.ProtoMessage) (pkg string, impPath string) {
+	fileOpt, ok := optDesc.(*descriptorpb.FileOptions)
+	if !ok || fileOpt == nil {
+		return
+	}
+	opt := *fileOpt.GoPackage
 	if opt == "" {
 		return "", ""
 	}

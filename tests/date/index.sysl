@@ -1,13 +1,13 @@
 
 Bar:
     @description = ""
-    @package = "grpc_testing"
-    AnotherEndpoint(input <: .Date):
+    @package = "date"
+    AnotherEndpoint(input <: date.Date):
         ...
         @description = ""
 
-grpc_testing:
-    @package = "grpc_testing"
+date:
+    @package = "date"
     !type Date:
         This <: string
 

@@ -1,21 +1,18 @@
 
 Bar:
     @description = ""
-    @package = "grpc_testing"
-    AnotherEndpoint(input <: .Request):
+    @package = "multiplefiles"
+    AnotherEndpoint(input <: multiplefiles.Request):
         ...
         @description = ""
 
-grpc_testing:
-    @package = "grpc_testing"
-    !type Request:
-        CurrencyCode <: .Currency
-        Query <: string
-    !type Response:
-        Query <: string
-
-testing:
+multiplefiles:
     !enum Currency:
         AUD: 0
         USD: 1
+    !type Request:
+        CurrencyCode <: Currency
+        Query <: string
+    !type Response:
+        Query <: string
 

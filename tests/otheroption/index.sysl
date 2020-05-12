@@ -1,13 +1,13 @@
 
 Bar:
     @description = ""
-    @package = "grpc_testing"
-    AnotherEndpoint(input <: .Request):
+    @package = "otheroption"
+    AnotherEndpoint(input <: otheroption.Request):
         ...
         @description = ""
 
-grpc_testing:
-    @package = "grpc_testing"
+otheroption:
+    @package = "otheroption"
     !type Request:
         Query <: string
     !type Response:

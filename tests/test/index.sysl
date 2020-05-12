@@ -1,8 +1,8 @@
 
 Foo:
     @description = ""
-    @package = "grpc_testing"
-    Foobar(input <: .StreamingOutputCallRequest):
+    @package = "test"
+    Foobar(input <: test.StreamingOutputCallRequest):
         ...
         @description = ""
 
@@ -12,26 +12,26 @@ TestService:
         |// performance with various types of payload.
         |// One empty request followed by one empty response.
         |//    rpc EmptyCall(Empty) returns (Empty);
-    @package = "grpc_testing"
-    FullDuplexCall(input <: .StreamingOutputCallRequest):
+    @package = "test"
+    FullDuplexCall(input <: test.StreamingOutputCallRequest):
         ...
         @description =:
             |// A sequence of requests with each request served by the server immediately.
             |// As one request could lead to multiple responses, this interface
             |// demonstrates the idea of full duplexing.
-    HalfDuplexCall(input <: .StreamingOutputCallRequest):
+    HalfDuplexCall(input <: test.StreamingOutputCallRequest):
         ...
         @description =:
             |// A sequence of requests followed by a sequence of responses.
             |// The server buffers all the client requests and then serves them in order. A
             |// stream of responses are returned to the client when the server starts with
             |// first request.
-    StreamingInputCall(input <: .StreamingInputCallRequest):
+    StreamingInputCall(input <: test.StreamingInputCallRequest):
         ...
         @description =:
             |// A sequence of requests followed by one response (streamed upload).
             |// The server returns the aggregated size of client payload as the result.
-    StreamingOutputCall(input <: .StreamingOutputCallRequest):
+    StreamingOutputCall(input <: test.StreamingOutputCallRequest):
         ...
         @description =:
             |// One request followed by a sequence of responses (streamed download).
@@ -42,19 +42,19 @@ descriptor:
     !type DescriptorProto:
         @description =:
             |// Describes a message type.
-        EnumType <: sequence of .EnumDescriptorProto
-        Extension <: sequence of .FieldDescriptorProto
-        ExtensionRange <: sequence of .DescriptorProto_ExtensionRange
-        Field <: sequence of .FieldDescriptorProto
+        EnumType <: sequence of EnumDescriptorProto
+        Extension <: sequence of FieldDescriptorProto
+        ExtensionRange <: sequence of DescriptorProto_ExtensionRange
+        Field <: sequence of FieldDescriptorProto
         Name <: string
-        NestedType <: sequence of .DescriptorProto
-        OneofDecl <: sequence of .OneofDescriptorProto
-        Options <: .MessageOptions
+        NestedType <: sequence of DescriptorProto
+        OneofDecl <: sequence of OneofDescriptorProto
+        Options <: MessageOptions
         ReservedName <: sequence of string
-        ReservedRange <: sequence of .DescriptorProto_ReservedRange
+        ReservedRange <: sequence of DescriptorProto_ReservedRange
     !type DescriptorProto_ExtensionRange:
         End <: int
-        Options <: .ExtensionRangeOptions
+        Options <: ExtensionRangeOptions
         Start <: int
     !type DescriptorProto_ReservedRange:
         @description =:
@@ -67,10 +67,10 @@ descriptor:
         @description =:
             |// Describes an enum type.
         Name <: string
-        Options <: .EnumOptions
+        Options <: EnumOptions
         ReservedName <: sequence of string
-        ReservedRange <: sequence of .EnumDescriptorProto_EnumReservedRange
-        Value <: sequence of .EnumValueDescriptorProto
+        ReservedRange <: sequence of EnumDescriptorProto_EnumReservedRange
+        Value <: sequence of EnumValueDescriptorProto
     !type EnumDescriptorProto_EnumReservedRange:
         @description =:
             |// Range of reserved numeric values. Reserved values may not be used by
@@ -84,221 +84,31 @@ descriptor:
     !type EnumOptions:
         AllowAlias <: bool
         Deprecated <: bool
-        UninterpretedOption <: sequence of .UninterpretedOption
+        UninterpretedOption <: sequence of UninterpretedOption
     !type EnumValueDescriptorProto:
         @description =:
             |// Describes a value within an enum.
         Name <: string
         Number <: int
-        Options <: .EnumValueOptions
+        Options <: EnumValueOptions
     !type EnumValueOptions:
         Deprecated <: bool
-        UninterpretedOption <: sequence of .UninterpretedOption
+        UninterpretedOption <: sequence of UninterpretedOption
     !type ExtensionRangeOptions:
-        UninterpretedOption <: sequence of .UninterpretedOption
+        UninterpretedOption <: sequence of UninterpretedOption
     !type FieldDescriptorProto:
         @description =:
             |// Describes a field within a message.
         DefaultValue <: string
         Extendee <: string
         JsonName <: string
-        Label <: .FieldDescriptorProto_Label
+        Label <: FieldDescriptorProto_Label
         Name <: string
         Number <: int
         OneofIndex <: int
-        Options <: .FieldOptions
-        Type <: .FieldDescriptorProto_Type
+        Options <: FieldOptions
+        Type <: FieldDescriptorProto_Type
         TypeName <: string
-    !type FieldOptions:
-        Ctype <: .FieldOptions_CType
-        Deprecated <: bool
-        Jstype <: .FieldOptions_JSType
-        Lazy <: bool
-        Packed <: bool
-        UninterpretedOption <: sequence of .UninterpretedOption
-        Weak <: bool
-    !type FileDescriptorProto:
-        @description =:
-            |// Describes a complete .proto file.
-        Dependency <: sequence of string
-        EnumType <: sequence of .EnumDescriptorProto
-        Extension <: sequence of .FieldDescriptorProto
-        MessageType <: sequence of .DescriptorProto
-        Name <: string
-        Options <: .FileOptions
-        Package <: string
-        PublicDependency <: sequence of int
-        Service <: sequence of .ServiceDescriptorProto
-        SourceCodeInfo <: .SourceCodeInfo
-        Syntax <: string
-        WeakDependency <: sequence of int
-    !type FileDescriptorSet:
-        @description =:
-            |// The protocol compiler can output a FileDescriptorSet containing the .proto
-            |// files it parses.
-        File <: sequence of .FileDescriptorProto
-    !type FileOptions:
-        CcEnableArenas <: bool
-        CcGenericServices <: bool
-        CsharpNamespace <: string
-        Deprecated <: bool
-        GoPackage <: string
-        JavaGenerateEqualsAndHash <: bool
-        JavaGenericServices <: bool
-        JavaMultipleFiles <: bool
-        JavaOuterClassname <: string
-        JavaPackage <: string
-        JavaStringCheckUtf8 <: bool
-        ObjcClassPrefix <: string
-        OptimizeFor <: .FileOptions_OptimizeMode
-        PhpClassPrefix <: string
-        PhpGenericServices <: bool
-        PhpMetadataNamespace <: string
-        PhpNamespace <: string
-        PyGenericServices <: bool
-        RubyPackage <: string
-        SwiftPrefix <: string
-        UninterpretedOption <: sequence of .UninterpretedOption
-    !type GeneratedCodeInfo:
-        @description =:
-            |// Describes the relationship between generated code and its original source
-            |// file. A GeneratedCodeInfo message is associated with only one generated
-            |// source file, but may contain references to different source .proto files.
-        Annotation <: sequence of .GeneratedCodeInfo_Annotation
-    !type GeneratedCodeInfo_Annotation:
-        Begin <: int
-        End <: int
-        Path <: sequence of int
-        SourceFile <: string
-    !type MessageOptions:
-        Deprecated <: bool
-        MapEntry <: bool
-        MessageSetWireFormat <: bool
-        NoStandardDescriptorAccessor <: bool
-        UninterpretedOption <: sequence of .UninterpretedOption
-    !type MethodDescriptorProto:
-        @description =:
-            |// Describes a method of a service.
-        ClientStreaming <: bool
-        InputType <: string
-        Name <: string
-        Options <: .MethodOptions
-        OutputType <: string
-        ServerStreaming <: bool
-    !type MethodOptions:
-        Deprecated <: bool
-        IdempotencyLevel <: .MethodOptions_IdempotencyLevel
-        UninterpretedOption <: sequence of .UninterpretedOption
-    !type OneofDescriptorProto:
-        @description =:
-            |// Describes a oneof.
-        Name <: string
-        Options <: .OneofOptions
-    !type OneofOptions:
-        UninterpretedOption <: sequence of .UninterpretedOption
-    !type ServiceDescriptorProto:
-        @description =:
-            |// Describes a service.
-        Method <: sequence of .MethodDescriptorProto
-        Name <: string
-        Options <: .ServiceOptions
-    !type ServiceOptions:
-        Deprecated <: bool
-        UninterpretedOption <: sequence of .UninterpretedOption
-    !type SourceCodeInfo:
-        @description =:
-            |// Encapsulates information about the original source file from which a
-            |// FileDescriptorProto was generated.
-        Location <: sequence of .SourceCodeInfo_Location
-    !type SourceCodeInfo_Location:
-        LeadingComments <: string
-        LeadingDetachedComments <: sequence of string
-        Path <: sequence of int
-        Span <: sequence of int
-        TrailingComments <: string
-    !type UninterpretedOption:
-        @description =:
-            |// A message representing a option the parser does not recognize. This only
-            |// appears in options protos created by the compiler::Parser class.
-            |// DescriptorPool resolves these when building Descriptor objects. Therefore,
-            |// options protos in descriptor objects (e.g. returned by Descriptor::options(),
-            |// or produced by Descriptor::CopyTo()) will never have UninterpretedOptions
-            |// in them.
-        AggregateValue <: string
-        DoubleValue <: float
-        IdentifierValue <: string
-        Name <: sequence of .UninterpretedOption_NamePart
-        NegativeIntValue <: int
-        PositiveIntValue <: int
-        StringValue <: bytes
-    !type UninterpretedOption_NamePart:
-        @description =:
-            |// The name of the uninterpreted option.  Each string represents a segment in
-            |// a dot-separated name.  is_extension is true iff a segment represents an
-            |// extension (denoted with parentheses in options specs in .proto files).
-            |// E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
-            |// "foo.(bar.baz).qux".
-        IsExtension <: bool
-        NamePart <: string
-
-grpc_testing:
-    @package = "grpc_testing"
-    !type EchoStatus:
-        @description =:
-            |// A protobuf representation for grpc status. This is used by test
-            |// clients to specify a status that the server should attempt to return.
-        Code <: int
-        Message <: string
-    !type Payload:
-        @description =:
-            |// A block of data, to simply increase gRPC message size.
-        Body <: bytes
-        Type <: .PayloadType
-    !type ResponseParameters:
-        @description =:
-            |// Configuration for a particular response.
-        IntervalUs <: int
-        Size <: int
-    !type SimpleRequest:
-        @description =:
-            |// Unary request.
-        FillGrpclbRouteType <: bool
-        FillOauthScope <: bool
-        FillServerId <: bool
-        FillUsername <: bool
-        Payload <: .Payload
-        ResponseSize <: int
-        ResponseStatus <: .EchoStatus
-        ResponseType <: .PayloadType
-    !type SimpleResponse:
-        @description =:
-            |// Unary response, as configured by the request.
-        GrpclbRouteType <: .GrpclbRouteType
-        OauthScope <: string
-        Payload <: .Payload
-        ServerId <: string
-        Username <: string
-    !type StreamingInputCallRequest:
-        @description =:
-            |// Client-streaming request.
-        Payload <: .Payload
-    !type StreamingInputCallResponse:
-        @description =:
-            |// Client-streaming response.
-        AggregatedPayloadSize <: int
-    !type StreamingOutputCallRequest:
-        @description =:
-            |// Server-streaming request.
-        Payload <: .Payload
-        ResponseParameters <: sequence of .ResponseParameters
-        ResponseStatus <: .EchoStatus
-        ResponseType <: .PayloadType
-    !type StreamingOutputCallResponse:
-        @description =:
-            |// Server-streaming response, as configured by the request and parameters.
-        Payload <: .Payload
-
-protobuf:
     !enum FieldDescriptorProto_Label:
         LABEL_OPTIONAL: 1
         LABEL_REPEATED: 3
@@ -322,6 +132,14 @@ protobuf:
         TYPE_STRING: 9
         TYPE_UINT32: 13
         TYPE_UINT64: 4
+    !type FieldOptions:
+        Ctype <: FieldOptions_CType
+        Deprecated <: bool
+        Jstype <: FieldOptions_JSType
+        Lazy <: bool
+        Packed <: bool
+        UninterpretedOption <: sequence of UninterpretedOption
+        Weak <: bool
     !enum FieldOptions_CType:
         CORD: 1
         STRING: 0
@@ -330,22 +148,200 @@ protobuf:
         JS_NORMAL: 0
         JS_NUMBER: 2
         JS_STRING: 1
+    !type FileDescriptorProto:
+        @description =:
+            |// Describes a complete .proto file.
+        Dependency <: sequence of string
+        EnumType <: sequence of EnumDescriptorProto
+        Extension <: sequence of FieldDescriptorProto
+        MessageType <: sequence of DescriptorProto
+        Name <: string
+        Options <: FileOptions
+        Package <: string
+        PublicDependency <: sequence of int
+        Service <: sequence of ServiceDescriptorProto
+        SourceCodeInfo <: SourceCodeInfo
+        Syntax <: string
+        WeakDependency <: sequence of int
+    !type FileDescriptorSet:
+        @description =:
+            |// The protocol compiler can output a FileDescriptorSet containing the .proto
+            |// files it parses.
+        File <: sequence of FileDescriptorProto
+    !type FileOptions:
+        CcEnableArenas <: bool
+        CcGenericServices <: bool
+        CsharpNamespace <: string
+        Deprecated <: bool
+        GoPackage <: string
+        JavaGenerateEqualsAndHash <: bool
+        JavaGenericServices <: bool
+        JavaMultipleFiles <: bool
+        JavaOuterClassname <: string
+        JavaPackage <: string
+        JavaStringCheckUtf8 <: bool
+        ObjcClassPrefix <: string
+        OptimizeFor <: FileOptions_OptimizeMode
+        PhpClassPrefix <: string
+        PhpGenericServices <: bool
+        PhpMetadataNamespace <: string
+        PhpNamespace <: string
+        PyGenericServices <: bool
+        RubyPackage <: string
+        SwiftPrefix <: string
+        UninterpretedOption <: sequence of UninterpretedOption
     !enum FileOptions_OptimizeMode:
         CODE_SIZE: 2
         LITE_RUNTIME: 3
         SPEED: 1
+    !type GeneratedCodeInfo:
+        @description =:
+            |// Describes the relationship between generated code and its original source
+            |// file. A GeneratedCodeInfo message is associated with only one generated
+            |// source file, but may contain references to different source .proto files.
+        Annotation <: sequence of GeneratedCodeInfo_Annotation
+    !type GeneratedCodeInfo_Annotation:
+        Begin <: int
+        End <: int
+        Path <: sequence of int
+        SourceFile <: string
+    !type MessageOptions:
+        Deprecated <: bool
+        MapEntry <: bool
+        MessageSetWireFormat <: bool
+        NoStandardDescriptorAccessor <: bool
+        UninterpretedOption <: sequence of UninterpretedOption
+    !type MethodDescriptorProto:
+        @description =:
+            |// Describes a method of a service.
+        ClientStreaming <: bool
+        InputType <: string
+        Name <: string
+        Options <: MethodOptions
+        OutputType <: string
+        ServerStreaming <: bool
+    !type MethodOptions:
+        Deprecated <: bool
+        IdempotencyLevel <: MethodOptions_IdempotencyLevel
+        UninterpretedOption <: sequence of UninterpretedOption
     !enum MethodOptions_IdempotencyLevel:
         IDEMPOTENCY_UNKNOWN: 0
         IDEMPOTENT: 2
         NO_SIDE_EFFECTS: 1
+    !type OneofDescriptorProto:
+        @description =:
+            |// Describes a oneof.
+        Name <: string
+        Options <: OneofOptions
+    !type OneofOptions:
+        UninterpretedOption <: sequence of UninterpretedOption
+    !type ServiceDescriptorProto:
+        @description =:
+            |// Describes a service.
+        Method <: sequence of MethodDescriptorProto
+        Name <: string
+        Options <: ServiceOptions
+    !type ServiceOptions:
+        Deprecated <: bool
+        UninterpretedOption <: sequence of UninterpretedOption
+    !type SourceCodeInfo:
+        @description =:
+            |// Encapsulates information about the original source file from which a
+            |// FileDescriptorProto was generated.
+        Location <: sequence of SourceCodeInfo_Location
+    !type SourceCodeInfo_Location:
+        LeadingComments <: string
+        LeadingDetachedComments <: sequence of string
+        Path <: sequence of int
+        Span <: sequence of int
+        TrailingComments <: string
+    !type UninterpretedOption:
+        @description =:
+            |// A message representing a option the parser does not recognize. This only
+            |// appears in options protos created by the compiler::Parser class.
+            |// DescriptorPool resolves these when building Descriptor objects. Therefore,
+            |// options protos in descriptor objects (e.g. returned by Descriptor::options(),
+            |// or produced by Descriptor::CopyTo()) will never have UninterpretedOptions
+            |// in them.
+        AggregateValue <: string
+        DoubleValue <: float
+        IdentifierValue <: string
+        Name <: sequence of UninterpretedOption_NamePart
+        NegativeIntValue <: int
+        PositiveIntValue <: int
+        StringValue <: bytes
+    !type UninterpretedOption_NamePart:
+        @description =:
+            |// The name of the uninterpreted option.  Each string represents a segment in
+            |// a dot-separated name.  is_extension is true iff a segment represents an
+            |// extension (denoted with parentheses in options specs in .proto files).
+            |// E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
+            |// "foo.(bar.baz).qux".
+        IsExtension <: bool
+        NamePart <: string
 
-testing:
+test:
+    @package = "test"
+    !type EchoStatus:
+        @description =:
+            |// A protobuf representation for grpc status. This is used by test
+            |// clients to specify a status that the server should attempt to return.
+        Code <: int
+        Message <: string
     !enum GrpclbRouteType:
         GRPCLB_ROUTE_TYPE_BACKEND: 2
         GRPCLB_ROUTE_TYPE_FALLBACK: 1
         GRPCLB_ROUTE_TYPE_UNKNOWN: 0
+    !type Payload:
+        @description =:
+            |// A block of data, to simply increase gRPC message size.
+        Body <: bytes
+        Type <: PayloadType
     !enum PayloadType:
         COMPRESSABLE: 0
         RANDOM: 2
         UNCOMPRESSABLE: 1
+    !type ResponseParameters:
+        @description =:
+            |// Configuration for a particular response.
+        IntervalUs <: int
+        Size <: int
+    !type SimpleRequest:
+        @description =:
+            |// Unary request.
+        FillGrpclbRouteType <: bool
+        FillOauthScope <: bool
+        FillServerId <: bool
+        FillUsername <: bool
+        Payload <: Payload
+        ResponseSize <: int
+        ResponseStatus <: EchoStatus
+        ResponseType <: PayloadType
+    !type SimpleResponse:
+        @description =:
+            |// Unary response, as configured by the request.
+        GrpclbRouteType <: GrpclbRouteType
+        OauthScope <: string
+        Payload <: Payload
+        ServerId <: string
+        Username <: string
+    !type StreamingInputCallRequest:
+        @description =:
+            |// Client-streaming request.
+        Payload <: Payload
+    !type StreamingInputCallResponse:
+        @description =:
+            |// Client-streaming response.
+        AggregatedPayloadSize <: int
+    !type StreamingOutputCallRequest:
+        @description =:
+            |// Server-streaming request.
+        Payload <: Payload
+        ResponseParameters <: sequence of ResponseParameters
+        ResponseStatus <: EchoStatus
+        ResponseType <: PayloadType
+    !type StreamingOutputCallResponse:
+        @description =:
+            |// Server-streaming response, as configured by the request and parameters.
+        Payload <: Payload
 

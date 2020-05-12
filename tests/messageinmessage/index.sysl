@@ -1,13 +1,10 @@
 
-grpc_testing2:
-    @package = "grpc_testing2"
+messageinmessage:
     !type Foo:
-        Foobar <: .Request_Type
-        Qwerty <: .Type2
+        Foobar <: Request_Type
+        Qwerty <: Type2
     !type Request:
-        Bar <: .Request_Type
-
-testing2:
+        Bar <: Request_Type
     !enum Request_Type:
         ACCOUNT: 1
         CARD: 2

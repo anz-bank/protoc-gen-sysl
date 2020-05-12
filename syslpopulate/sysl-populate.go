@@ -130,11 +130,15 @@ func SyslSequenceFrom(fieldType, application string) *sysl.Type {
 
 // SyslStruct converts a string to a sysl struct type
 func SyslStruct(fieldType, application string) *sysl.Type {
+	var appName *sysl.AppName
+	if application != "" {
+		appName = NewAppName(application)
+	}
 	return &sysl.Type{
 		Type: &sysl.Type_TypeRef{
 			TypeRef: &sysl.ScopedRef{
 				Ref: &sysl.Scope{
-					Appname: NewAppName(application),
+					Appname: appName,
 					Path:    []string{fieldType},
 				},
 			},

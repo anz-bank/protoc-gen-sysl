@@ -1,17 +1,17 @@
 
 Bar:
     @description = ""
-    @package = "grpc_testing_what"
-    AnotherEndpoint(input <: .Date):
+    @package = "externaltype"
+    AnotherEndpoint(input <: externaltype.Date):
         ...
         @description = ""
 
 Car:
     @description = ""
-    @package = "grpc_testing_what"
-    AnotherEndpoint(input <: .This):
+    @package = "externaltype"
+    AnotherEndpoint(input <: externaltype.This):
         @description = ""
-        return ok <: .This_That
+        return ok <: externaltype.This_That
 
 empty:
     @package = "empty"
@@ -28,14 +28,14 @@ empty:
             |// The JSON representation for `Empty` is empty JSON object `{}`.
         ...
 
-grpc_testing_what:
-    @package = "grpc_testing_what"
+externaltype:
+    @package = "externaltype"
     !type Date:
-        Foobar <: .Timestamp
+        Foobar <: Timestamp
     !type Foo:
-        Foobar <: .Empty
+        Foobar <: Empty
     !type This:
-        Foobar <: .This_That
+        Foobar <: This_That
     !type This_That:
         Ohno <: string
 

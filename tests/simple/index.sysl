@@ -2,8 +2,8 @@
 Bar:
     @description =:
         |// This is a comment before Bar
-    @package = "whatever"
-    AnotherEndpoint(input <: whatever.Request):
+    @package = "simple"
+    AnotherEndpoint(input <: simple.Request):
         ...
         @description =:
             |// this is a comment before Bar.AnotherEndpoint
@@ -11,13 +11,13 @@ Bar:
 Foo:
     @description =:
         |// This is a comment before Foo
-    @package = "whatever"
-    ThisEndpoint(input <: whatever.Request):
+    @package = "simple"
+    ThisEndpoint(input <: simple.Request):
         ...
         @description = ""
 
-whatever:
-    @package = "whatever"
+simple:
+    @package = "simple"
     !type Money:
         Nanos <: int
         Units <: int

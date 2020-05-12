@@ -1,10 +1,6 @@
 package gensysl
 
 import (
-	"strings"
-
-	"google.golang.org/protobuf/types/descriptorpb"
-
 	"google.golang.org/protobuf/reflect/protoreflect"
 
 	"google.golang.org/protobuf/compiler/protogen"
@@ -17,30 +13,23 @@ import (
 func (p *PrinterModule) endpointFromMethod(m *protogen.Method) (*sysl.Endpoint, map[string]string) {
 	syslCalls := []*sysl.Statement{}
 	stringCalls := make(map[string]string)
-	this, ok := m.Desc.ParentFile().Options().(*descriptorpb.FileOptions)
-	if !ok {
-		panic(this)
-	}
-	application, _ := goPackageOption(this)
+	application, Name := p.messageToSysl(m.Input)
 	endpoint := syslpopulate.NewEndpoint(m.GoName)
-	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(p.messageToSysl(m.Input), application)}
+	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(Name, application)}
 	for _, out := range m.Output.Messages {
-		syslCalls = append(syslCalls, syslpopulate.NewReturn(application, p.messageToSysl(out)))
+		application, Name := p.messageToSysl(out)
+		syslCalls = append(syslCalls, syslpopulate.NewReturn(application, Name))
 	}
 	endpoint.Stmt = append(endpoint.Stmt, syslCalls...)
 	return endpoint, stringCalls
 }
 
 // messageToSysl converts a message to a sysl type
-func (p *PrinterModule) messageToSysl(m *protogen.Message) string {
+func (p *PrinterModule) messageToSysl(m *protogen.Message) (string, string) {
 	var fieldType string
-
-	if t := m.Desc; t != nil {
-		fieldType = m.GoIdent.GoName
-		fieldType = strings.ReplaceAll(fieldType, ".", "")
-		fieldType = syslpopulate.SanitiseTypeName(fieldType)
-	}
-	return fieldType
+	fieldType = m.GoIdent.GoName
+	application, _ := goPackageOptionRaw(string(m.GoIdent.GoImportPath))
+	return application, fieldType
 }
 
 // enumToSysl converts an Enum to a sysl enum
@@ -57,9 +46,14 @@ func enumToSysl(e *protogen.Enum) map[string]int64 {
 // fieldGoType returns the Go type used for a field.
 //
 // If it returns pointer=true, the struct field is a pointer to the type.
-func fieldGoType(field *protogen.Field) *sysl.Type {
+func fieldGoType(file *protogen.File, field *protogen.Field) *sysl.Type {
 	if field.Desc.IsWeak() {
 		return nil
+	}
+	application, _ := goPackageOptionRaw(string(field.GoIdent.GoImportPath))
+	currentApp, _ := goPackageOptionRaw(string(file.GoImportPath))
+	if application == currentApp {
+		application = ""
 	}
 	var t *sysl.Type
 	switch field.Desc.Kind() {
@@ -76,9 +70,9 @@ func fieldGoType(field *protogen.Field) *sysl.Type {
 	case protoreflect.BytesKind:
 		t = syslpopulate.SyslPrimitive(sysl.Type_BYTES)
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		t = syslpopulate.NewType(field.Message.GoIdent.GoName, "")
+		t = syslpopulate.NewType(field.Message.GoIdent.GoName, application)
 	case protoreflect.EnumKind:
-		t = syslpopulate.NewType(field.Enum.GoIdent.GoName, "")
+		t = syslpopulate.NewType(field.Enum.GoIdent.GoName, application)
 	}
 	switch {
 	case field.Desc.IsList():
