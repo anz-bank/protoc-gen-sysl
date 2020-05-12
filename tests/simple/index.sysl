@@ -3,7 +3,7 @@ Bar:
     @description =:
         |// This is a comment before Bar
     @package = "whatever"
-    AnotherEndpoint(input <: testing.):
+    AnotherEndpoint(input <: whatever.Request):
         ...
         @description =:
             |// this is a comment before Bar.AnotherEndpoint
@@ -12,13 +12,17 @@ Foo:
     @description =:
         |// This is a comment before Foo
     @package = "whatever"
-    ThisEndpoint(input <: testing.):
+    ThisEndpoint(input <: whatever.Request):
         ...
         @description = ""
 
-testing:
-    @package = "testing"
-    !type testing:
-        Nanos <: testing.nanos
-        Units <: testing.units
+whatever:
+    @package = "whatever"
+    !type Money:
+        Nanos <: int
+        Units <: int
+    !type Request:
+        Query <: string
+    !type Response:
+        Query <: string
 

@@ -28,12 +28,5 @@ func main() {
 	)
 	protogen.Options{
 		ParamFunc: flags.Set,
-	}.Run(func(gen *protogen.Plugin) error {
-		for _, f := range gen.Files {
-			if f.Generate {
-				gensysl.GenerateFile(gen, f)
-			}
-		}
-		return nil
-	})
+	}.Run(gensysl.GenerateFiles)
 }

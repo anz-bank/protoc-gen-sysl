@@ -20,8 +20,6 @@ package grpc.testing;
 
 import "google/protobuf/descriptor.proto";
 
-import "sysloption/sysloption.proto";
-
 extend google.protobuf.ServiceOptions {
     sint64 service_opt1 = 7887650;
 }
@@ -173,9 +171,6 @@ service TestService {
 
     // One request followed by one response.
     // The server returns the client payload as-is.
-    rpc UnaryCall(SimpleRequest) returns (SimpleResponse){
-        option (sysl.calls) = {call: "StreamingOutputCallRequest.Foobar"};
-        }
 
     // One request followed by a sequence of responses (streamed download).
     // The server returns the payload with client desired type and sizes.

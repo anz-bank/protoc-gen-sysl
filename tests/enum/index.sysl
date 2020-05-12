@@ -1,18 +1,21 @@
 
 Bar:
     @description = ""
-    @package = "grpctesting"
-    AnotherEndpoint(input <: grpctesting.Request):
+    @package = "grpc_testing"
+    AnotherEndpoint(input <: .Request):
+        ...
         @description = ""
-        return ok <: grpctesting.Response
 
-grpctesting:
-    @package = "grpctesting"
+grpc_testing:
+    @package = "grpc_testing"
+    !type Request:
+        CurrencyCode <: .Currency
+        Query <: string
+    !type Response:
+        Query <: string
+
+testing:
     !enum Currency:
         AUD: 0
         USD: 1
-    !type Request:
-        currency_code <: grpctesting.Currency
-        query <: string
-    !type Response:
-        query <: string
+

@@ -7,15 +7,15 @@ import (
 )
 
 var TypeMapping = map[string]sysl.Type_Primitive{
-	"TYPE_BYTES":  sysl.Type_BYTES,
-	"TYPE_INT32":  sysl.Type_INT,
-	"TYPE_INT64":  sysl.Type_INT,
-	"TYPE_UINT32": sysl.Type_INT,
-	"TYPE_UINT64": sysl.Type_INT,
-	"TYPE_STRING": sysl.Type_STRING,
-	"TYPE_BOOL":   sysl.Type_BOOL,
-	"TYPE_DOUBLE": sysl.Type_FLOAT,
-	"TYPE_FLOAT":  sysl.Type_FLOAT,
+	"TYPE_BYTES": sysl.Type_BYTES,
+	"int32":      sysl.Type_INT,
+	"int64":      sysl.Type_INT,
+	"uint32":     sysl.Type_INT,
+	"uint64":     sysl.Type_INT,
+	"string":     sysl.Type_STRING,
+	"bool":       sysl.Type_BOOL,
+	"float64":    sysl.Type_FLOAT,
+	"TYPE_FLOAT": sysl.Type_FLOAT,
 }
 
 var specialMappings = map[string]string{"date": "date__", "Any": "Any__", "any": "any_"}
@@ -52,6 +52,9 @@ func NewAttribute(value string) *sysl.Attribute {
 
 // NewType Initialises a Sysl type from string
 func NewType(name, application string) *sysl.Type {
+	if strings.Contains(name, "sequence of") {
+		return SyslSequence(strings.ReplaceAll(name, "sequence of", ""), application)
+	}
 	if fieldType, ok := TypeMapping[name]; ok {
 		return SyslPrimitive(fieldType)
 	}
@@ -96,6 +99,31 @@ func SyslPrimitive(fieldType sysl.Type_Primitive) *sysl.Type {
 	return &sysl.Type{
 		Type: &sysl.Type_Primitive_{
 			Primitive: fieldType,
+		},
+	}
+}
+func Sequence(t *sysl.Type) *sysl.Type {
+	return &sysl.Type{
+		Type: &sysl.Type_Sequence{
+			Sequence: t,
+		},
+	}
+}
+
+// SyslPrimitive converts a string to a sysl primitive type (parameter must be in sysl type)
+func SyslSequence(fieldType, application string) *sysl.Type {
+	return &sysl.Type{
+		Type: &sysl.Type_Sequence{
+			Sequence: NewType(fieldType, application),
+		},
+	}
+}
+
+// SyslPrimitive converts a string to a sysl primitive type (parameter must be in sysl type)
+func SyslSequenceFrom(fieldType, application string) *sysl.Type {
+	return &sysl.Type{
+		Type: &sysl.Type_Sequence{
+			Sequence: NewType(fieldType, application),
 		},
 	}
 }

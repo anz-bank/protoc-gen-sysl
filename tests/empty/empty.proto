@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package grpc.testing;
+option go_package = "tests/empty;empty";
 
 import "tests/empty/type.proto";
 

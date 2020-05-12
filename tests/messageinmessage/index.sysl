@@ -1,8 +1,14 @@
 
-grpctesting2:
+grpc_testing2:
+    @package = "grpc_testing2"
+    !type Foo:
+        Foobar <: .Request_Type
+        Qwerty <: .Type2
     !type Request:
-        bar <: grpctesting2.Type
-    !enum Type:
+        Bar <: .Request_Type
+
+testing2:
+    !enum Request_Type:
         ACCOUNT: 1
         CARD: 2
         UNKNOWN: 0
@@ -10,6 +16,4 @@ grpctesting2:
         ACCOUNT: 1
         CARD: 2
         UNKNOWN: 0
-    !type foo:
-        foobar <: grpctesting2.Type
-        qwerty <: grpctesting2.Type2
+

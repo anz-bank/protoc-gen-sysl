@@ -2,7 +2,12 @@ package gensysl
 
 import (
 	"bytes"
+	"go/token"
 	"strings"
+	"unicode"
+	"unicode/utf8"
+
+	"google.golang.org/protobuf/types/descriptorpb"
 
 	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
 	"github.com/anz-bank/sysl/pkg/printer"
@@ -22,19 +27,22 @@ func syslPackageName(m string) string {
 }
 
 // GenerateFile generates the contents of a .pb.go file.
-func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile {
+func GenerateFiles(gen *protogen.Plugin) error {
 	filename := "index.sysl"
-	g := gen.NewGeneratedFile(filename, file.GoImportPath)
-
+	var buf bytes.Buffer
+	g := gen.NewGeneratedFile(filename, gen.Files[0].GoImportPath)
 	p := &PrinterModule{
 		Log:    logrus.New(),
 		Module: &sysl.Module{Apps: make(map[string]*sysl.Application)},
 	}
-	p.VisitFile(file)
-	var buf bytes.Buffer
+	for _, file := range gen.Files {
+		if err := p.VisitFile(file); err != nil {
+			return err
+		}
+	}
 	printer.Module(&buf, p.Module)
 	g.P(buf.String())
-	return g
+	return nil
 }
 
 func (p *PrinterModule) VisitFile(file *protogen.File) (err error) {
@@ -99,10 +107,9 @@ func (p *PrinterModule) VisitMethod(s *protogen.Service, m *protogen.Method) (er
 // message foo{...} --> !type foo:
 func (p *PrinterModule) VisitMessage(m *protogen.Message) error {
 	var fieldName string
-	var syslType *sysl.Type
 	pattenAttributes := make(map[string]*sysl.Attribute)
 	attrDefs := make(map[string]*sysl.Type)
-	packageName := syslPackageName(string(m.Desc.Parent().ParentFile().Package().Name()))
+	packageName := syslPackageName(p.PackageName)
 	if len(m.Fields) == 0 {
 		pattenAttributes["patterns"] = &sysl.Attribute{Attribute: &sysl.Attribute_A{A: &sysl.Attribute_Array{
 			Elt: []*sysl.Attribute{&sysl.Attribute{
@@ -117,9 +124,8 @@ func (p *PrinterModule) VisitMessage(m *protogen.Message) error {
 		pattenAttributes["description"] = syslpopulate.NewAttribute(description)
 	}
 	for _, e := range m.Fields {
-		fieldName, syslType = p.fieldToSysl(e)
-		fieldName = syslpopulate.SanitiseTypeName(fieldName)
-		attrDefs[fieldName] = syslType
+		fieldName = e.GoName
+		attrDefs[fieldName] = fieldGoType(e)
 	}
 	for _, e := range m.Messages {
 		if err := p.VisitMessage(e); err != nil {
@@ -146,46 +152,6 @@ func (p *PrinterModule) VisitMessage(m *protogen.Message) error {
 		},
 	}
 	return nil
-}
-
-// fieldToString converts a field type to a string and returns name and type respectively
-func (p *PrinterModule) fieldToSysl(f *protogen.Field) (string, *sysl.Type) {
-	var fieldName, fieldType string
-	application := syslPackageName(string(f.Desc.Parent().ParentFile().Package().Name()))
-	fieldName = f.GoName
-	if t := f.Desc; t != nil && t.Name() != "" {
-		if arr := NoEmptyStrings(strings.Split(string(t.Name()), ".")); len(arr) > 1 {
-
-			// This is some wack logic to process messages and enums that are defined in other messages
-			fieldType = arr[len(arr)-1]
-			remove := strings.ReplaceAll(string(f.Message.Desc.FullName()), string(f.Message.Desc.Parent().Name()), "")
-			remove = strings.ReplaceAll(remove, ".", "")
-			application = strings.ReplaceAll(strings.Join(arr[:len(arr)-1], ""), remove, "")
-			if enum := f.Enum; enum != nil {
-				remove = strings.ReplaceAll(string(enum.Desc.Name()), string(f.Message.Desc.Parent().Name()), "")
-				remove = strings.ReplaceAll(remove, fieldType, "")
-				remove = strings.ReplaceAll(remove, ".", "")
-
-				application = strings.ReplaceAll(application, remove, "")
-
-			}
-		} else {
-			fieldType = strings.ReplaceAll(string(t.Name()), application, "")
-			fieldType = strings.ReplaceAll(fieldType, ".", "")
-		}
-	} else {
-		//fieldType = f.
-
-	}
-	fieldType = syslpopulate.SanitiseTypeName(fieldType)
-	if f.Desc.IsList() {
-		return fieldName, &sysl.Type{
-			Type: &sysl.Type_Sequence{
-				Sequence: syslpopulate.NewType(fieldType, application),
-			},
-		}
-	}
-	return fieldName, syslpopulate.NewType(fieldType, application)
 }
 
 func NoEmptyStrings(in []string) []string {
@@ -215,4 +181,61 @@ func (p *PrinterModule) VisitEnum(e *protogen.Enum) error {
 		},
 	}
 	return nil
+}
+
+// goPackageOption interprets a file's go_package option.
+// If there is no go_package, it returns ("", "").
+// If there's a simple name, it returns (pkg, "").
+// If the option implies an import path, it returns (pkg, impPath).
+//type GetOptions interface {
+//	GetOptions() *descriptorpb.FileOptions
+//}
+
+func goPackageOption(optDesc *descriptorpb.FileOptions) (pkg string, impPath string) {
+	opt := optDesc.GetGoPackage()
+	if opt == "" {
+		return "", ""
+	}
+	rawPkg, impPath := goPackageOptionRaw(opt)
+	pkg = cleanPackageName(rawPkg)
+	if string(pkg) != rawPkg && impPath != "" {
+
+	}
+	return pkg, impPath
+}
+func goPackageOptionRaw(opt string) (rawPkg string, impPath string) {
+	// A semicolon-delimited suffix delimits the import path and package name.
+	if i := strings.Index(opt, ";"); i >= 0 {
+		return opt[i+1:], string(opt[:i])
+	}
+	// The presence of a slash implies there's an import path.
+	if i := strings.LastIndex(opt, "/"); i >= 0 {
+		return opt[i+1:], string(opt)
+	}
+	return opt, ""
+}
+
+// cleanPackageName converts a string to a valid Go package name.
+func cleanPackageName(name string) string {
+	return string(GoSanitized(name))
+}
+
+// GoSanitized converts a string to a valid Go identifier.
+func GoSanitized(s string) string {
+	// Sanitize the input to the set of valid characters,
+	// which must be '_' or be in the Unicode L or N categories.
+	s = strings.Map(func(r rune) rune {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) {
+			return r
+		}
+		return '_'
+	}, s)
+
+	// Prepend '_' in the event of a Go keyword conflict or if
+	// the identifier is invalid (does not start in the Unicode L category).
+	r, _ := utf8.DecodeRuneInString(s)
+	if token.Lookup(s).IsKeyword() || !unicode.IsLetter(r) {
+		return "_" + s
+	}
+	return s
 }

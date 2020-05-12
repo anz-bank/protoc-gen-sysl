@@ -25,17 +25,17 @@ import (
 
 var tests = []string{
 	"simple/",
-	//"empty/",
-	//"any/",
-	//"repeated/",
-	//"messageinmessage/",
-	//"externaltype/",
-	//"test",
-	//"multiplefiles/",
-	//"otheroption/",
-	//"enum/",
-	//"disconnectedimport/",
-	//"date/",
+	"empty/",
+	"any/",
+	"repeated/",
+	"messageinmessage/",
+	"externaltype/",
+	"test",
+	"multiplefiles/",
+	"otheroption/",
+	"enum/",
+	"disconnectedimport/",
+	"date/",
 }
 
 const testDir = "./tests"
@@ -68,15 +68,7 @@ func ConvertSyslToProto(filename string) (*pluginpb.CodeGeneratorResponse, error
 		flags flag.FlagSet
 	)
 	res := &bytes.Buffer{}
-	run(protogen.Options{ParamFunc: flags.Set}, req, res,
-		func(gen *protogen.Plugin) error {
-			for _, f := range gen.Files {
-				if f.Generate {
-					gensysl.GenerateFile(gen, f)
-				}
-			}
-			return nil
-		})
+	run(protogen.Options{ParamFunc: flags.Set}, req, res, gensysl.GenerateFiles)
 	response := &pluginpb.CodeGeneratorResponse{}
 	err = proto.Unmarshal(res.Bytes(), response)
 	if err != nil {
