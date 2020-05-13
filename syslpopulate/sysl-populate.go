@@ -7,15 +7,15 @@ import (
 )
 
 var TypeMapping = map[string]sysl.Type_Primitive{
-	"TYPE_BYTES": sysl.Type_BYTES,
-	"int32":      sysl.Type_INT,
-	"int64":      sysl.Type_INT,
-	"uint32":     sysl.Type_INT,
-	"uint64":     sysl.Type_INT,
-	"string":     sysl.Type_STRING,
-	"bool":       sysl.Type_BOOL,
-	"float64":    sysl.Type_FLOAT,
-	"TYPE_FLOAT": sysl.Type_FLOAT,
+	"bytes":   sysl.Type_BYTES,
+	"int32":   sysl.Type_INT,
+	"int64":   sysl.Type_INT,
+	"uint32":  sysl.Type_INT,
+	"uint64":  sysl.Type_INT,
+	"string":  sysl.Type_STRING,
+	"bool":    sysl.Type_BOOL,
+	"float64": sysl.Type_FLOAT,
+	"float":   sysl.Type_FLOAT,
 }
 
 var specialMappings = map[string]string{"date": "date__", "Any": "Any__", "any": "any_"}
@@ -150,12 +150,15 @@ func SyslStruct(fieldType, application string) *sysl.Type {
 func SanitiseTypeName(name string) string {
 	parts := strings.Split(name, ".")
 	typeName := parts[len(parts)-1]
-	if _, ok := specialMappings[typeName]; ok {
-		typeName = specialMappings[name]
+	if _, ok := specialMappings[strings.ToLower(typeName)]; ok {
+		typeName = specialMappings[strings.ToLower(typeName)]
 		if len(parts) > 1 {
 			typeName = parts[0] + typeName
 		}
 		return typeName
+	}
+	if _, ok := TypeMapping[strings.ToLower(typeName)]; ok {
+		return typeName + "_"
 	}
 	return name
 }

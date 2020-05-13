@@ -4,17 +4,17 @@ Bar:
         |// This is a comment before Bar
     @package = "simple"
     AnotherEndpoint(input <: simple.Request):
-        ...
         @description =:
             |// this is a comment before Bar.AnotherEndpoint
+        return ok <: simple.Response
 
 Foo:
     @description =:
         |// This is a comment before Foo
     @package = "simple"
     ThisEndpoint(input <: simple.Request):
-        ...
         @description = ""
+        return ok <: simple.Response
 
 simple:
     @package = "simple"

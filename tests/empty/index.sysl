@@ -3,8 +3,8 @@ Bar:
     @description = ""
     @package = "empty"
     AnotherEndpoint(input <: empty.Response):
-        ...
         @description = ""
+        return ok <: empty.Response
 
 empty:
     @package = "empty"

@@ -3,8 +3,8 @@ Bar:
     @description = ""
     @package = "otheroption"
     AnotherEndpoint(input <: otheroption.Request):
-        ...
         @description = ""
+        return ok <: otheroption.Response
 
 otheroption:
     @package = "otheroption"

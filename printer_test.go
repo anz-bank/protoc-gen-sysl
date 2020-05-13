@@ -24,13 +24,13 @@ import (
 )
 
 var tests = []string{
-	"disconnectedimport/",
-	"any/",
+	"externaltype/",
+	//"disconnectedimport/",
+	//"any/",
 	//"simple/",
 	//"empty/",
 	//"repeated/",
 	//"messageinmessage/",
-	//"externaltype/",
 	//"test",
 	//"multiplefiles/",
 	//"otheroption/",

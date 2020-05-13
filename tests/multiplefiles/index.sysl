@@ -3,15 +3,15 @@ Bar:
     @description = ""
     @package = "multiplefiles"
     AnotherEndpoint(input <: multiplefiles.Request):
-        ...
         @description = ""
+        return ok <: multiplefiles.Response
 
 multiplefiles:
     !enum Currency:
         AUD: 0
         USD: 1
     !type Request:
-        CurrencyCode <: Currency
+        CurrencyCode <: tests/multiplefiles.Currency
         Query <: string
     !type Response:
         Query <: string

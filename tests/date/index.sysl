@@ -2,12 +2,12 @@
 Bar:
     @description = ""
     @package = "date"
-    AnotherEndpoint(input <: date.Date):
-        ...
+    AnotherEndpoint(input <: date.date__):
         @description = ""
+        return ok <: date__.date__
 
-date:
-    @package = "date"
-    !type Date:
+date__:
+    @package = "date__"
+    !type date__:
         This <: string
 

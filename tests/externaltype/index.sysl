@@ -2,16 +2,16 @@
 Bar:
     @description = ""
     @package = "externaltype"
-    AnotherEndpoint(input <: externaltype.Date):
-        ...
+    AnotherEndpoint(input <: externaltype.date__):
         @description = ""
+        return ok <: externaltype.date__
 
 Car:
     @description = ""
     @package = "externaltype"
     AnotherEndpoint(input <: externaltype.This):
         @description = ""
-        return ok <: externaltype.This_That
+        return ok <: externaltype.This
 
 empty:
     @package = "empty"
@@ -30,14 +30,14 @@ empty:
 
 externaltype:
     @package = "externaltype"
-    !type Date:
-        Foobar <: Timestamp
     !type Foo:
-        Foobar <: Empty
+        Foobar <: empty.Empty
     !type This:
         Foobar <: This_That
     !type This_That:
         Ohno <: string
+    !type date__:
+        Foobar <: timestamp.Timestamp
 
 timestamp:
     @package = "timestamp"

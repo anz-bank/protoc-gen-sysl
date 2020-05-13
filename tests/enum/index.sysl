@@ -3,8 +3,8 @@ Bar:
     @description = ""
     @package = "enum"
     AnotherEndpoint(input <: enum.Request):
-        ...
         @description = ""
+        return ok <: enum.Response
 
 enum:
     @package = "enum"
@@ -12,7 +12,7 @@ enum:
         AUD: 0
         USD: 1
     !type Request:
-        CurrencyCode <: Currency
+        CurrencyCode <: tests/enum.Currency
         Query <: string
     !type Response:
         Query <: string

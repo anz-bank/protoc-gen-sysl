@@ -3,12 +3,14 @@ Bar:
     @description = ""
     @package = "any"
     AnotherEndpoint(input <: any.This):
-        ...
         @description = ""
+        return ok <: any_.This
 
-any:
-    @package = "any"
-    !type Any__:
+any_:
+    @package = "any_"
+    !type This:
+        GrpcRequest <: any.any_
+    !type any_:
         @description =:
             |// `Any` contains an arbitrary serialized protocol buffer message along with a
             |// URL that describes the type of the serialized message.
@@ -92,6 +94,4 @@ any:
             |//
         TypeUrl <: string
         Value <: bytes
-    !type This:
-        GrpcRequest <: Any
 

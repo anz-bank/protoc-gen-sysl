@@ -3,8 +3,8 @@ Foo:
     @description = ""
     @package = "test"
     Foobar(input <: test.StreamingOutputCallRequest):
-        ...
         @description = ""
+        return ok <: test.StreamingOutputCallResponse
 
 TestService:
     @description =:
@@ -14,28 +14,28 @@ TestService:
         |//    rpc EmptyCall(Empty) returns (Empty);
     @package = "test"
     FullDuplexCall(input <: test.StreamingOutputCallRequest):
-        ...
         @description =:
             |// A sequence of requests with each request served by the server immediately.
             |// As one request could lead to multiple responses, this interface
             |// demonstrates the idea of full duplexing.
+        return ok <: test.StreamingOutputCallResponse
     HalfDuplexCall(input <: test.StreamingOutputCallRequest):
-        ...
         @description =:
             |// A sequence of requests followed by a sequence of responses.
             |// The server buffers all the client requests and then serves them in order. A
             |// stream of responses are returned to the client when the server starts with
             |// first request.
+        return ok <: test.StreamingOutputCallResponse
     StreamingInputCall(input <: test.StreamingInputCallRequest):
-        ...
         @description =:
             |// A sequence of requests followed by one response (streamed upload).
             |// The server returns the aggregated size of client payload as the result.
+        return ok <: test.StreamingInputCallResponse
     StreamingOutputCall(input <: test.StreamingOutputCallRequest):
-        ...
         @description =:
             |// One request followed by a sequence of responses (streamed download).
             |// The server returns the payload with client desired type and sizes.
+        return ok <: test.StreamingOutputCallResponse
 
 descriptor:
     @package = "descriptor"
@@ -102,12 +102,12 @@ descriptor:
         DefaultValue <: string
         Extendee <: string
         JsonName <: string
-        Label <: FieldDescriptorProto_Label
+        Label <: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldDescriptorProto_Label
         Name <: string
         Number <: int
         OneofIndex <: int
         Options <: FieldOptions
-        Type <: FieldDescriptorProto_Type
+        Type <: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldDescriptorProto_Type
         TypeName <: string
     !enum FieldDescriptorProto_Label:
         LABEL_OPTIONAL: 1
@@ -133,16 +133,16 @@ descriptor:
         TYPE_UINT32: 13
         TYPE_UINT64: 4
     !type FieldOptions:
-        Ctype <: FieldOptions_CType
+        Ctype <: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldOptions_CType
         Deprecated <: bool
-        Jstype <: FieldOptions_JSType
+        Jstype <: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldOptions_JSType
         Lazy <: bool
         Packed <: bool
         UninterpretedOption <: sequence of UninterpretedOption
         Weak <: bool
     !enum FieldOptions_CType:
         CORD: 1
-        STRING: 0
+        STRING_: 0
         STRING_PIECE: 2
     !enum FieldOptions_JSType:
         JS_NORMAL: 0
@@ -181,7 +181,7 @@ descriptor:
         JavaPackage <: string
         JavaStringCheckUtf8 <: bool
         ObjcClassPrefix <: string
-        OptimizeFor <: FileOptions_OptimizeMode
+        OptimizeFor <: github.com/golang/protobuf/protoc-gen-go/descriptor.FileOptions_OptimizeMode
         PhpClassPrefix <: string
         PhpGenericServices <: bool
         PhpMetadataNamespace <: string
@@ -222,7 +222,7 @@ descriptor:
         ServerStreaming <: bool
     !type MethodOptions:
         Deprecated <: bool
-        IdempotencyLevel <: MethodOptions_IdempotencyLevel
+        IdempotencyLevel <: github.com/golang/protobuf/protoc-gen-go/descriptor.MethodOptions_IdempotencyLevel
         UninterpretedOption <: sequence of UninterpretedOption
     !enum MethodOptions_IdempotencyLevel:
         IDEMPOTENCY_UNKNOWN: 0
@@ -296,7 +296,7 @@ test:
         @description =:
             |// A block of data, to simply increase gRPC message size.
         Body <: bytes
-        Type <: PayloadType
+        Type <: tests/test.PayloadType
     !enum PayloadType:
         COMPRESSABLE: 0
         RANDOM: 2
@@ -316,11 +316,11 @@ test:
         Payload <: Payload
         ResponseSize <: int
         ResponseStatus <: EchoStatus
-        ResponseType <: PayloadType
+        ResponseType <: tests/test.PayloadType
     !type SimpleResponse:
         @description =:
             |// Unary response, as configured by the request.
-        GrpclbRouteType <: GrpclbRouteType
+        GrpclbRouteType <: tests/test.GrpclbRouteType
         OauthScope <: string
         Payload <: Payload
         ServerId <: string
@@ -339,7 +339,7 @@ test:
         Payload <: Payload
         ResponseParameters <: sequence of ResponseParameters
         ResponseStatus <: EchoStatus
-        ResponseType <: PayloadType
+        ResponseType <: tests/test.PayloadType
     !type StreamingOutputCallResponse:
         @description =:
             |// Server-streaming response, as configured by the request and parameters.

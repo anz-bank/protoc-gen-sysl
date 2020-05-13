@@ -16,18 +16,17 @@ func (p *PrinterModule) endpointFromMethod(m *protogen.Method) (*sysl.Endpoint, 
 	application, Name := p.messageToSysl(m.Input)
 	endpoint := syslpopulate.NewEndpoint(m.GoName)
 	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(Name, application)}
-	for _, out := range m.Output.Messages {
-		application, Name := p.messageToSysl(out)
-		syslCalls = append(syslCalls, syslpopulate.NewReturn(application, Name))
-	}
+	application, Name = p.messageToSysl(m.Output)
+	syslCalls = append(syslCalls, syslpopulate.NewReturn(application, Name))
 	endpoint.Stmt = append(endpoint.Stmt, syslCalls...)
+
 	return endpoint, stringCalls
 }
 
 // messageToSysl converts a message to a sysl type
 func (p *PrinterModule) messageToSysl(m *protogen.Message) (string, string) {
 	var fieldType string
-	fieldType = m.GoIdent.GoName
+	fieldType = syslpopulate.SanitiseTypeName(m.GoIdent.GoName)
 	application, _ := goPackageOptionRaw(string(m.GoIdent.GoImportPath))
 	return application, fieldType
 }
@@ -37,7 +36,7 @@ func enumToSysl(e *protogen.Enum) map[string]int64 {
 	values := make(map[string]int64)
 	if t := e.Values; t != nil {
 		for _, val := range t {
-			values[string(val.Desc.Name())] = int64(val.Desc.Number())
+			values[syslpopulate.SanitiseTypeName(string(val.Desc.Name()))] = int64(val.Desc.Number())
 		}
 	}
 	return values
@@ -46,12 +45,14 @@ func enumToSysl(e *protogen.Enum) map[string]int64 {
 // fieldGoType returns the Go type used for a field.
 //
 // If it returns pointer=true, the struct field is a pointer to the type.
-func fieldGoType(file *protogen.File, field *protogen.Field) *sysl.Type {
+func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	if field.Desc.IsWeak() {
 		return nil
 	}
-	application, _ := goPackageOptionRaw(string(field.GoIdent.GoImportPath))
-	currentApp, _ := goPackageOptionRaw(string(file.GoImportPath))
+	application := string(field.GoIdent.GoImportPath)
+	if field.Message != nil {
+		application, _ = goPackageOptionRaw(string(field.Message.GoIdent.GoImportPath))
+	}
 	if application == currentApp {
 		application = ""
 	}
@@ -70,9 +71,9 @@ func fieldGoType(file *protogen.File, field *protogen.Field) *sysl.Type {
 	case protoreflect.BytesKind:
 		t = syslpopulate.SyslPrimitive(sysl.Type_BYTES)
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		t = syslpopulate.NewType(field.Message.GoIdent.GoName, application)
+		t = syslpopulate.NewType(syslpopulate.SanitiseTypeName(field.Message.GoIdent.GoName), application)
 	case protoreflect.EnumKind:
-		t = syslpopulate.NewType(field.Enum.GoIdent.GoName, application)
+		t = syslpopulate.NewType(syslpopulate.SanitiseTypeName(field.Enum.GoIdent.GoName), application)
 	}
 	switch {
 	case field.Desc.IsList():
