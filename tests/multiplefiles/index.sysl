@@ -11,7 +11,7 @@ multiplefiles:
         AUD: 0
         USD: 1
     !type Request:
-        CurrencyCode <: tests/multiplefiles.Currency
+        CurrencyCode <: Currency
         Query <: string
     !type Response:
         Query <: string

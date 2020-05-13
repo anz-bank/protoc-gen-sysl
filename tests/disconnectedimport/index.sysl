@@ -11,7 +11,7 @@ disconnectedimport:
         AUD: 0
         USD: 1
     !type Request:
-        CurrencyCode <: tests/disconnectedimport.Currency
+        CurrencyCode <: Currency
         Query <: string
     !type Response:
         Query <: string

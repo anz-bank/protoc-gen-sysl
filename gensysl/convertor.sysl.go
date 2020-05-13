@@ -49,7 +49,7 @@ func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	if field.Desc.IsWeak() {
 		return nil
 	}
-	application := string(field.GoIdent.GoImportPath)
+	application, _ := goPackageOptionRaw(string(field.GoIdent.GoImportPath))
 	if field.Message != nil {
 		application, _ = goPackageOptionRaw(string(field.Message.GoIdent.GoImportPath))
 	}

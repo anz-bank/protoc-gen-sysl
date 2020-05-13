@@ -1,10 +1,10 @@
 
 messageinmessage:
     !type Foo:
-        Foobar <: tests/messageinmessage.Request_Type
-        Qwerty <: tests/messageinmessage.Type2
+        Foobar <: Request_Type
+        Qwerty <: Type2
     !type Request:
-        Bar <: tests/messageinmessage.Request_Type
+        Bar <: Request_Type
     !enum Request_Type:
         ACCOUNT: 1
         CARD: 2

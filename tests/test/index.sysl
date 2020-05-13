@@ -102,12 +102,12 @@ descriptor:
         DefaultValue <: string
         Extendee <: string
         JsonName <: string
-        Label <: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldDescriptorProto_Label
+        Label <: FieldDescriptorProto_Label
         Name <: string
         Number <: int
         OneofIndex <: int
         Options <: FieldOptions
-        Type <: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldDescriptorProto_Type
+        Type <: FieldDescriptorProto_Type
         TypeName <: string
     !enum FieldDescriptorProto_Label:
         LABEL_OPTIONAL: 1
@@ -133,9 +133,9 @@ descriptor:
         TYPE_UINT32: 13
         TYPE_UINT64: 4
     !type FieldOptions:
-        Ctype <: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldOptions_CType
+        Ctype <: FieldOptions_CType
         Deprecated <: bool
-        Jstype <: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldOptions_JSType
+        Jstype <: FieldOptions_JSType
         Lazy <: bool
         Packed <: bool
         UninterpretedOption <: sequence of UninterpretedOption
@@ -181,7 +181,7 @@ descriptor:
         JavaPackage <: string
         JavaStringCheckUtf8 <: bool
         ObjcClassPrefix <: string
-        OptimizeFor <: github.com/golang/protobuf/protoc-gen-go/descriptor.FileOptions_OptimizeMode
+        OptimizeFor <: FileOptions_OptimizeMode
         PhpClassPrefix <: string
         PhpGenericServices <: bool
         PhpMetadataNamespace <: string
@@ -222,7 +222,7 @@ descriptor:
         ServerStreaming <: bool
     !type MethodOptions:
         Deprecated <: bool
-        IdempotencyLevel <: github.com/golang/protobuf/protoc-gen-go/descriptor.MethodOptions_IdempotencyLevel
+        IdempotencyLevel <: MethodOptions_IdempotencyLevel
         UninterpretedOption <: sequence of UninterpretedOption
     !enum MethodOptions_IdempotencyLevel:
         IDEMPOTENCY_UNKNOWN: 0
@@ -296,7 +296,7 @@ test:
         @description =:
             |// A block of data, to simply increase gRPC message size.
         Body <: bytes
-        Type <: tests/test.PayloadType
+        Type <: PayloadType
     !enum PayloadType:
         COMPRESSABLE: 0
         RANDOM: 2
@@ -316,11 +316,11 @@ test:
         Payload <: Payload
         ResponseSize <: int
         ResponseStatus <: EchoStatus
-        ResponseType <: tests/test.PayloadType
+        ResponseType <: PayloadType
     !type SimpleResponse:
         @description =:
             |// Unary response, as configured by the request.
-        GrpclbRouteType <: tests/test.GrpclbRouteType
+        GrpclbRouteType <: GrpclbRouteType
         OauthScope <: string
         Payload <: Payload
         ServerId <: string
@@ -339,7 +339,7 @@ test:
         Payload <: Payload
         ResponseParameters <: sequence of ResponseParameters
         ResponseStatus <: EchoStatus
-        ResponseType <: tests/test.PayloadType
+        ResponseType <: PayloadType
     !type StreamingOutputCallResponse:
         @description =:
             |// Server-streaming response, as configured by the request and parameters.
