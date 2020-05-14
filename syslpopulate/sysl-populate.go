@@ -39,6 +39,11 @@ func NewApplication(appName string) *sysl.Application {
 	}
 }
 
+// NewApplication Initialises a Sysl application
+func NewModule() *sysl.Module {
+	return &sysl.Module{Apps: map[string]*sysl.Application{}}
+}
+
 // NewEndpoint Initialises a Sysl Endpoint
 func NewEndpoint(name string) *sysl.Endpoint {
 	return &sysl.Endpoint{Name: name}

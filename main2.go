@@ -18,11 +18,6 @@ import (
 )
 
 func main() {
-	//if len(os.Args) == 2 && os.Args[1] == "--version" {
-	//	fmt.Fprintf(os.Stderr, "%v %v\n", filepath.Base(os.Args[0]))
-	//	os.Exit(1)
-	//}
-
 	var (
 		flags flag.FlagSet
 	)
