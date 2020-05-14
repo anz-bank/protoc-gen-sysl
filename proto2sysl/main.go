@@ -60,14 +60,16 @@ func (p *Converter) VisitFile(file *protogen.File) (err error) {
 // service myservice{...} --> myservice:
 func (p *Converter) VisitService(s *protogen.Service) error {
 	pkgName, name := descToSyslName(s.Desc)
-	p.Module.Apps[name] = syslpopulate.NewApplication(name)
-	p.Module.Apps[name].Attrs["package"] = syslpopulate.NewAttribute(pkgName)
-	p.Module.Apps[name].Attrs["description"] = syslpopulate.NewAttribute(s.Comments.Leading.String() + s.Comments.Trailing.String())
+	app := syslpopulate.NewApplication(name)
+
+	app.Attrs["package"] = syslpopulate.NewAttribute(pkgName)
+	app.Attrs["description"] = syslpopulate.NewAttribute(s.Comments.Leading.String() + s.Comments.Trailing.String())
 	for _, e := range s.Methods {
 		if err := p.VisitMethod(s, e); err != nil {
 			return err
 		}
 	}
+	p.Module.Apps[name] = app
 	return nil
 }
 
@@ -78,13 +80,21 @@ func (p *Converter) VisitService(s *protogen.Service) error {
 func (p *Converter) VisitMethod(s *protogen.Service, m *protogen.Method) error {
 	appName := string(m.Desc.Parent().Name())
 	endpointName := syslpopulate.SanitiseTypeName(string(m.Desc.Name()))
-	application, Name := descToSyslName(m.Input.Desc)
 	endpoint := syslpopulate.NewEndpoint(endpointName)
-	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(Name, application)}
-	application, Name = descToSyslName(m.Output.Desc)
-	endpoint.Stmt = []*sysl.Statement{syslpopulate.NewReturn(application, Name)}
+
+	// Apps types are stored in a sysl app which is the same as the package name
+	// Input
+	packageName, Name := descToSyslName(m.Input.Desc)
+	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(Name, packageName)}
+
+	// Output
+	packageName, Name = descToSyslName(m.Output.Desc)
+	endpoint.Stmt = []*sysl.Statement{syslpopulate.NewReturn(packageName, Name)}
+
+	// Attributes
 	endpoint.Attrs = make(map[string]*sysl.Attribute)
 	endpoint.Attrs["description"] = syslpopulate.NewAttribute(m.Comments.Leading.String() + m.Comments.Trailing.String())
+
 	p.Module.Apps[appName].Endpoints[endpointName] = endpoint
 	return nil
 }
@@ -97,9 +107,6 @@ func (p *Converter) VisitMessage(m *protogen.Message) error {
 	attrs := make(map[string]*sysl.Attribute)
 	attrDefs := make(map[string]*sysl.Type)
 	packageName, typeName := descToSyslName(m.Desc)
-	if len(m.Fields) == 0 {
-		attrs["patterns"] = syslpopulate.NewPattern("empty")
-	}
 
 	if description := m.Comments.Leading.String() + m.Comments.Trailing.String(); description != "" {
 		attrs["description"] = syslpopulate.NewAttribute(description)
@@ -108,18 +115,24 @@ func (p *Converter) VisitMessage(m *protogen.Message) error {
 		fieldName = syslpopulate.SanitiseTypeName(string(e.Desc.Name()))
 		attrDefs[fieldName] = fieldGoType(packageName, e)
 	}
+	// If there are no fields add ~empty pattern
+	if len(m.Fields) == 0 {
+		attrs["patterns"] = syslpopulate.NewPattern("empty")
+	}
+	// in proto messages can be defined within messages
 	for _, e := range m.Messages {
 		if err := p.VisitMessage(e); err != nil {
 			return err
 		}
 	}
+	// same with enums
 	for _, e := range m.Enums {
 		if err := p.VisitEnum(e); err != nil {
 			return err
 		}
 	}
+	// If this is the first service in the package, we need to make an app to store the types
 	if _, ok := p.Module.Apps[packageName]; !ok {
-		packageName = syslpopulate.SanitiseTypeName(packageName)
 		p.Module.Apps[packageName] = syslpopulate.NewApplication(packageName)
 		p.Module.Apps[packageName].Attrs["package"] = syslpopulate.NewAttribute(packageName)
 	}
