@@ -1,21 +1,24 @@
 
-messageinmessage:
+grpc_testing2:
+    @package = "grpc_testing2"
     !type Foo:
-        Foobar <: Request_Type:
+        Foobar <: grpc_testing2_foo.Request_Type:
             @json_tag = "foobar"
             @rpcId = "1"
-        Qwerty <: Type2:
+        Qwerty <: grpc_testing2_foo.Type2:
             @json_tag = "qwerty"
             @rpcId = "8"
     !type Request:
-        Bar <: Request_Type:
+        Bar <: grpc_testing2_Request.Request_Type:
             @json_tag = "bar"
             @rpcId = "9"
-    !enum Request_Type:
+    !enum Type2:
         ACCOUNT: 1
         CARD: 2
         UNKNOWN: 0
-    !enum Type2:
+
+grpc_testing2_Request:
+    !enum Type:
         ACCOUNT: 1
         CARD: 2
         UNKNOWN: 0

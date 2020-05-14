@@ -5,25 +5,14 @@ option go_package = "hello";
 package hello;
  
 message Request {
- string account_id = 3;
- string operation = 2;
- string user_id = 1;
+ string AccountId = 3;
+ string Operation = 2;
+ string UserId = 1;
 }
 
 message Response {
- string reason = 2;
- bool you_may = 1;
+ string Reason = 2;
+ bool YouMay = 1;
 }
  
  
- 
-
-service hello {
-  rpc Listme(Request) returns (Response) {}
- rpc Mayi(Request) returns (Response) {}
-}
- 
- 
-
- 
-

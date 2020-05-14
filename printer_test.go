@@ -24,6 +24,7 @@ import (
 )
 
 var tests = []string{
+	"any/",
 	"hello/",
 	"externaltype/",
 	"disconnectedimport/",

@@ -53,7 +53,8 @@ ci:				## Runs the same ci that is on master.
 grpc: sysl grpc
 # Build sysl into GRPC
 sysl: *.sysl
-	sysl tmpl --template grpc.sysl --app-name hello --start start --outdir tests/hello hello.sysl
+	sysl tmpl --template grpc.sysl --app-name hello --start start --outdir tests/hello tests/hello/index.sysl
+	sysl tmpl --template grpc.sysl --app-name Hello --start start --outdir tests/hello2 tests/hello/index.sysl
 # Execure proto to generate go code
 # grpc: *
 # 	protoc -I hello/ hello/hello.proto --go_out=plugins=grpc:hello

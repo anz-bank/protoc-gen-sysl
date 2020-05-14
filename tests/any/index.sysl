@@ -1,17 +1,13 @@
 
 Bar:
     @description = ""
-    @package = "any"
-    AnotherEndpoint(input <: any.This):
+    @package = "grpc_testing"
+    AnotherEndpoint(input <: grpc_testing.This):
         @description = ""
-        return ok <: any_.This
+        return ok <: grpc_testing.This
 
-any_:
-    @package = "any_"
-    !type This:
-        GrpcRequest <: any.any_:
-            @json_tag = "grpcRequest"
-            @rpcId = "1"
+googleany:
+    @package = "googleany"
     !type any_:
         @description =:
             |// `Any` contains an arbitrary serialized protocol buffer message along with a
@@ -100,4 +96,11 @@ any_:
         Value <: bytes:
             @json_tag = "value"
             @rpcId = "2"
+
+grpc_testing:
+    @package = "grpc_testing"
+    !type This:
+        GrpcRequest <: googleany.any_:
+            @json_tag = "grpcRequest"
+            @rpcId = "1"
 

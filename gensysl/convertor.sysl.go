@@ -11,25 +11,11 @@ import (
 	"github.com/anz-bank/sysl/pkg/sysl"
 )
 
-// EndpointFromMethod converts a pgs Method to a sysl endpoint and fills in call and return statments
-func (p *PrinterModule) endpointFromMethod(m *protogen.Method) (*sysl.Endpoint, map[string]string) {
-	syslCalls := []*sysl.Statement{}
-	stringCalls := make(map[string]string)
-	application, Name := p.messageToSysl(m.Input)
-	endpoint := syslpopulate.NewEndpoint(m.GoName)
-	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(Name, application)}
-	application, Name = p.messageToSysl(m.Output)
-	syslCalls = append(syslCalls, syslpopulate.NewReturn(application, Name))
-	endpoint.Stmt = append(endpoint.Stmt, syslCalls...)
-
-	return endpoint, stringCalls
-}
-
 // messageToSysl converts a message to a sysl type
 func (p *PrinterModule) messageToSysl(m *protogen.Message) (string, string) {
 	var fieldType string
-	fieldType = syslpopulate.SanitiseTypeName(m.GoIdent.GoName)
-	application, _ := goPackageOptionRaw(string(m.GoIdent.GoImportPath))
+	fieldType = syslpopulate.SanitiseTypeName(string(m.Desc.Name()))
+	application, _ := goPackageOptionRaw(string(m.Desc.FullName()), fieldType)
 	return application, fieldType
 }
 
@@ -45,15 +31,13 @@ func enumToSysl(e *protogen.Enum) map[string]int64 {
 }
 
 // fieldGoType returns the Go type used for a field.
-//
-// If it returns pointer=true, the struct field is a pointer to the type.
 func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	if field.Desc.IsWeak() {
 		return nil
 	}
-	application, _ := goPackageOptionRaw(string(field.GoIdent.GoImportPath))
+	application, _ := goPackageOptionRaw(string(field.Desc.FullName()), string(field.Desc.Name()))
 	if field.Message != nil {
-		application, _ = goPackageOptionRaw(string(field.Message.GoIdent.GoImportPath))
+		application, _ = goPackageOptionRaw(string(field.Message.Desc.FullName()), string(field.Desc.Name()))
 	}
 	if application == currentApp {
 		application = ""
@@ -77,6 +61,7 @@ func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	case protoreflect.EnumKind:
 		t = syslpopulate.NewType(syslpopulate.SanitiseTypeName(field.Enum.GoIdent.GoName), application)
 	}
+
 	t.Attrs = map[string]*sysl.Attribute{
 		"json_tag": syslpopulate.NewAttribute(field.Desc.JSONName()),
 		"rpcId":    syslpopulate.NewAttribute(strconv.Itoa(int(field.Desc.Number()))),

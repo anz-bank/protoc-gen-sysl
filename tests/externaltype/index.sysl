@@ -1,20 +1,20 @@
 
 Bar:
     @description = ""
-    @package = "externaltype"
-    AnotherEndpoint(input <: externaltype.date__):
+    @package = "grpc_testing_what"
+    AnotherEndpoint(input <: grpc.date__):
         @description = ""
-        return ok <: externaltype.date__
+        return ok <: grpc.date__
 
 Car:
     @description = ""
-    @package = "externaltype"
-    AnotherEndpoint(input <: externaltype.This):
+    @package = "grpc_testing_what"
+    AnotherEndpoint(input <: grpc_testing_what.this):
         @description = ""
-        return ok <: externaltype.This
+        return ok <: grpc_testing_what.this
 
-empty:
-    @package = "empty"
+google_protobuf:
+    @package = "google_protobuf"
     !type Empty[~empty]:
         @description =:
             |// A generic empty message that you can re-use to avoid defining duplicated
@@ -27,28 +27,6 @@ empty:
             |//
             |// The JSON representation for `Empty` is empty JSON object `{}`.
         ...
-
-externaltype:
-    @package = "externaltype"
-    !type Foo:
-        Foobar <: empty.Empty:
-            @json_tag = "foobar"
-            @rpcId = "1"
-    !type This:
-        Foobar <: This_That:
-            @json_tag = "foobar"
-            @rpcId = "1"
-    !type This_That:
-        Ohno <: string:
-            @json_tag = "ohno"
-            @rpcId = "1"
-    !type date__:
-        Foobar <: timestamp.Timestamp:
-            @json_tag = "foobar"
-            @rpcId = "1"
-
-timestamp:
-    @package = "timestamp"
     !type Timestamp:
         @description =:
             |// A Timestamp represents a point in time independent of any time zone or local
@@ -142,5 +120,30 @@ timestamp:
             @rpcId = "2"
         Seconds <: int:
             @json_tag = "seconds"
+            @rpcId = "1"
+
+grpc:
+    @package = "grpc"
+    !type date__:
+        Foobar <: google_protobuf_Timestamp.Timestamp:
+            @json_tag = "foobar"
+            @rpcId = "1"
+
+grpc_testing_what:
+    @package = "grpc_testing_what"
+    !type Foo:
+        Foobar <: google_protobuf_Empty.Empty:
+            @json_tag = "foobar"
+            @rpcId = "1"
+    !type This:
+        Foobar <: grpc_testing_what_this_That.This_That:
+            @json_tag = "foobar"
+            @rpcId = "1"
+
+grpc_testing_what_this:
+    @package = "grpc_testing_what_this"
+    !type This_That:
+        Ohno <: string:
+            @json_tag = "ohno"
             @rpcId = "1"
 

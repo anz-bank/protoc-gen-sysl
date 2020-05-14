@@ -2,22 +2,22 @@
 Bar:
     @description =:
         |// This is a comment before Bar
-    @package = "simple"
-    AnotherEndpoint(input <: simple.Request):
+    @package = "grpc_testing"
+    AnotherEndpoint(input <: grpc_testing.Request):
         @description =:
             |// this is a comment before Bar.AnotherEndpoint
-        return ok <: simple.Response
+        return ok <: grpc_testing.Response
 
 Foo:
     @description =:
         |// This is a comment before Foo
-    @package = "simple"
-    ThisEndpoint(input <: simple.Request):
+    @package = "grpc_testing"
+    ThisEndpoint(input <: grpc_testing.Request):
         @description = ""
-        return ok <: simple.Response
+        return ok <: grpc_testing.Response
 
-simple:
-    @package = "simple"
+grpc_testing:
+    @package = "grpc_testing"
     !type Money:
         Nanos <: int:
             @json_tag = "nanos"

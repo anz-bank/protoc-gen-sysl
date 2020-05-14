@@ -1,31 +1,21 @@
 
-Hello:
-    @description = ""
-    @package = "hello"
-    Listme(input <: hello.Request):
-        @description = ""
-        return ok <: hello.Response
-    Mayi(input <: hello.Request):
-        @description = ""
-        return ok <: hello.Response
-
 hello:
     @package = "hello"
     !type Request:
         AccountId <: string:
-            @json_tag = "accountId"
+            @json_tag = "AccountId"
             @rpcId = "3"
         Operation <: string:
-            @json_tag = "operation"
+            @json_tag = "Operation"
             @rpcId = "2"
         UserId <: string:
-            @json_tag = "userId"
+            @json_tag = "UserId"
             @rpcId = "1"
     !type Response:
         Reason <: string:
-            @json_tag = "reason"
+            @json_tag = "Reason"
             @rpcId = "2"
         YouMay <: bool:
-            @json_tag = "youMay"
+            @json_tag = "YouMay"
             @rpcId = "1"
 

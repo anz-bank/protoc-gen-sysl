@@ -7,10 +7,6 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"google.golang.org/protobuf/types/descriptorpb"
-
-	"google.golang.org/protobuf/reflect/protoreflect"
-
 	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
 	"github.com/anz-bank/sysl/pkg/printer"
 	"github.com/anz-bank/sysl/pkg/sysl"
@@ -21,10 +17,6 @@ import (
 type PrinterModule struct {
 	Log    *logrus.Logger
 	Module *sysl.Module
-}
-
-func syslPackageName(m string) string {
-	return strings.ReplaceAll(strings.ReplaceAll(m, ".", " "), " ", "")
 }
 
 // GenerateFile generates the contents of a .pb.go file.
@@ -70,7 +62,7 @@ func (p *PrinterModule) VisitFile(file *protogen.File) (err error) {
 func (p *PrinterModule) VisitService(file *protogen.File, s *protogen.Service) error {
 	name := syslpopulate.SanitiseTypeName(s.GoName)
 	p.Module.Apps[name] = syslpopulate.NewApplication(name)
-	pkgName, _ := goPackageOptionRaw(string(file.GoImportPath))
+	pkgName, _ := goPackageOptionRaw(string(file.Desc.FullName()))
 	p.Module.Apps[name].Attrs["package"] = syslpopulate.NewAttribute(pkgName)
 	p.Module.Apps[name].Attrs["description"] = syslpopulate.NewAttribute(s.Comments.Leading.String() + s.Comments.Trailing.String())
 	for _, e := range s.Methods {
@@ -86,21 +78,16 @@ func (p *PrinterModule) VisitService(file *protogen.File, s *protogen.Service) e
 // thisEndpoint(input <: InputType):
 //     return ok <: outputType
 func (p *PrinterModule) VisitMethod(s *protogen.Service, m *protogen.Method) (err error) {
-	//var Calls map[string]string
 	appName := syslpopulate.SanitiseTypeName(s.GoName)
 	endpointName := syslpopulate.SanitiseTypeName(m.GoName)
-	p.Module.Apps[appName].Endpoints[endpointName], _ = p.endpointFromMethod(m)
-	p.Module.Apps[appName].Endpoints[endpointName].Attrs = make(map[string]*sysl.Attribute)
-	p.Module.Apps[appName].Endpoints[endpointName].Attrs["description"] = syslpopulate.NewAttribute(m.Comments.Leading.String() + m.Comments.Trailing.String())
-	//for app_, endpoint := range Calls {
-	//	app := syslpopulate.SanitiseTypeName(app_)
-	//	if _, ok := p.Module.Apps[app]; !ok {
-	//		//p.Module.Apps[app] = syslpopulate.NewApplication(app)
-	//	}
-	//	if _, ok := p.Module.Apps[app].Endpoints[endpoint]; !ok {
-	//		p.Module.Apps[app].Endpoints[endpoint] = syslpopulate.NewEndpoint(endpoint)
-	//	}
-	//}
+	application, Name := p.messageToSysl(m.Input)
+	endpoint := syslpopulate.NewEndpoint(m.GoName)
+	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(Name, application)}
+	application, Name = p.messageToSysl(m.Output)
+	endpoint.Stmt = []*sysl.Statement{syslpopulate.NewReturn(application, Name)}
+	endpoint.Attrs = make(map[string]*sysl.Attribute)
+	endpoint.Attrs["description"] = syslpopulate.NewAttribute(m.Comments.Leading.String() + m.Comments.Trailing.String())
+	p.Module.Apps[appName].Endpoints[endpointName] = endpoint
 	return nil
 }
 
@@ -112,7 +99,7 @@ func (p *PrinterModule) VisitMessage(file *protogen.File, m *protogen.Message) e
 	var fieldName string
 	pattenAttributes := make(map[string]*sysl.Attribute)
 	attrDefs := make(map[string]*sysl.Type)
-	packageName, _ := goPackageOptionRaw(string(m.GoIdent.GoImportPath))
+	packageName, _ := goPackageOptionRaw(string(m.Desc.FullName()), string(m.Desc.Name()))
 	packageName = syslpopulate.SanitiseTypeName(packageName)
 	if len(m.Fields) == 0 {
 		pattenAttributes["patterns"] = &sysl.Attribute{Attribute: &sysl.Attribute_A{A: &sysl.Attribute_Array{
@@ -172,8 +159,8 @@ func NoEmptyStrings(in []string) []string {
 // Currently this sysl syntax is unsupported, but enums exist within the sysl data object
 // enum foo{...} --> !enum foo:
 func (p *PrinterModule) VisitEnum(e *protogen.Enum) error {
-	packageName, _ := goPackageOptionRaw(string(e.GoIdent.GoImportPath))
-	typeName := syslpopulate.SanitiseTypeName(e.GoIdent.GoName)
+	packageName, _ := goPackageOptionRaw(string(e.Desc.FullName()), string(e.Desc.Name()))
+	typeName := syslpopulate.SanitiseTypeName(string(e.Desc.Name()))
 	if _, ok := p.Module.Apps[packageName]; !ok {
 		p.Module.Apps[packageName] = syslpopulate.NewApplication(packageName)
 	}
@@ -195,32 +182,47 @@ func (p *PrinterModule) VisitEnum(e *protogen.Enum) error {
 //	GetOptions() *descriptorpb.FileOptions
 //}
 
-func goPackageOption(optDesc protoreflect.ProtoMessage) (pkg string, impPath string) {
-	fileOpt, ok := optDesc.(*descriptorpb.FileOptions)
-	if !ok || fileOpt == nil {
-		return
-	}
-	opt := *fileOpt.GoPackage
-	if opt == "" {
-		return "", ""
-	}
-	rawPkg, impPath := goPackageOptionRaw(opt)
-	pkg = cleanPackageName(rawPkg)
-	if string(pkg) != rawPkg && impPath != "" {
-
-	}
-	return pkg, impPath
-}
-func goPackageOptionRaw(opt string) (rawPkg string, impPath string) {
+//func goPackageOption(optDesc protoreflect.ProtoMessage) (pkg string, impPath string) {
+//	fileOpt, ok := optDesc.(*descriptorpb.FileOptions)
+//	if !ok || fileOpt == nil {
+//		return
+//	}
+//	opt := *fileOpt.GoPackage
+//	if opt == "" {
+//		return "", ""
+//	}
+//	rawPkg, impPath := goPackageOptionRaw(opt)
+//	pkg = cleanPackageName(rawPkg)
+//	if string(pkg) != rawPkg && impPath != "" {
+//
+//	}
+//	return pkg, impPath
+//}
+func goPackageOptionRaw(opt string, t ...string) (rawPkg string, impPath string) {
 	// A semicolon-delimited suffix delimits the import path and package name.
 	if i := strings.Index(opt, ";"); i >= 0 {
-		return opt[i+1:], string(opt[:i])
+		//return syslpopulate.SanitiseTypeName(opt[i+1:]), string(opt[:i])
+		rawPkg = opt[i+1:]
+		// The presence of a slash implies there's an import path.
+	} else if i := strings.LastIndex(opt, "/"); i >= 0 {
+		//return syslpopulate.SanitiseTypeName(opt[i+1:]), string(opt)
+		rawPkg = opt[i+1:]
+	} else {
+		rawPkg = opt
 	}
-	// The presence of a slash implies there's an import path.
-	if i := strings.LastIndex(opt, "/"); i >= 0 {
-		return opt[i+1:], string(opt)
+	rawPkg = syslpopulate.SanitiseTypeName(rawPkg)
+	rawPkg = strings.ReplaceAll(rawPkg, ".", "_")
+	for _, e := range t {
+		rawPkg = strings.ReplaceAll(rawPkg, e, "")
 	}
-	return syslpopulate.SanitiseTypeName(opt), ""
+	for i := len(rawPkg) - 1; i >= 0; i-- {
+		if rawPkg[i] == '_' {
+			rawPkg = rawPkg[0:i]
+		} else {
+			break
+		}
+	}
+	return rawPkg, ""
 }
 
 // cleanPackageName converts a string to a valid Go package name.

@@ -1,13 +1,13 @@
 
 Bar:
     @description = ""
-    @package = "empty"
-    AnotherEndpoint(input <: empty.Response):
+    @package = "grpc_testing"
+    AnotherEndpoint(input <: grpc_testing.Response):
         @description = ""
-        return ok <: empty.Response
+        return ok <: grpc_testing.Response
 
-empty:
-    @package = "empty"
+grpc_testing:
+    @package = "grpc_testing"
     !type Response[~empty]:
         @description =:
             |// Hello world
