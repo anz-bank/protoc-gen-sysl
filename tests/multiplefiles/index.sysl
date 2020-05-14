@@ -11,8 +11,14 @@ multiplefiles:
         AUD: 0
         USD: 1
     !type Request:
-        CurrencyCode <: Currency
-        Query <: string
+        CurrencyCode <: Currency:
+            @json_tag = "currencyCode"
+            @rpcId = "2"
+        Query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
     !type Response:
-        Query <: string
+        Query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
 

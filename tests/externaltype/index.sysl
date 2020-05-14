@@ -31,13 +31,21 @@ empty:
 externaltype:
     @package = "externaltype"
     !type Foo:
-        Foobar <: empty.Empty
+        Foobar <: empty.Empty:
+            @json_tag = "foobar"
+            @rpcId = "1"
     !type This:
-        Foobar <: This_That
+        Foobar <: This_That:
+            @json_tag = "foobar"
+            @rpcId = "1"
     !type This_That:
-        Ohno <: string
+        Ohno <: string:
+            @json_tag = "ohno"
+            @rpcId = "1"
     !type date__:
-        Foobar <: timestamp.Timestamp
+        Foobar <: timestamp.Timestamp:
+            @json_tag = "foobar"
+            @rpcId = "1"
 
 timestamp:
     @package = "timestamp"
@@ -129,6 +137,10 @@ timestamp:
             |// ) to obtain a formatter capable of generating timestamps in this format.
             |//
             |//
-        Nanos <: int
-        Seconds <: int
+        Nanos <: int:
+            @json_tag = "nanos"
+            @rpcId = "2"
+        Seconds <: int:
+            @json_tag = "seconds"
+            @rpcId = "1"
 

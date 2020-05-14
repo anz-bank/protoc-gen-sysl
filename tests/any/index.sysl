@@ -9,7 +9,9 @@ Bar:
 any_:
     @package = "any_"
     !type This:
-        GrpcRequest <: any.any_
+        GrpcRequest <: any.any_:
+            @json_tag = "grpcRequest"
+            @rpcId = "1"
     !type any_:
         @description =:
             |// `Any` contains an arbitrary serialized protocol buffer message along with a
@@ -92,6 +94,10 @@ any_:
             |//       "value": "1.212s"
             |//     }
             |//
-        TypeUrl <: string
-        Value <: bytes
+        TypeUrl <: string:
+            @json_tag = "typeUrl"
+            @rpcId = "1"
+        Value <: bytes:
+            @json_tag = "value"
+            @rpcId = "2"
 

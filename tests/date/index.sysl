@@ -9,5 +9,7 @@ Bar:
 date__:
     @package = "date__"
     !type date__:
-        This <: string
+        This <: string:
+            @json_tag = "this"
+            @rpcId = "1"
 

@@ -50,6 +50,12 @@ func NewAttribute(value string) *sysl.Attribute {
 	}
 }
 
+func NewIntAttribute(value int) *sysl.Attribute {
+	return &sysl.Attribute{
+		Attribute: &sysl.Attribute_I{I: int64(value)},
+	}
+}
+
 // NewType Initialises a Sysl type from string
 func NewType(name, application string) *sysl.Type {
 	if strings.Contains(name, "sequence of") {

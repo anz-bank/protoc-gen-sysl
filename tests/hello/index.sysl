@@ -12,10 +12,20 @@ Hello:
 hello:
     @package = "hello"
     !type Request:
-        AccountId <: string
-        Operation <: string
-        UserId <: string
+        AccountId <: string:
+            @json_tag = "accountId"
+            @rpcId = "3"
+        Operation <: string:
+            @json_tag = "operation"
+            @rpcId = "2"
+        UserId <: string:
+            @json_tag = "userId"
+            @rpcId = "1"
     !type Response:
-        Reason <: string
-        YouMay <: bool
+        Reason <: string:
+            @json_tag = "reason"
+            @rpcId = "2"
+        YouMay <: bool:
+            @json_tag = "youMay"
+            @rpcId = "1"
 

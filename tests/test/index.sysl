@@ -46,28 +46,46 @@ descriptor:
         Extension <: sequence of FieldDescriptorProto
         ExtensionRange <: sequence of DescriptorProto_ExtensionRange
         Field <: sequence of FieldDescriptorProto
-        Name <: string
+        Name <: string:
+            @json_tag = "name"
+            @rpcId = "1"
         NestedType <: sequence of DescriptorProto
         OneofDecl <: sequence of OneofDescriptorProto
-        Options <: MessageOptions
+        Options <: MessageOptions:
+            @json_tag = "options"
+            @rpcId = "7"
         ReservedName <: sequence of string
         ReservedRange <: sequence of DescriptorProto_ReservedRange
     !type DescriptorProto_ExtensionRange:
-        End <: int
-        Options <: ExtensionRangeOptions
-        Start <: int
+        End <: int:
+            @json_tag = "end"
+            @rpcId = "2"
+        Options <: ExtensionRangeOptions:
+            @json_tag = "options"
+            @rpcId = "3"
+        Start <: int:
+            @json_tag = "start"
+            @rpcId = "1"
     !type DescriptorProto_ReservedRange:
         @description =:
             |// Range of reserved tag numbers. Reserved tag numbers may not be used by
             |// fields or extension ranges in the same message. Reserved ranges may
             |// not overlap.
-        End <: int
-        Start <: int
+        End <: int:
+            @json_tag = "end"
+            @rpcId = "2"
+        Start <: int:
+            @json_tag = "start"
+            @rpcId = "1"
     !type EnumDescriptorProto:
         @description =:
             |// Describes an enum type.
-        Name <: string
-        Options <: EnumOptions
+        Name <: string:
+            @json_tag = "name"
+            @rpcId = "1"
+        Options <: EnumOptions:
+            @json_tag = "options"
+            @rpcId = "3"
         ReservedName <: sequence of string
         ReservedRange <: sequence of EnumDescriptorProto_EnumReservedRange
         Value <: sequence of EnumValueDescriptorProto
@@ -79,36 +97,72 @@ descriptor:
             |// Note that this is distinct from DescriptorProto.ReservedRange in that it
             |// is inclusive such that it can appropriately represent the entire int32
             |// domain.
-        End <: int
-        Start <: int
+        End <: int:
+            @json_tag = "end"
+            @rpcId = "2"
+        Start <: int:
+            @json_tag = "start"
+            @rpcId = "1"
     !type EnumOptions:
-        AllowAlias <: bool
-        Deprecated <: bool
+        AllowAlias <: bool:
+            @json_tag = "allowAlias"
+            @rpcId = "2"
+        Deprecated <: bool:
+            @json_tag = "deprecated"
+            @rpcId = "3"
         UninterpretedOption <: sequence of UninterpretedOption
     !type EnumValueDescriptorProto:
         @description =:
             |// Describes a value within an enum.
-        Name <: string
-        Number <: int
-        Options <: EnumValueOptions
+        Name <: string:
+            @json_tag = "name"
+            @rpcId = "1"
+        Number <: int:
+            @json_tag = "number"
+            @rpcId = "2"
+        Options <: EnumValueOptions:
+            @json_tag = "options"
+            @rpcId = "3"
     !type EnumValueOptions:
-        Deprecated <: bool
+        Deprecated <: bool:
+            @json_tag = "deprecated"
+            @rpcId = "1"
         UninterpretedOption <: sequence of UninterpretedOption
     !type ExtensionRangeOptions:
         UninterpretedOption <: sequence of UninterpretedOption
     !type FieldDescriptorProto:
         @description =:
             |// Describes a field within a message.
-        DefaultValue <: string
-        Extendee <: string
-        JsonName <: string
-        Label <: FieldDescriptorProto_Label
-        Name <: string
-        Number <: int
-        OneofIndex <: int
-        Options <: FieldOptions
-        Type <: FieldDescriptorProto_Type
-        TypeName <: string
+        DefaultValue <: string:
+            @json_tag = "defaultValue"
+            @rpcId = "7"
+        Extendee <: string:
+            @json_tag = "extendee"
+            @rpcId = "2"
+        JsonName <: string:
+            @json_tag = "jsonName"
+            @rpcId = "10"
+        Label <: FieldDescriptorProto_Label:
+            @json_tag = "label"
+            @rpcId = "4"
+        Name <: string:
+            @json_tag = "name"
+            @rpcId = "1"
+        Number <: int:
+            @json_tag = "number"
+            @rpcId = "3"
+        OneofIndex <: int:
+            @json_tag = "oneofIndex"
+            @rpcId = "9"
+        Options <: FieldOptions:
+            @json_tag = "options"
+            @rpcId = "8"
+        Type <: FieldDescriptorProto_Type:
+            @json_tag = "type"
+            @rpcId = "5"
+        TypeName <: string:
+            @json_tag = "typeName"
+            @rpcId = "6"
     !enum FieldDescriptorProto_Label:
         LABEL_OPTIONAL: 1
         LABEL_REPEATED: 3
@@ -133,13 +187,25 @@ descriptor:
         TYPE_UINT32: 13
         TYPE_UINT64: 4
     !type FieldOptions:
-        Ctype <: FieldOptions_CType
-        Deprecated <: bool
-        Jstype <: FieldOptions_JSType
-        Lazy <: bool
-        Packed <: bool
+        Ctype <: FieldOptions_CType:
+            @json_tag = "ctype"
+            @rpcId = "1"
+        Deprecated <: bool:
+            @json_tag = "deprecated"
+            @rpcId = "3"
+        Jstype <: FieldOptions_JSType:
+            @json_tag = "jstype"
+            @rpcId = "6"
+        Lazy <: bool:
+            @json_tag = "lazy"
+            @rpcId = "5"
+        Packed <: bool:
+            @json_tag = "packed"
+            @rpcId = "2"
         UninterpretedOption <: sequence of UninterpretedOption
-        Weak <: bool
+        Weak <: bool:
+            @json_tag = "weak"
+            @rpcId = "10"
     !enum FieldOptions_CType:
         CORD: 1
         STRING_: 0
@@ -155,13 +221,23 @@ descriptor:
         EnumType <: sequence of EnumDescriptorProto
         Extension <: sequence of FieldDescriptorProto
         MessageType <: sequence of DescriptorProto
-        Name <: string
-        Options <: FileOptions
-        Package <: string
+        Name <: string:
+            @json_tag = "name"
+            @rpcId = "1"
+        Options <: FileOptions:
+            @json_tag = "options"
+            @rpcId = "8"
+        Package <: string:
+            @json_tag = "package"
+            @rpcId = "2"
         PublicDependency <: sequence of int
         Service <: sequence of ServiceDescriptorProto
-        SourceCodeInfo <: SourceCodeInfo
-        Syntax <: string
+        SourceCodeInfo <: SourceCodeInfo:
+            @json_tag = "sourceCodeInfo"
+            @rpcId = "9"
+        Syntax <: string:
+            @json_tag = "syntax"
+            @rpcId = "12"
         WeakDependency <: sequence of int
     !type FileDescriptorSet:
         @description =:
@@ -169,26 +245,66 @@ descriptor:
             |// files it parses.
         File <: sequence of FileDescriptorProto
     !type FileOptions:
-        CcEnableArenas <: bool
-        CcGenericServices <: bool
-        CsharpNamespace <: string
-        Deprecated <: bool
-        GoPackage <: string
-        JavaGenerateEqualsAndHash <: bool
-        JavaGenericServices <: bool
-        JavaMultipleFiles <: bool
-        JavaOuterClassname <: string
-        JavaPackage <: string
-        JavaStringCheckUtf8 <: bool
-        ObjcClassPrefix <: string
-        OptimizeFor <: FileOptions_OptimizeMode
-        PhpClassPrefix <: string
-        PhpGenericServices <: bool
-        PhpMetadataNamespace <: string
-        PhpNamespace <: string
-        PyGenericServices <: bool
-        RubyPackage <: string
-        SwiftPrefix <: string
+        CcEnableArenas <: bool:
+            @json_tag = "ccEnableArenas"
+            @rpcId = "31"
+        CcGenericServices <: bool:
+            @json_tag = "ccGenericServices"
+            @rpcId = "16"
+        CsharpNamespace <: string:
+            @json_tag = "csharpNamespace"
+            @rpcId = "37"
+        Deprecated <: bool:
+            @json_tag = "deprecated"
+            @rpcId = "23"
+        GoPackage <: string:
+            @json_tag = "goPackage"
+            @rpcId = "11"
+        JavaGenerateEqualsAndHash <: bool:
+            @json_tag = "javaGenerateEqualsAndHash"
+            @rpcId = "20"
+        JavaGenericServices <: bool:
+            @json_tag = "javaGenericServices"
+            @rpcId = "17"
+        JavaMultipleFiles <: bool:
+            @json_tag = "javaMultipleFiles"
+            @rpcId = "10"
+        JavaOuterClassname <: string:
+            @json_tag = "javaOuterClassname"
+            @rpcId = "8"
+        JavaPackage <: string:
+            @json_tag = "javaPackage"
+            @rpcId = "1"
+        JavaStringCheckUtf8 <: bool:
+            @json_tag = "javaStringCheckUtf8"
+            @rpcId = "27"
+        ObjcClassPrefix <: string:
+            @json_tag = "objcClassPrefix"
+            @rpcId = "36"
+        OptimizeFor <: FileOptions_OptimizeMode:
+            @json_tag = "optimizeFor"
+            @rpcId = "9"
+        PhpClassPrefix <: string:
+            @json_tag = "phpClassPrefix"
+            @rpcId = "40"
+        PhpGenericServices <: bool:
+            @json_tag = "phpGenericServices"
+            @rpcId = "42"
+        PhpMetadataNamespace <: string:
+            @json_tag = "phpMetadataNamespace"
+            @rpcId = "44"
+        PhpNamespace <: string:
+            @json_tag = "phpNamespace"
+            @rpcId = "41"
+        PyGenericServices <: bool:
+            @json_tag = "pyGenericServices"
+            @rpcId = "18"
+        RubyPackage <: string:
+            @json_tag = "rubyPackage"
+            @rpcId = "45"
+        SwiftPrefix <: string:
+            @json_tag = "swiftPrefix"
+            @rpcId = "39"
         UninterpretedOption <: sequence of UninterpretedOption
     !enum FileOptions_OptimizeMode:
         CODE_SIZE: 2
@@ -201,28 +317,58 @@ descriptor:
             |// source file, but may contain references to different source .proto files.
         Annotation <: sequence of GeneratedCodeInfo_Annotation
     !type GeneratedCodeInfo_Annotation:
-        Begin <: int
-        End <: int
+        Begin <: int:
+            @json_tag = "begin"
+            @rpcId = "3"
+        End <: int:
+            @json_tag = "end"
+            @rpcId = "4"
         Path <: sequence of int
-        SourceFile <: string
+        SourceFile <: string:
+            @json_tag = "sourceFile"
+            @rpcId = "2"
     !type MessageOptions:
-        Deprecated <: bool
-        MapEntry <: bool
-        MessageSetWireFormat <: bool
-        NoStandardDescriptorAccessor <: bool
+        Deprecated <: bool:
+            @json_tag = "deprecated"
+            @rpcId = "3"
+        MapEntry <: bool:
+            @json_tag = "mapEntry"
+            @rpcId = "7"
+        MessageSetWireFormat <: bool:
+            @json_tag = "messageSetWireFormat"
+            @rpcId = "1"
+        NoStandardDescriptorAccessor <: bool:
+            @json_tag = "noStandardDescriptorAccessor"
+            @rpcId = "2"
         UninterpretedOption <: sequence of UninterpretedOption
     !type MethodDescriptorProto:
         @description =:
             |// Describes a method of a service.
-        ClientStreaming <: bool
-        InputType <: string
-        Name <: string
-        Options <: MethodOptions
-        OutputType <: string
-        ServerStreaming <: bool
+        ClientStreaming <: bool:
+            @json_tag = "clientStreaming"
+            @rpcId = "5"
+        InputType <: string:
+            @json_tag = "inputType"
+            @rpcId = "2"
+        Name <: string:
+            @json_tag = "name"
+            @rpcId = "1"
+        Options <: MethodOptions:
+            @json_tag = "options"
+            @rpcId = "4"
+        OutputType <: string:
+            @json_tag = "outputType"
+            @rpcId = "3"
+        ServerStreaming <: bool:
+            @json_tag = "serverStreaming"
+            @rpcId = "6"
     !type MethodOptions:
-        Deprecated <: bool
-        IdempotencyLevel <: MethodOptions_IdempotencyLevel
+        Deprecated <: bool:
+            @json_tag = "deprecated"
+            @rpcId = "33"
+        IdempotencyLevel <: MethodOptions_IdempotencyLevel:
+            @json_tag = "idempotencyLevel"
+            @rpcId = "34"
         UninterpretedOption <: sequence of UninterpretedOption
     !enum MethodOptions_IdempotencyLevel:
         IDEMPOTENCY_UNKNOWN: 0
@@ -231,18 +377,28 @@ descriptor:
     !type OneofDescriptorProto:
         @description =:
             |// Describes a oneof.
-        Name <: string
-        Options <: OneofOptions
+        Name <: string:
+            @json_tag = "name"
+            @rpcId = "1"
+        Options <: OneofOptions:
+            @json_tag = "options"
+            @rpcId = "2"
     !type OneofOptions:
         UninterpretedOption <: sequence of UninterpretedOption
     !type ServiceDescriptorProto:
         @description =:
             |// Describes a service.
         Method <: sequence of MethodDescriptorProto
-        Name <: string
-        Options <: ServiceOptions
+        Name <: string:
+            @json_tag = "name"
+            @rpcId = "1"
+        Options <: ServiceOptions:
+            @json_tag = "options"
+            @rpcId = "3"
     !type ServiceOptions:
-        Deprecated <: bool
+        Deprecated <: bool:
+            @json_tag = "deprecated"
+            @rpcId = "33"
         UninterpretedOption <: sequence of UninterpretedOption
     !type SourceCodeInfo:
         @description =:
@@ -250,11 +406,15 @@ descriptor:
             |// FileDescriptorProto was generated.
         Location <: sequence of SourceCodeInfo_Location
     !type SourceCodeInfo_Location:
-        LeadingComments <: string
+        LeadingComments <: string:
+            @json_tag = "leadingComments"
+            @rpcId = "3"
         LeadingDetachedComments <: sequence of string
         Path <: sequence of int
         Span <: sequence of int
-        TrailingComments <: string
+        TrailingComments <: string:
+            @json_tag = "trailingComments"
+            @rpcId = "4"
     !type UninterpretedOption:
         @description =:
             |// A message representing a option the parser does not recognize. This only
@@ -263,13 +423,25 @@ descriptor:
             |// options protos in descriptor objects (e.g. returned by Descriptor::options(),
             |// or produced by Descriptor::CopyTo()) will never have UninterpretedOptions
             |// in them.
-        AggregateValue <: string
-        DoubleValue <: float
-        IdentifierValue <: string
+        AggregateValue <: string:
+            @json_tag = "aggregateValue"
+            @rpcId = "8"
+        DoubleValue <: float:
+            @json_tag = "doubleValue"
+            @rpcId = "6"
+        IdentifierValue <: string:
+            @json_tag = "identifierValue"
+            @rpcId = "3"
         Name <: sequence of UninterpretedOption_NamePart
-        NegativeIntValue <: int
-        PositiveIntValue <: int
-        StringValue <: bytes
+        NegativeIntValue <: int:
+            @json_tag = "negativeIntValue"
+            @rpcId = "5"
+        PositiveIntValue <: int:
+            @json_tag = "positiveIntValue"
+            @rpcId = "4"
+        StringValue <: bytes:
+            @json_tag = "stringValue"
+            @rpcId = "7"
     !type UninterpretedOption_NamePart:
         @description =:
             |// The name of the uninterpreted option.  Each string represents a segment in
@@ -277,8 +449,12 @@ descriptor:
             |// extension (denoted with parentheses in options specs in .proto files).
             |// E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
             |// "foo.(bar.baz).qux".
-        IsExtension <: bool
-        NamePart <: string
+        IsExtension <: bool:
+            @json_tag = "isExtension"
+            @rpcId = "2"
+        NamePart <: string:
+            @json_tag = "namePart"
+            @rpcId = "1"
 
 test:
     @package = "test"
@@ -286,8 +462,12 @@ test:
         @description =:
             |// A protobuf representation for grpc status. This is used by test
             |// clients to specify a status that the server should attempt to return.
-        Code <: int
-        Message <: string
+        Code <: int:
+            @json_tag = "code"
+            @rpcId = "1"
+        Message <: string:
+            @json_tag = "message"
+            @rpcId = "2"
     !enum GrpclbRouteType:
         GRPCLB_ROUTE_TYPE_BACKEND: 2
         GRPCLB_ROUTE_TYPE_FALLBACK: 1
@@ -295,8 +475,12 @@ test:
     !type Payload:
         @description =:
             |// A block of data, to simply increase gRPC message size.
-        Body <: bytes
-        Type <: PayloadType
+        Body <: bytes:
+            @json_tag = "body"
+            @rpcId = "2"
+        Type <: PayloadType:
+            @json_tag = "type"
+            @rpcId = "1"
     !enum PayloadType:
         COMPRESSABLE: 0
         RANDOM: 2
@@ -304,44 +488,86 @@ test:
     !type ResponseParameters:
         @description =:
             |// Configuration for a particular response.
-        IntervalUs <: int
-        Size <: int
+        IntervalUs <: int:
+            @json_tag = "intervalUs"
+            @rpcId = "2"
+        Size <: int:
+            @json_tag = "size"
+            @rpcId = "1"
     !type SimpleRequest:
         @description =:
             |// Unary request.
-        FillGrpclbRouteType <: bool
-        FillOauthScope <: bool
-        FillServerId <: bool
-        FillUsername <: bool
-        Payload <: Payload
-        ResponseSize <: int
-        ResponseStatus <: EchoStatus
-        ResponseType <: PayloadType
+        FillGrpclbRouteType <: bool:
+            @json_tag = "fillGrpclbRouteType"
+            @rpcId = "10"
+        FillOauthScope <: bool:
+            @json_tag = "fillOauthScope"
+            @rpcId = "5"
+        FillServerId <: bool:
+            @json_tag = "fillServerId"
+            @rpcId = "9"
+        FillUsername <: bool:
+            @json_tag = "fillUsername"
+            @rpcId = "4"
+        Payload <: Payload:
+            @json_tag = "payload"
+            @rpcId = "3"
+        ResponseSize <: int:
+            @json_tag = "responseSize"
+            @rpcId = "2"
+        ResponseStatus <: EchoStatus:
+            @json_tag = "responseStatus"
+            @rpcId = "7"
+        ResponseType <: PayloadType:
+            @json_tag = "responseType"
+            @rpcId = "1"
     !type SimpleResponse:
         @description =:
             |// Unary response, as configured by the request.
-        GrpclbRouteType <: GrpclbRouteType
-        OauthScope <: string
-        Payload <: Payload
-        ServerId <: string
-        Username <: string
+        GrpclbRouteType <: GrpclbRouteType:
+            @json_tag = "grpclbRouteType"
+            @rpcId = "5"
+        OauthScope <: string:
+            @json_tag = "oauthScope"
+            @rpcId = "3"
+        Payload <: Payload:
+            @json_tag = "payload"
+            @rpcId = "1"
+        ServerId <: string:
+            @json_tag = "serverId"
+            @rpcId = "4"
+        Username <: string:
+            @json_tag = "username"
+            @rpcId = "2"
     !type StreamingInputCallRequest:
         @description =:
             |// Client-streaming request.
-        Payload <: Payload
+        Payload <: Payload:
+            @json_tag = "payload"
+            @rpcId = "1"
     !type StreamingInputCallResponse:
         @description =:
             |// Client-streaming response.
-        AggregatedPayloadSize <: int
+        AggregatedPayloadSize <: int:
+            @json_tag = "aggregatedPayloadSize"
+            @rpcId = "1"
     !type StreamingOutputCallRequest:
         @description =:
             |// Server-streaming request.
-        Payload <: Payload
+        Payload <: Payload:
+            @json_tag = "payload"
+            @rpcId = "3"
         ResponseParameters <: sequence of ResponseParameters
-        ResponseStatus <: EchoStatus
-        ResponseType <: PayloadType
+        ResponseStatus <: EchoStatus:
+            @json_tag = "responseStatus"
+            @rpcId = "7"
+        ResponseType <: PayloadType:
+            @json_tag = "responseType"
+            @rpcId = "1"
     !type StreamingOutputCallResponse:
         @description =:
             |// Server-streaming response, as configured by the request and parameters.
-        Payload <: Payload
+        Payload <: Payload:
+            @json_tag = "payload"
+            @rpcId = "1"
 

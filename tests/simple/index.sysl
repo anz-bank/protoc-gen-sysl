@@ -19,10 +19,18 @@ Foo:
 simple:
     @package = "simple"
     !type Money:
-        Nanos <: int
-        Units <: int
+        Nanos <: int:
+            @json_tag = "nanos"
+            @rpcId = "3"
+        Units <: int:
+            @json_tag = "units"
+            @rpcId = "2"
     !type Request:
-        Query <: string
+        Query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
     !type Response:
-        Query <: string
+        Query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
 

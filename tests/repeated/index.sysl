@@ -5,5 +5,7 @@ repeated:
         Q <: sequence of Whatever
         Query <: sequence of string
     !type Whatever:
-        Query <: string
+        Query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
 
