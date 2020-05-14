@@ -133,13 +133,10 @@ grpc_testing_what:
             @json_tag = "foobar"
             @rpcId = "1"
     !type this:
-        foobar <: grpc_testing_what_this.This_That:
+        foobar <: This_That:
             @json_tag = "foobar"
             @rpcId = "1"
-
-grpc_testing_what_this:
-    @package = "grpc_testing_what_this"
-    !type That:
+    !type this_That:
         ohno <: string:
             @json_tag = "ohno"
             @rpcId = "1"

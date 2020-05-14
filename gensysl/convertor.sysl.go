@@ -13,10 +13,11 @@ import (
 
 // messageToSysl converts a message to a sysl type
 func (p *PrinterModule) messageToSysl(m *protogen.Message) (string, string) {
-	var fieldType string
-	fieldType = syslpopulate.SanitiseTypeName(string(m.Desc.Name()))
-	application, _ := goPackageOptionRaw(string(m.Desc.FullName()), string(m.Desc.Name()))
-	return application, fieldType
+	//var fieldType string
+	//fieldType = syslpopulate.SanitiseTypeName(string(m.Desc.Name()))
+	//application, _ := goPackageOptionRaw(string(m.Desc.FullName()), string(m.Desc.Name()))
+	packageName, typeName := syslNames(string(m.Desc.Parent().ParentFile().Package()), string(m.Desc.FullName()))
+	return packageName, typeName
 }
 
 // enumToSysl converts an Enum to a sysl enum
@@ -31,13 +32,15 @@ func enumToSysl(e *protogen.Enum) map[string]int64 {
 }
 
 // fieldGoType returns the Go type used for a field.
-func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
+func fieldGoType(currentApp string, currentMessage string, field *protogen.Field) *sysl.Type {
 	if field.Desc.IsWeak() {
 		return nil
 	}
-	application, _ := goPackageOptionRaw(string(field.Desc.FullName()), string(field.Desc.Name()))
+	application, _ := syslNames(string(field.Desc.Parent().ParentFile().Package()), string(field.Desc.FullName()))
+	//application, _ := goPackageOptionRaw(string(field.Parent.Desc.ParentFile().Package()), currentMessage, string(field.Desc.Name()))
 	if field.Message != nil {
-		application, _ = goPackageOptionRaw(string(field.Message.Desc.FullName()), string(field.Message.Desc.Name()))
+		application, _ = syslNames(string(field.Message.Desc.Parent().ParentFile().Package()), string(field.Message.Desc.FullName()))
+		//goPackageOptionRaw(string(field.Message.Desc.FullName()), currentMessage, string(field.Message.Desc.Name()))
 	}
 	if application == currentApp {
 		application = ""

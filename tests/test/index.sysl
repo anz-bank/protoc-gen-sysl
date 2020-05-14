@@ -44,7 +44,7 @@ google_protobuf:
             |// Describes a message type.
         enum_type <: sequence of EnumDescriptorProto
         extension <: sequence of FieldDescriptorProto
-        extension_range <: sequence of google_protobuf_DescriptorProto.DescriptorProto_ExtensionRange
+        extension_range <: sequence of DescriptorProto_ExtensionRange
         field <: sequence of FieldDescriptorProto
         name <: string:
             @json_tag = "name"
@@ -55,7 +55,28 @@ google_protobuf:
             @json_tag = "options"
             @rpcId = "7"
         reserved_name <: sequence of string
-        reserved_range <: sequence of google_protobuf_DescriptorProto.DescriptorProto_ReservedRange
+        reserved_range <: sequence of DescriptorProto_ReservedRange
+    !type DescriptorProto_ExtensionRange:
+        end <: int:
+            @json_tag = "end"
+            @rpcId = "2"
+        options <: ExtensionRangeOptions:
+            @json_tag = "options"
+            @rpcId = "3"
+        start <: int:
+            @json_tag = "start"
+            @rpcId = "1"
+    !type DescriptorProto_ReservedRange:
+        @description =:
+            |// Range of reserved tag numbers. Reserved tag numbers may not be used by
+            |// fields or extension ranges in the same message. Reserved ranges may
+            |// not overlap.
+        end <: int:
+            @json_tag = "end"
+            @rpcId = "2"
+        start <: int:
+            @json_tag = "start"
+            @rpcId = "1"
     !type EnumDescriptorProto:
         @description =:
             |// Describes an enum type.
@@ -66,8 +87,22 @@ google_protobuf:
             @json_tag = "options"
             @rpcId = "3"
         reserved_name <: sequence of string
-        reserved_range <: sequence of google_protobuf_EnumDescriptorProto.EnumDescriptorProto_EnumReservedRange
+        reserved_range <: sequence of EnumDescriptorProto_EnumReservedRange
         value <: sequence of EnumValueDescriptorProto
+    !type EnumDescriptorProto_EnumReservedRange:
+        @description =:
+            |// Range of reserved numeric values. Reserved values may not be used by
+            |// entries in the same enum. Reserved ranges may not overlap.
+            |//
+            |// Note that this is distinct from DescriptorProto.ReservedRange in that it
+            |// is inclusive such that it can appropriately represent the entire int32
+            |// domain.
+        end <: int:
+            @json_tag = "end"
+            @rpcId = "2"
+        start <: int:
+            @json_tag = "start"
+            @rpcId = "1"
     !type EnumOptions:
         allow_alias <: bool:
             @json_tag = "allowAlias"
@@ -107,7 +142,7 @@ google_protobuf:
         json_name <: string:
             @json_tag = "jsonName"
             @rpcId = "10"
-        label <: google_protobuf_FieldDescriptorProto.FieldDescriptorProto_Label:
+        label <: FieldDescriptorProto_Label:
             @json_tag = "label"
             @rpcId = "4"
         name <: string:
@@ -122,20 +157,43 @@ google_protobuf:
         options <: FieldOptions:
             @json_tag = "options"
             @rpcId = "8"
-        type <: google_protobuf_FieldDescriptorProto.FieldDescriptorProto_Type:
+        type <: FieldDescriptorProto_Type:
             @json_tag = "type"
             @rpcId = "5"
         type_name <: string:
             @json_tag = "typeName"
             @rpcId = "6"
+    !enum FieldDescriptorProto_Label:
+        LABEL_OPTIONAL: 1
+        LABEL_REPEATED: 3
+        LABEL_REQUIRED: 2
+    !enum FieldDescriptorProto_Type:
+        TYPE_BOOL: 8
+        TYPE_BYTES: 12
+        TYPE_DOUBLE: 1
+        TYPE_ENUM: 14
+        TYPE_FIXED32: 7
+        TYPE_FIXED64: 6
+        TYPE_FLOAT: 2
+        TYPE_GROUP: 10
+        TYPE_INT32: 5
+        TYPE_INT64: 3
+        TYPE_MESSAGE: 11
+        TYPE_SFIXED32: 15
+        TYPE_SFIXED64: 16
+        TYPE_SINT32: 17
+        TYPE_SINT64: 18
+        TYPE_STRING: 9
+        TYPE_UINT32: 13
+        TYPE_UINT64: 4
     !type FieldOptions:
-        ctype <: google_protobuf_FieldOptions.FieldOptions_CType:
+        ctype <: FieldOptions_CType:
             @json_tag = "ctype"
             @rpcId = "1"
         deprecated <: bool:
             @json_tag = "deprecated"
             @rpcId = "3"
-        jstype <: google_protobuf_FieldOptions.FieldOptions_JSType:
+        jstype <: FieldOptions_JSType:
             @json_tag = "jstype"
             @rpcId = "6"
         lazy <: bool:
@@ -148,6 +206,14 @@ google_protobuf:
         weak <: bool:
             @json_tag = "weak"
             @rpcId = "10"
+    !enum FieldOptions_CType:
+        CORD: 1
+        STRING_: 0
+        STRING_PIECE: 2
+    !enum FieldOptions_JSType:
+        JS_NORMAL: 0
+        JS_NUMBER: 2
+        JS_STRING: 1
     !type FileDescriptorProto:
         @description =:
             |// Describes a complete .proto file.
@@ -215,7 +281,7 @@ google_protobuf:
         objc_class_prefix <: string:
             @json_tag = "objcClassPrefix"
             @rpcId = "36"
-        optimize_for <: google_protobuf_FileOptions.FileOptions_OptimizeMode:
+        optimize_for <: FileOptions_OptimizeMode:
             @json_tag = "optimizeFor"
             @rpcId = "9"
         php_class_prefix <: string:
@@ -240,12 +306,27 @@ google_protobuf:
             @json_tag = "swiftPrefix"
             @rpcId = "39"
         uninterpreted_option <: sequence of UninterpretedOption
+    !enum FileOptions_OptimizeMode:
+        CODE_SIZE: 2
+        LITE_RUNTIME: 3
+        SPEED: 1
     !type GeneratedCodeInfo:
         @description =:
             |// Describes the relationship between generated code and its original source
             |// file. A GeneratedCodeInfo message is associated with only one generated
             |// source file, but may contain references to different source .proto files.
-        annotation <: sequence of google_protobuf_GeneratedCodeInfo.GeneratedCodeInfo_Annotation
+        annotation <: sequence of GeneratedCodeInfo_Annotation
+    !type GeneratedCodeInfo_Annotation:
+        begin <: int:
+            @json_tag = "begin"
+            @rpcId = "3"
+        end <: int:
+            @json_tag = "end"
+            @rpcId = "4"
+        path <: sequence of int
+        source_file <: string:
+            @json_tag = "sourceFile"
+            @rpcId = "2"
     !type MessageOptions:
         deprecated <: bool:
             @json_tag = "deprecated"
@@ -285,10 +366,14 @@ google_protobuf:
         deprecated <: bool:
             @json_tag = "deprecated"
             @rpcId = "33"
-        idempotency_level <: google_protobuf_MethodOptions.MethodOptions_IdempotencyLevel:
+        idempotency_level <: MethodOptions_IdempotencyLevel:
             @json_tag = "idempotencyLevel"
             @rpcId = "34"
         uninterpreted_option <: sequence of UninterpretedOption
+    !enum MethodOptions_IdempotencyLevel:
+        IDEMPOTENCY_UNKNOWN: 0
+        IDEMPOTENT: 2
+        NO_SIDE_EFFECTS: 1
     !type OneofDescriptorProto:
         @description =:
             |// Describes a oneof.
@@ -319,7 +404,17 @@ google_protobuf:
         @description =:
             |// Encapsulates information about the original source file from which a
             |// FileDescriptorProto was generated.
-        location <: sequence of google_protobuf_SourceCodeInfo.SourceCodeInfo_Location
+        location <: sequence of SourceCodeInfo_Location
+    !type SourceCodeInfo_Location:
+        leading_comments <: string:
+            @json_tag = "leadingComments"
+            @rpcId = "3"
+        leading_detached_comments <: sequence of string
+        path <: sequence of int
+        span <: sequence of int
+        trailing_comments <: string:
+            @json_tag = "trailingComments"
+            @rpcId = "4"
     !type UninterpretedOption:
         @description =:
             |// A message representing a option the parser does not recognize. This only
@@ -337,7 +432,7 @@ google_protobuf:
         identifier_value <: string:
             @json_tag = "identifierValue"
             @rpcId = "3"
-        name <: sequence of google_protobuf_UninterpretedOption.UninterpretedOption_NamePart
+        name <: sequence of UninterpretedOption_NamePart
         negative_int_value <: int:
             @json_tag = "negativeIntValue"
             @rpcId = "5"
@@ -347,125 +442,7 @@ google_protobuf:
         string_value <: bytes:
             @json_tag = "stringValue"
             @rpcId = "7"
-
-google_protobuf_DescriptorProto:
-    @package = "google_protobuf_DescriptorProto"
-    !type ExtensionRange:
-        end <: int:
-            @json_tag = "end"
-            @rpcId = "2"
-        options <: google_protobuf.ExtensionRangeOptions:
-            @json_tag = "options"
-            @rpcId = "3"
-        start <: int:
-            @json_tag = "start"
-            @rpcId = "1"
-    !type ReservedRange:
-        @description =:
-            |// Range of reserved tag numbers. Reserved tag numbers may not be used by
-            |// fields or extension ranges in the same message. Reserved ranges may
-            |// not overlap.
-        end <: int:
-            @json_tag = "end"
-            @rpcId = "2"
-        start <: int:
-            @json_tag = "start"
-            @rpcId = "1"
-
-google_protobuf_EnumDescriptorProto:
-    @package = "google_protobuf_EnumDescriptorProto"
-    !type EnumReservedRange:
-        @description =:
-            |// Range of reserved numeric values. Reserved values may not be used by
-            |// entries in the same enum. Reserved ranges may not overlap.
-            |//
-            |// Note that this is distinct from DescriptorProto.ReservedRange in that it
-            |// is inclusive such that it can appropriately represent the entire int32
-            |// domain.
-        end <: int:
-            @json_tag = "end"
-            @rpcId = "2"
-        start <: int:
-            @json_tag = "start"
-            @rpcId = "1"
-
-google_protobuf_FieldDescriptorProto:
-    !enum Label:
-        LABEL_OPTIONAL: 1
-        LABEL_REPEATED: 3
-        LABEL_REQUIRED: 2
-    !enum Type:
-        TYPE_BOOL: 8
-        TYPE_BYTES: 12
-        TYPE_DOUBLE: 1
-        TYPE_ENUM: 14
-        TYPE_FIXED32: 7
-        TYPE_FIXED64: 6
-        TYPE_FLOAT: 2
-        TYPE_GROUP: 10
-        TYPE_INT32: 5
-        TYPE_INT64: 3
-        TYPE_MESSAGE: 11
-        TYPE_SFIXED32: 15
-        TYPE_SFIXED64: 16
-        TYPE_SINT32: 17
-        TYPE_SINT64: 18
-        TYPE_STRING: 9
-        TYPE_UINT32: 13
-        TYPE_UINT64: 4
-
-google_protobuf_FieldOptions:
-    !enum CType:
-        CORD: 1
-        STRING_: 0
-        STRING_PIECE: 2
-    !enum JSType:
-        JS_NORMAL: 0
-        JS_NUMBER: 2
-        JS_STRING: 1
-
-google_protobuf_FileOptions:
-    !enum OptimizeMode:
-        CODE_SIZE: 2
-        LITE_RUNTIME: 3
-        SPEED: 1
-
-google_protobuf_GeneratedCodeInfo:
-    @package = "google_protobuf_GeneratedCodeInfo"
-    !type Annotation:
-        begin <: int:
-            @json_tag = "begin"
-            @rpcId = "3"
-        end <: int:
-            @json_tag = "end"
-            @rpcId = "4"
-        path <: sequence of int
-        source_file <: string:
-            @json_tag = "sourceFile"
-            @rpcId = "2"
-
-google_protobuf_MethodOptions:
-    !enum IdempotencyLevel:
-        IDEMPOTENCY_UNKNOWN: 0
-        IDEMPOTENT: 2
-        NO_SIDE_EFFECTS: 1
-
-google_protobuf_SourceCodeInfo:
-    @package = "google_protobuf_SourceCodeInfo"
-    !type Location:
-        leading_comments <: string:
-            @json_tag = "leadingComments"
-            @rpcId = "3"
-        leading_detached_comments <: sequence of string
-        path <: sequence of int
-        span <: sequence of int
-        trailing_comments <: string:
-            @json_tag = "trailingComments"
-            @rpcId = "4"
-
-google_protobuf_UninterpretedOption:
-    @package = "google_protobuf_UninterpretedOption"
-    !type NamePart:
+    !type UninterpretedOption_NamePart:
         @description =:
             |// The name of the uninterpreted option.  Each string represents a segment in
             |// a dot-separated name.  is_extension is true iff a segment represents an
@@ -501,7 +478,7 @@ grpc_testing:
         body <: bytes:
             @json_tag = "body"
             @rpcId = "2"
-        type <: grpc_testing_Payload.PayloadType:
+        type <: PayloadType:
             @json_tag = "type"
             @rpcId = "1"
     !enum PayloadType:
@@ -541,13 +518,13 @@ grpc_testing:
         response_status <: EchoStatus:
             @json_tag = "responseStatus"
             @rpcId = "7"
-        response_type <: grpc_testing_SimpleRequest.PayloadType:
+        response_type <: PayloadType:
             @json_tag = "responseType"
             @rpcId = "1"
     !type SimpleResponse:
         @description =:
             |// Unary response, as configured by the request.
-        grpclb_route_type <: grpc_testing_SimpleResponse.GrpclbRouteType:
+        grpclb_route_type <: GrpclbRouteType:
             @json_tag = "grpclbRouteType"
             @rpcId = "5"
         oauth_scope <: string:
@@ -584,7 +561,7 @@ grpc_testing:
         response_status <: EchoStatus:
             @json_tag = "responseStatus"
             @rpcId = "7"
-        response_type <: grpc_testing_StreamingOutputCallRequest.PayloadType:
+        response_type <: PayloadType:
             @json_tag = "responseType"
             @rpcId = "1"
     !type StreamingOutputCallResponse:

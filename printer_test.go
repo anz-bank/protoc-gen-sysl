@@ -24,10 +24,11 @@ import (
 )
 
 var tests = []string{
-	"date/",
+	//"date/",
+	//"multiplefiles/",
 	//"any/",
 	//"hello/",
-	//"externaltype/",
+	"externaltype/",
 	//"disconnectedimport/",
 	//"any/",
 	//"simple/",
@@ -35,7 +36,7 @@ var tests = []string{
 	//"repeated/",
 	//"messageinmessage/",
 	//"test",
-	//"multiplefiles/",
+
 	//"otheroption/",
 	//"enum/",
 }
