@@ -32,15 +32,13 @@ func enumToSysl(e *protogen.Enum) map[string]int64 {
 }
 
 // fieldGoType returns the Go type used for a field.
-func fieldGoType(currentApp string, currentMessage string, field *protogen.Field) *sysl.Type {
+func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	if field.Desc.IsWeak() {
 		return nil
 	}
 	application, _ := syslNames(string(field.Desc.Parent().ParentFile().Package()), string(field.Desc.FullName()))
-	//application, _ := goPackageOptionRaw(string(field.Parent.Desc.ParentFile().Package()), currentMessage, string(field.Desc.Name()))
 	if field.Message != nil {
 		application, _ = syslNames(string(field.Message.Desc.Parent().ParentFile().Package()), string(field.Message.Desc.FullName()))
-		//goPackageOptionRaw(string(field.Message.Desc.FullName()), currentMessage, string(field.Message.Desc.Name()))
 	}
 	if application == currentApp {
 		application = ""
@@ -60,11 +58,12 @@ func fieldGoType(currentApp string, currentMessage string, field *protogen.Field
 	case protoreflect.BytesKind:
 		t = syslpopulate.SyslPrimitive(sysl.Type_BYTES)
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		t = syslpopulate.NewType(syslpopulate.SanitiseTypeName(field.Message.GoIdent.GoName), application)
+		_, typeName := syslNames(application, string(field.Message.Desc.FullName()))
+		t = syslpopulate.NewType(typeName, application)
 	case protoreflect.EnumKind:
-		t = syslpopulate.NewType(syslpopulate.SanitiseTypeName(field.Enum.GoIdent.GoName), application)
+		_, typeName := syslNames(application, string(field.Enum.Desc.FullName()))
+		t = syslpopulate.NewType(typeName, application)
 	}
-
 	t.Attrs = map[string]*sysl.Attribute{
 		"json_tag": syslpopulate.NewAttribute(field.Desc.JSONName()),
 		"rpcId":    syslpopulate.NewAttribute(strconv.Itoa(int(field.Desc.Number()))),

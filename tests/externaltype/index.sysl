@@ -2,9 +2,9 @@
 Bar:
     @description = ""
     @package = "grpc_testing_what"
-    AnotherEndpoint(input <: grpc_testing_what.date__):
+    AnotherEndpoint(input <: grpc_testing_what.date_):
         @description = ""
-        return ok <: grpc_testing_what.date__
+        return ok <: grpc_testing_what.date_
 
 Car:
     @description = ""
@@ -124,16 +124,16 @@ google_protobuf:
 
 grpc_testing_what:
     @package = "grpc_testing_what"
-    !type date__:
-        foobar <: google_protobuf.Timestamp:
+    !type date_:
+        foobar <: google_protobuf.google_protobuf_Timestamp:
             @json_tag = "foobar"
             @rpcId = "1"
     !type foo:
-        foobar <: google_protobuf.Empty:
+        foobar <: google_protobuf.google_protobuf_Empty:
             @json_tag = "foobar"
             @rpcId = "1"
     !type this:
-        foobar <: This_That:
+        foobar <: grpc_testing_what_this_That:
             @json_tag = "foobar"
             @rpcId = "1"
     !type this_That:

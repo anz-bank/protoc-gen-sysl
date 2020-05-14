@@ -18,7 +18,16 @@ var TypeMapping = map[string]sysl.Type_Primitive{
 	"float":   sysl.Type_FLOAT,
 }
 
-var specialMappings = map[string]string{"date": "date__", "Any": "Any__", "any": "any_"}
+var specialMappings = map[string]string{"date": "date_", "Any": "Any_", "any": "any_"}
+
+// NewPattern returns a pattern attribute nested in a whole bunch of other types because fml
+func NewPattern(patterns ...string) *sysl.Attribute {
+	var Elt []*sysl.Attribute
+	for _, pattern := range patterns {
+		Elt = append(Elt, &sysl.Attribute{Attribute: &sysl.Attribute_S{S: pattern}})
+	}
+	return &sysl.Attribute{Attribute: &sysl.Attribute_A{A: &sysl.Attribute_Array{Elt: Elt}}}
+}
 
 // NewApplication Initialises a Sysl application
 func NewApplication(appName string) *sysl.Application {

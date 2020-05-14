@@ -1,7 +1,7 @@
 
 grpc_testing2:
     !type Request:
-        bar <: Request_Type:
+        bar <: grpc_testing2_Request_Type:
             @json_tag = "bar"
             @rpcId = "9"
     !enum Request_Type:
@@ -13,10 +13,10 @@ grpc_testing2:
         CARD: 2
         UNKNOWN: 0
     !type foo:
-        foobar <: Request_Type:
+        foobar <: grpc_testing2_Request_Type:
             @json_tag = "foobar"
             @rpcId = "1"
-        qwerty <: Type2:
+        qwerty <: grpc_testing2_Type2:
             @json_tag = "qwerty"
             @rpcId = "8"
 

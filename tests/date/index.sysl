@@ -2,18 +2,18 @@
 Bar:
     @description = ""
     @package = "grpc_testing"
-    AnotherEndpoint(input <: grpc_testing.date__):
+    AnotherEndpoint(input <: grpc_testing.date_):
         @description = ""
-        return ok <: grpc_testing.date__
+        return ok <: grpc_testing.date_
 
 grpc_testing:
     @package = "grpc_testing"
-    !type date__:
+    !type date_:
         this <: string:
             @json_tag = "this"
             @rpcId = "1"
     !type that:
-        s <: date__:
+        s <: grpc_testing_date:
             @json_tag = "s"
             @rpcId = "1"
 

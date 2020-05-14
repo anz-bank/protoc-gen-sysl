@@ -100,7 +100,7 @@ google_protobuf:
 grpc_testing:
     @package = "grpc_testing"
     !type This:
-        grpc_request <: google_protobuf.any_:
+        grpc_request <: google_protobuf.google_protobuf_Any:
             @json_tag = "grpcRequest"
             @rpcId = "1"
 

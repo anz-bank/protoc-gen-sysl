@@ -2,10 +2,7 @@ package gensysl
 
 import (
 	"bytes"
-	"go/token"
 	"strings"
-	"unicode"
-	"unicode/utf8"
 
 	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
 	"github.com/anz-bank/sysl/pkg/printer"
@@ -40,12 +37,12 @@ func GenerateFiles(gen *protogen.Plugin) error {
 
 func (p *PrinterModule) VisitFile(file *protogen.File) (err error) {
 	for _, s := range file.Services {
-		if err := p.VisitService(file, s); err != nil {
+		if err := p.VisitService(s); err != nil {
 			return err
 		}
 	}
 	for _, t := range file.Messages {
-		if err := p.VisitMessage(file, t); err != nil {
+		if err := p.VisitMessage(t); err != nil {
 			return err
 		}
 	}
@@ -59,10 +56,7 @@ func (p *PrinterModule) VisitFile(file *protogen.File) (err error) {
 
 // VisitService converts to sysl and constructs endpoints from methods
 // service myservice{...} --> myservice:
-func (p *PrinterModule) VisitService(file *protogen.File, s *protogen.Service) error {
-	//name := syslpopulate.SanitiseTypeName(string(s.Desc.Name()))
-
-	//pkgName, _ := goPackageOptionRaw(string(s.Desc.FullName()), name)
+func (p *PrinterModule) VisitService(s *protogen.Service) error {
 	pkgName, name := syslNames(string(s.Desc.Parent().ParentFile().Package()), string(s.Desc.FullName()))
 	p.Module.Apps[name] = syslpopulate.NewApplication(name)
 	p.Module.Apps[name].Attrs["package"] = syslpopulate.NewAttribute(pkgName)
@@ -79,13 +73,13 @@ func (p *PrinterModule) VisitService(file *protogen.File, s *protogen.Service) e
 // rpc thisEndpoint(InputType)returns(outputType) -->
 // thisEndpoint(input <: InputType):
 //     return ok <: outputType
-func (p *PrinterModule) VisitMethod(s *protogen.Service, m *protogen.Method) (err error) {
+func (p *PrinterModule) VisitMethod(s *protogen.Service, m *protogen.Method) error {
 	appName := syslpopulate.SanitiseTypeName(s.GoName)
 	endpointName := syslpopulate.SanitiseTypeName(m.GoName)
-	application, Name := p.messageToSysl(m.Input)
+	application, Name := syslNames(string(m.Input.Desc.Parent().ParentFile().Package()), string(m.Input.Desc.FullName()))
 	endpoint := syslpopulate.NewEndpoint(m.GoName)
 	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(Name, application)}
-	application, Name = p.messageToSysl(m.Output)
+	application, Name = syslNames(string(m.Output.Desc.Parent().ParentFile().Package()), string(m.Output.Desc.FullName()))
 	endpoint.Stmt = []*sysl.Statement{syslpopulate.NewReturn(application, Name)}
 	endpoint.Attrs = make(map[string]*sysl.Attribute)
 	endpoint.Attrs["description"] = syslpopulate.NewAttribute(m.Comments.Leading.String() + m.Comments.Trailing.String())
@@ -96,33 +90,25 @@ func (p *PrinterModule) VisitMethod(s *protogen.Service, m *protogen.Method) (er
 // VisitMessage converts to sysl and constructs types from messages. All types are writen to the
 // TypeApplication (as in sysl types belong to applications but not in proto
 // message foo{...} --> !type foo:
-func (p *PrinterModule) VisitMessage(file *protogen.File, m *protogen.Message) error {
+func (p *PrinterModule) VisitMessage(m *protogen.Message) error {
 	typeName := syslpopulate.SanitiseTypeName(string(m.Desc.Name()))
 	var fieldName string
-	pattenAttributes := make(map[string]*sysl.Attribute)
+	attrs := make(map[string]*sysl.Attribute)
 	attrDefs := make(map[string]*sysl.Type)
-	//packageName, _ := goPackageOptionRaw(string(m.Desc.FullName()), string(m.Desc.Name()))
-	//packageName = syslpopulate.SanitiseTypeName(packageName)
 	packageName, typeName := syslNames(string(m.Desc.Parent().ParentFile().Package()), string(m.Desc.FullName()))
 	if len(m.Fields) == 0 {
-		pattenAttributes["patterns"] = &sysl.Attribute{Attribute: &sysl.Attribute_A{A: &sysl.Attribute_Array{
-			Elt: []*sysl.Attribute{&sysl.Attribute{
-				Attribute: &sysl.Attribute_S{S: "empty"},
-			},
-			},
-		},
-		},
-		}
+		attrs["patterns"] = syslpopulate.NewPattern("empty")
 	}
+
 	if description := m.Comments.Leading.String() + m.Comments.Trailing.String(); description != "" {
-		pattenAttributes["description"] = syslpopulate.NewAttribute(description)
+		attrs["description"] = syslpopulate.NewAttribute(description)
 	}
 	for _, e := range m.Fields {
 		fieldName = syslpopulate.SanitiseTypeName(string(e.Desc.Name()))
-		attrDefs[fieldName] = fieldGoType(packageName, string(m.Desc.Name()), e)
+		attrDefs[fieldName] = fieldGoType(packageName, e)
 	}
 	for _, e := range m.Messages {
-		if err := p.VisitMessage(file, e); err != nil {
+		if err := p.VisitMessage(e); err != nil {
 			return err
 		}
 	}
@@ -137,7 +123,7 @@ func (p *PrinterModule) VisitMessage(file *protogen.File, m *protogen.Message) e
 		p.Module.Apps[packageName].Attrs["package"] = syslpopulate.NewAttribute(packageName)
 	}
 	p.Module.Apps[packageName].Types[typeName] = &sysl.Type{
-		Attrs: pattenAttributes,
+		Attrs: attrs,
 		Type: &sysl.Type_Tuple_{
 			Tuple: &sysl.Type_Tuple{
 				AttrDefs: attrDefs,
@@ -145,16 +131,6 @@ func (p *PrinterModule) VisitMessage(file *protogen.File, m *protogen.Message) e
 		},
 	}
 	return nil
-}
-
-func NoEmptyStrings(in []string) []string {
-	out := make([]string, 0, len(in))
-	for _, element := range in {
-		if element != "" {
-			out = append(out, element)
-		}
-	}
-	return out
 }
 
 // VisitEnumValue converts to sysl enums. All types are writen to the
@@ -175,30 +151,6 @@ func (p *PrinterModule) VisitEnum(e *protogen.Enum) error {
 	return nil
 }
 
-// goPackageOption interprets a file's go_package option.
-// If there is no go_package, it returns ("", "").
-// If there's a simple name, it returns (pkg, "").
-// If the option implies an import path, it returns (pkg, impPath).
-//type GetOptions interface {
-//	GetOptions() *descriptorpb.FileOptions
-//}
-
-//func goPackageOption(optDesc protoreflect.ProtoMessage) (pkg string, impPath string) {
-//	fileOpt, ok := optDesc.(*descriptorpb.FileOptions)
-//	if !ok || fileOpt == nil {
-//		return
-//	}
-//	opt := *fileOpt.GoPackage
-//	if opt == "" {
-//		return "", ""
-//	}
-//	rawPkg, impPath := goPackageOptionRaw(opt)
-//	pkg = cleanPackageName(rawPkg)
-//	if string(pkg) != rawPkg && impPath != "" {
-//
-//	}
-//	return pkg, impPath
-//}
 func syslNames(pkg, fullName string) (string, string) {
 	// A semicolon-delimited suffix delimits the import path and package name.
 	name := strings.ReplaceAll(fullName, pkg, "")
@@ -212,55 +164,4 @@ func syslNames(pkg, fullName string) (string, string) {
 		}
 	}
 	return pkg, syslpopulate.SanitiseTypeName(name)
-}
-func goPackageOptionRaw(opt string, t ...string) (rawPkg string, impPath string) {
-	// A semicolon-delimited suffix delimits the import path and package name.
-	if i := strings.Index(opt, ";"); i >= 0 {
-		//return syslpopulate.SanitiseTypeName(opt[i+1:]), string(opt[:i])
-		rawPkg = opt[i+1:]
-		// The presence of a slash implies there's an import path.
-	} else if i := strings.LastIndex(opt, "/"); i >= 0 {
-		//return syslpopulate.SanitiseTypeName(opt[i+1:]), string(opt)
-		rawPkg = opt[i+1:]
-	} else {
-		rawPkg = opt
-	}
-	rawPkg = strings.ReplaceAll(rawPkg, ".", "_")
-	rawPkg = syslpopulate.SanitiseTypeName(rawPkg)
-	for _, e := range t {
-		rawPkg = strings.ReplaceAll(rawPkg, e, "")
-	}
-	for i := len(rawPkg) - 1; i >= 0; i-- {
-		if rawPkg[i] == '_' {
-			rawPkg = rawPkg[0:i]
-		} else {
-			break
-		}
-	}
-	return rawPkg, ""
-}
-
-// cleanPackageName converts a string to a valid Go package name.
-func cleanPackageName(name string) string {
-	return string(GoSanitized(name))
-}
-
-// GoSanitized converts a string to a valid Go identifier.
-func GoSanitized(s string) string {
-	// Sanitize the input to the set of valid characters,
-	// which must be '_' or be in the Unicode L or N categories.
-	s = strings.Map(func(r rune) rune {
-		if unicode.IsLetter(r) || unicode.IsDigit(r) {
-			return r
-		}
-		return '_'
-	}, s)
-
-	// Prepend '_' in the event of a Go keyword conflict or if
-	// the identifier is invalid (does not start in the Unicode L category).
-	r, _ := utf8.DecodeRuneInString(s)
-	if token.Lookup(s).IsKeyword() || !unicode.IsLetter(r) {
-		return "_" + s
-	}
-	return s
 }
