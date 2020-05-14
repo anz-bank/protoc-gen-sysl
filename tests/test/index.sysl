@@ -2,7 +2,7 @@
 Foo:
     @description = ""
     @package = "grpc_testing"
-    Foobar(input <: grpc_testing.StreamingOutputCallRequest):
+    Foobar(input <: grpc_testing.StreamingOutputCallRequest)[~grpc, ~GRPC]:
         @description = ""
         return ok <: grpc_testing.StreamingOutputCallResponse
 
@@ -13,25 +13,25 @@ TestService:
         |// One empty request followed by one empty response.
         |//    rpc EmptyCall(Empty) returns (Empty);
     @package = "grpc_testing"
-    FullDuplexCall(input <: grpc_testing.StreamingOutputCallRequest):
+    FullDuplexCall(input <: grpc_testing.StreamingOutputCallRequest)[~grpc, ~GRPC]:
         @description =:
             |// A sequence of requests with each request served by the server immediately.
             |// As one request could lead to multiple responses, this interface
             |// demonstrates the idea of full duplexing.
         return ok <: grpc_testing.StreamingOutputCallResponse
-    HalfDuplexCall(input <: grpc_testing.StreamingOutputCallRequest):
+    HalfDuplexCall(input <: grpc_testing.StreamingOutputCallRequest)[~grpc, ~GRPC]:
         @description =:
             |// A sequence of requests followed by a sequence of responses.
             |// The server buffers all the client requests and then serves them in order. A
             |// stream of responses are returned to the client when the server starts with
             |// first request.
         return ok <: grpc_testing.StreamingOutputCallResponse
-    StreamingInputCall(input <: grpc_testing.StreamingInputCallRequest):
+    StreamingInputCall(input <: grpc_testing.StreamingInputCallRequest)[~grpc, ~GRPC]:
         @description =:
             |// A sequence of requests followed by one response (streamed upload).
             |// The server returns the aggregated size of client payload as the result.
         return ok <: grpc_testing.StreamingInputCallResponse
-    StreamingOutputCall(input <: grpc_testing.StreamingOutputCallRequest):
+    StreamingOutputCall(input <: grpc_testing.StreamingOutputCallRequest)[~grpc, ~GRPC]:
         @description =:
             |// One request followed by a sequence of responses (streamed download).
             |// The server returns the payload with client desired type and sizes.

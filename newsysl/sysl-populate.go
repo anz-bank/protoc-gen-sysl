@@ -1,4 +1,4 @@
-package syslpopulate
+package newsysl
 
 import (
 	"strings"
@@ -20,8 +20,8 @@ var TypeMapping = map[string]sysl.Type_Primitive{
 
 var specialMappings = map[string]string{"date": "date_", "Any": "Any_", "any": "any_"}
 
-// NewPattern returns a pattern attribute nested in a whole bunch of other types because fml
-func NewPattern(patterns ...string) *sysl.Attribute {
+// Pattern returns a pattern attribute nested in a whole bunch of other types because fml
+func Pattern(patterns ...string) *sysl.Attribute {
 	var Elt []*sysl.Attribute
 	for _, pattern := range patterns {
 		Elt = append(Elt, &sysl.Attribute{Attribute: &sysl.Attribute_S{S: pattern}})
@@ -29,61 +29,55 @@ func NewPattern(patterns ...string) *sysl.Attribute {
 	return &sysl.Attribute{Attribute: &sysl.Attribute_A{A: &sysl.Attribute_Array{Elt: Elt}}}
 }
 
-// NewApplication Initialises a Sysl application
-func NewApplication(appName string) *sysl.Application {
+// Application Initialises a Sysl application
+func Application(appName string) *sysl.Application {
 	return &sysl.Application{
-		Name:      NewAppName(appName),
+		Name:      AppName(appName),
 		Endpoints: map[string]*sysl.Endpoint{},
 		Types:     map[string]*sysl.Type{},
 		Attrs:     map[string]*sysl.Attribute{},
 	}
 }
 
-// NewApplication Initialises a Sysl application
-func NewModule() *sysl.Module {
+// Application Initialises a Sysl application
+func Module() *sysl.Module {
 	return &sysl.Module{Apps: map[string]*sysl.Application{}}
 }
 
-// NewEndpoint Initialises a Sysl Endpoint
-func NewEndpoint(name string) *sysl.Endpoint {
+// Endpoint Initialises a Sysl Endpoint
+func Endpoint(name string) *sysl.Endpoint {
 	return &sysl.Endpoint{Name: name}
 }
 
-// NewParameter Initialises a Sysl Parameter input
-func NewParameter(name, application string) *sysl.Param {
+// Param Initialises a Sysl Param input
+func Param(name, application string) *sysl.Param {
 	return &sysl.Param{
 		Name: "input",
-		Type: NewType(name, application),
+		Type: Type(name, application),
 	}
 }
 
-// NewAttribute Initialises a Sysl Attribute
-func NewAttribute(value string) *sysl.Attribute {
+// Attribute Initialises a Sysl Attribute
+func Attribute(value string) *sysl.Attribute {
 	return &sysl.Attribute{
 		Attribute: &sysl.Attribute_S{S: value},
 	}
 }
 
-func NewIntAttribute(value int) *sysl.Attribute {
-	return &sysl.Attribute{
-		Attribute: &sysl.Attribute_I{I: int64(value)},
-	}
-}
-
-// NewType Initialises a Sysl type from string
-func NewType(name, application string) *sysl.Type {
+// Type Initialises a Sysl type from string
+func Type(name, application string) *sysl.Type {
 	if strings.Contains(name, "sequence of") {
-		return SyslSequence(strings.ReplaceAll(name, "sequence of", ""), application)
+		return NewSequence(strings.ReplaceAll(name, "sequence of", ""), application)
 	}
 	if fieldType, ok := TypeMapping[name]; ok {
-		return SyslPrimitive(fieldType)
+		return Primitive(fieldType)
 	}
-	return SyslStruct(name, application)
+	return Struct(name, application)
 }
 
-// NewReturn Initialises a return statement and wraps it in a sysl statement
+// Return Initialises a return statement and wraps it in a sysl statement
 // payloads will be concatenated and seperated by dots "."
-func NewReturn(payloads ...string) *sysl.Statement {
+func Return(payloads ...string) *sysl.Statement {
 	for i := range payloads {
 		payloads[i] = SanitiseTypeName(payloads[i])
 	}
@@ -91,16 +85,16 @@ func NewReturn(payloads ...string) *sysl.Statement {
 		Payload: "ok <: " + strings.Join(payloads, ".")}}}
 }
 
-// NewCall Initialises a call statement and wraps it in a sysl statement
-func NewCall(app, endpoint string) *sysl.Statement {
+// Call Initialises a call statement and wraps it in a sysl statement
+func Call(app, endpoint string) *sysl.Statement {
 	return &sysl.Statement{Stmt: &sysl.Statement_Call{
 		Call: &sysl.Call{
-			Target:   NewAppName(app),
+			Target:   AppName(app),
 			Endpoint: endpoint}}}
 }
 
-// NewStringStatement Initialises a call statement and wraps it in a sysl statement
-func NewStringStatement(value string) *sysl.Statement {
+// StringStatement Initialises a call statement and wraps it in a sysl statement
+func StringStatement(value string) *sysl.Statement {
 	return &sysl.Statement{Stmt: &sysl.Statement_Action{
 		Action: &sysl.Action{
 			Action: value,
@@ -110,12 +104,12 @@ func NewStringStatement(value string) *sysl.Statement {
 }
 
 // AppName returns an appname from the inputs
-func NewAppName(name ...string) *sysl.AppName {
+func AppName(name ...string) *sysl.AppName {
 	return &sysl.AppName{Part: name}
 }
 
-// SyslPrimitive converts a string to a sysl primitive type (parameter must be in sysl type)
-func SyslPrimitive(fieldType sysl.Type_Primitive) *sysl.Type {
+// Primitive converts a string to a sysl primitive type (parameter must be in sysl type)
+func Primitive(fieldType sysl.Type_Primitive) *sysl.Type {
 	return &sysl.Type{
 		Type: &sysl.Type_Primitive_{
 			Primitive: fieldType,
@@ -130,29 +124,20 @@ func Sequence(t *sysl.Type) *sysl.Type {
 	}
 }
 
-// SyslPrimitive converts a string to a sysl primitive type (parameter must be in sysl type)
-func SyslSequence(fieldType, application string) *sysl.Type {
+// Primitive converts a string to a sysl primitive type (parameter must be in sysl type)
+func NewSequence(fieldType, application string) *sysl.Type {
 	return &sysl.Type{
 		Type: &sysl.Type_Sequence{
-			Sequence: NewType(fieldType, application),
+			Sequence: Type(fieldType, application),
 		},
 	}
 }
 
-// SyslPrimitive converts a string to a sysl primitive type (parameter must be in sysl type)
-func SyslSequenceFrom(fieldType, application string) *sysl.Type {
-	return &sysl.Type{
-		Type: &sysl.Type_Sequence{
-			Sequence: NewType(fieldType, application),
-		},
-	}
-}
-
-// SyslStruct converts a string to a sysl struct type
-func SyslStruct(fieldType, application string) *sysl.Type {
+// Struct converts a string to a sysl struct type
+func Struct(fieldType, application string) *sysl.Type {
 	var appName *sysl.AppName
 	if application != "" {
-		appName = NewAppName(application)
+		appName = AppName(application)
 	}
 	return &sysl.Type{
 		Type: &sysl.Type_TypeRef{

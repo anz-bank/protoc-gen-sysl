@@ -2,7 +2,7 @@
 Bar:
     @description = ""
     @package = "grpc_testing"
-    AnotherEndpoint(input <: grpc_testing.date_):
+    AnotherEndpoint(input <: grpc_testing.date_)[~grpc, ~GRPC]:
         @description = ""
         return ok <: grpc_testing.date_
 

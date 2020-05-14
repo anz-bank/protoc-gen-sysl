@@ -6,27 +6,22 @@ import (
 
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
+	"github.com/anz-bank/protoc-gen-sysl/newsysl"
 	"github.com/anz-bank/sysl/pkg/printer"
 	"github.com/anz-bank/sysl/pkg/sysl"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
-type Converter struct {
-	Module *sysl.Module
-}
-
-// GenerateFile generates the contents of a .pb.go file.
+// GenerateFile generates the contents of a index.sysl file.
 func GenerateFiles(gen *protogen.Plugin) error {
-	filename := "index.sysl"
-	var buf bytes.Buffer
-	g := gen.NewGeneratedFile(filename, gen.Files[0].GoImportPath)
-	m := syslpopulate.NewModule()
+	g := gen.NewGeneratedFile("index.sysl", gen.Files[0].GoImportPath)
+	m := newsysl.Module() // destination sysl module
 	for _, file := range gen.Files {
 		if err := VisitFile(m, file); err != nil {
 			return err
 		}
 	}
+	var buf bytes.Buffer
 	printer.Module(&buf, m)
 	g.P(buf.String())
 	return nil
@@ -55,13 +50,13 @@ func VisitFile(module *sysl.Module, file *protogen.File) (err error) {
 // service myservice{...} --> myservice:
 func VisitService(module *sysl.Module, s *protogen.Service) error {
 	pkgName, name := descToSyslName(s.Desc)
-	app := syslpopulate.NewApplication(name)
+	app := newsysl.Application(name)
 
-	app.Attrs["package"] = syslpopulate.NewAttribute(pkgName)
-	app.Attrs["description"] = syslpopulate.NewAttribute(s.Comments.Leading.String() + s.Comments.Trailing.String())
+	app.Attrs["package"] = newsysl.Attribute(pkgName)
+	app.Attrs["description"] = newsysl.Attribute(s.Comments.Leading.String() + s.Comments.Trailing.String())
 	module.Apps[name] = app
 	for _, e := range s.Methods {
-		if err := VisitMethod(module, s, e); err != nil {
+		if err := VisitMethod(module, e); err != nil {
 			return err
 		}
 	}
@@ -72,23 +67,24 @@ func VisitService(module *sysl.Module, s *protogen.Service) error {
 // rpc thisEndpoint(InputType)returns(outputType) -->
 // thisEndpoint(input <: InputType):
 //     return ok <: outputType
-func VisitMethod(module *sysl.Module, s *protogen.Service, m *protogen.Method) error {
+func VisitMethod(module *sysl.Module, m *protogen.Method) error {
 	appName := string(m.Desc.Parent().Name())
-	endpointName := syslpopulate.SanitiseTypeName(string(m.Desc.Name()))
-	endpoint := syslpopulate.NewEndpoint(endpointName)
+	endpointName := newsysl.SanitiseTypeName(string(m.Desc.Name()))
+	endpoint := newsysl.Endpoint(endpointName)
 
 	// Apps types are stored in a sysl app which is the same as the package name
 	// Input
 	packageName, Name := descToSyslName(m.Input.Desc)
-	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(Name, packageName)}
+	endpoint.Param = []*sysl.Param{newsysl.Param(Name, packageName)}
 
 	// Output
 	packageName, Name = descToSyslName(m.Output.Desc)
-	endpoint.Stmt = []*sysl.Statement{syslpopulate.NewReturn(packageName, Name)}
+	endpoint.Stmt = []*sysl.Statement{newsysl.Return(packageName, Name)}
 
 	// Attributes
 	endpoint.Attrs = make(map[string]*sysl.Attribute)
-	endpoint.Attrs["description"] = syslpopulate.NewAttribute(m.Comments.Leading.String() + m.Comments.Trailing.String())
+	endpoint.Attrs["description"] = newsysl.Attribute(m.Comments.Leading.String() + m.Comments.Trailing.String())
+	endpoint.Attrs["patterns"] = newsysl.Pattern("grpc", "GRPC")
 
 	module.Apps[appName].Endpoints[endpointName] = endpoint
 	return nil
@@ -104,15 +100,15 @@ func VisitMessage(module *sysl.Module, m *protogen.Message) error {
 	packageName, typeName := descToSyslName(m.Desc)
 
 	if description := m.Comments.Leading.String() + m.Comments.Trailing.String(); description != "" {
-		attrs["description"] = syslpopulate.NewAttribute(description)
+		attrs["description"] = newsysl.Attribute(description)
 	}
 	for _, e := range m.Fields {
-		fieldName = syslpopulate.SanitiseTypeName(string(e.Desc.Name()))
+		fieldName = newsysl.SanitiseTypeName(string(e.Desc.Name()))
 		attrDefs[fieldName] = fieldGoType(packageName, e)
 	}
 	// If there are no fields add ~empty pattern
 	if len(m.Fields) == 0 {
-		attrs["patterns"] = syslpopulate.NewPattern("empty")
+		attrs["patterns"] = newsysl.Pattern("empty")
 	}
 	// in proto messages can be defined within messages
 	for _, e := range m.Messages {
@@ -128,8 +124,8 @@ func VisitMessage(module *sysl.Module, m *protogen.Message) error {
 	}
 	// If this is the first service in the package, we need to make an app to store the types
 	if _, ok := module.Apps[packageName]; !ok {
-		module.Apps[packageName] = syslpopulate.NewApplication(packageName)
-		module.Apps[packageName].Attrs["package"] = syslpopulate.NewAttribute(packageName)
+		module.Apps[packageName] = newsysl.Application(packageName)
+		module.Apps[packageName].Attrs["package"] = newsysl.Attribute(packageName)
 	}
 	module.Apps[packageName].Types[typeName] = &sysl.Type{
 		Attrs: attrs,
@@ -148,12 +144,12 @@ func VisitMessage(module *sysl.Module, m *protogen.Message) error {
 func VisitEnum(module *sysl.Module, e *protogen.Enum) error {
 	packageName, typeName := descToSyslName(e.Desc)
 	if _, ok := module.Apps[packageName]; !ok {
-		module.Apps[packageName] = syslpopulate.NewApplication(packageName)
+		module.Apps[packageName] = newsysl.Application(packageName)
 	}
 	values := make(map[string]int64)
 	t := e.Values
 	for _, val := range t {
-		values[syslpopulate.SanitiseTypeName(string(val.Desc.Name()))] = int64(val.Desc.Number())
+		values[newsysl.SanitiseTypeName(string(val.Desc.Name()))] = int64(val.Desc.Number())
 	}
 	module.Apps[packageName].Types[typeName] = &sysl.Type{
 		Type: &sysl.Type_Enum_{
@@ -182,5 +178,5 @@ func syslNames(pkg, fullName string) (string, string) {
 			break
 		}
 	}
-	return pkg, syslpopulate.SanitiseTypeName(name)
+	return pkg, newsysl.SanitiseTypeName(name)
 }

@@ -2,7 +2,7 @@
 Bar:
     @description = ""
     @package = "grpc_testing"
-    AnotherEndpoint(input <: grpc_testing.Request):
+    AnotherEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
         @description = ""
         return ok <: grpc_testing.Response
 

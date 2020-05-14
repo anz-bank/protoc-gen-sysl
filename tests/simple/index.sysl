@@ -3,7 +3,7 @@ Bar:
     @description =:
         |// This is a comment before Bar
     @package = "grpc_testing"
-    AnotherEndpoint(input <: grpc_testing.Request):
+    AnotherEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
         @description =:
             |// this is a comment before Bar.AnotherEndpoint
         return ok <: grpc_testing.Response
@@ -12,7 +12,7 @@ Foo:
     @description =:
         |// This is a comment before Foo
     @package = "grpc_testing"
-    thisEndpoint(input <: grpc_testing.Request):
+    thisEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
         @description = ""
         return ok <: grpc_testing.Response
 

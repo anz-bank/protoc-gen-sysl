@@ -2,14 +2,14 @@
 Bar:
     @description = ""
     @package = "grpc_testing_what"
-    AnotherEndpoint(input <: grpc_testing_what.date_):
+    AnotherEndpoint(input <: grpc_testing_what.date_)[~grpc, ~GRPC]:
         @description = ""
         return ok <: grpc_testing_what.date_
 
 Car:
     @description = ""
     @package = "grpc_testing_what"
-    AnotherEndpoint(input <: grpc_testing_what.this):
+    AnotherEndpoint(input <: grpc_testing_what.this)[~grpc, ~GRPC]:
         @description = ""
         return ok <: grpc_testing_what.this
 
