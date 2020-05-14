@@ -13,7 +13,7 @@ grpc_testing:
             @json_tag = "this"
             @rpcId = "1"
     !type that:
-        s <: grpc_testing_date:
+        s <: date_:
             @json_tag = "s"
             @rpcId = "1"
 

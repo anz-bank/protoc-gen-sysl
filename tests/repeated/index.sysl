@@ -2,7 +2,7 @@
 grpc_testing:
     @package = "grpc_testing"
     !type Request:
-        q <: sequence of grpc_testing_Whatever
+        q <: sequence of Whatever
         query <: sequence of string
     !type Whatever:
         query <: string:

@@ -125,15 +125,17 @@ google_protobuf:
 grpc_testing_what:
     @package = "grpc_testing_what"
     !type date_:
-        foobar <: google_protobuf.google_protobuf_Timestamp:
+        foobar <: google_protobuf.Timestamp:
             @json_tag = "foobar"
             @rpcId = "1"
     !type foo:
-        foobar <: google_protobuf.google_protobuf_Empty:
+        foobar <: google_protobuf.Empty:
             @json_tag = "foobar"
             @rpcId = "1"
+    !type repeatedDate:
+        foobar <: sequence of google_protobuf.Timestamp
     !type this:
-        foobar <: grpc_testing_what_this_That:
+        foobar <: this_That:
             @json_tag = "foobar"
             @rpcId = "1"
     !type this_That:

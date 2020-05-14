@@ -40,9 +40,6 @@ func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	if field.Message != nil {
 		application, _ = syslNames(string(field.Message.Desc.Parent().ParentFile().Package()), string(field.Message.Desc.FullName()))
 	}
-	if application == currentApp {
-		application = ""
-	}
 	var t *sysl.Type
 	switch field.Desc.Kind() {
 	case protoreflect.BoolKind:
@@ -58,10 +55,16 @@ func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	case protoreflect.BytesKind:
 		t = syslpopulate.SyslPrimitive(sysl.Type_BYTES)
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		_, typeName := syslNames(application, string(field.Message.Desc.FullName()))
+		_, typeName := syslNames(string(field.Message.Desc.Parent().ParentFile().Package()), string(field.Message.Desc.FullName()))
+		if application == currentApp {
+			application = ""
+		}
 		t = syslpopulate.NewType(typeName, application)
 	case protoreflect.EnumKind:
-		_, typeName := syslNames(application, string(field.Enum.Desc.FullName()))
+		_, typeName := syslNames(string(field.Enum.Desc.Parent().ParentFile().Package()), string(field.Enum.Desc.FullName()))
+		if application == currentApp {
+			application = ""
+		}
 		t = syslpopulate.NewType(typeName, application)
 	}
 	t.Attrs = map[string]*sysl.Attribute{

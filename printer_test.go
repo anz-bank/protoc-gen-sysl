@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"testing"
 
+	"github.com/anz-bank/sysl/pkg/parse"
 	"github.com/anz-bank/sysl/pkg/syslutil"
 	"github.com/spf13/afero"
 
@@ -24,21 +26,20 @@ import (
 )
 
 var tests = []string{
-	//"date/",
-	//"multiplefiles/",
-	//"any/",
-	//"hello/",
+	"multiplefiles/",
+	"date/",
+	"any/",
+	"hello/",
 	"externaltype/",
-	//"disconnectedimport/",
-	//"any/",
-	//"simple/",
-	//"empty/",
-	//"repeated/",
-	//"messageinmessage/",
-	//"test",
-
-	//"otheroption/",
-	//"enum/",
+	"disconnectedimport/",
+	"any/",
+	"simple/",
+	"empty/",
+	"repeated/",
+	"messageinmessage/",
+	"test",
+	"otheroption/",
+	"enum/",
 }
 
 const testDir = "./tests"
@@ -48,7 +49,6 @@ func TestPrinting(t *testing.T) {
 		test = filepath.Join(testDir, test)
 		_, fs := syslutil.WriteToMemOverlayFs(test)
 		GeneratorResponse, err := ConvertSyslToProto(filepath.Join(test, "code_generator_request.pb.bin"))
-
 		t.Run(test, func(t *testing.T) {
 			assert.NoError(t, err)
 			golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
@@ -57,6 +57,9 @@ func TestPrinting(t *testing.T) {
 				fmt.Println(*GeneratorResponse.File[0].Content)
 			}
 			assert.Equal(t, *GeneratorResponse.File[0].Content, string(golden))
+			if _, err := parse.NewParser().Parse(*GeneratorResponse.File[0].Name, fs); err != nil {
+				log.Fatal(err)
+			}
 		})
 	}
 }
