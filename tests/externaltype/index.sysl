@@ -2,9 +2,9 @@
 Bar:
     @description = ""
     @package = "grpc_testing_what"
-    AnotherEndpoint(input <: grpc.date__):
+    AnotherEndpoint(input <: grpc_testing_what.date__):
         @description = ""
-        return ok <: grpc.date__
+        return ok <: grpc_testing_what.date__
 
 Car:
     @description = ""
@@ -115,35 +115,32 @@ google_protobuf:
             |// ) to obtain a formatter capable of generating timestamps in this format.
             |//
             |//
-        Nanos <: int:
+        nanos <: int:
             @json_tag = "nanos"
             @rpcId = "2"
-        Seconds <: int:
+        seconds <: int:
             @json_tag = "seconds"
-            @rpcId = "1"
-
-grpc:
-    @package = "grpc"
-    !type date__:
-        Foobar <: google_protobuf_Timestamp.Timestamp:
-            @json_tag = "foobar"
             @rpcId = "1"
 
 grpc_testing_what:
     @package = "grpc_testing_what"
-    !type Foo:
-        Foobar <: google_protobuf_Empty.Empty:
+    !type date__:
+        foobar <: google_protobuf.Timestamp:
             @json_tag = "foobar"
             @rpcId = "1"
-    !type This:
-        Foobar <: grpc_testing_what_this_That.This_That:
+    !type foo:
+        foobar <: google_protobuf.Empty:
+            @json_tag = "foobar"
+            @rpcId = "1"
+    !type this:
+        foobar <: grpc_testing_what_this.This_That:
             @json_tag = "foobar"
             @rpcId = "1"
 
 grpc_testing_what_this:
     @package = "grpc_testing_what_this"
-    !type This_That:
-        Ohno <: string:
+    !type That:
+        ohno <: string:
             @json_tag = "ohno"
             @rpcId = "1"
 

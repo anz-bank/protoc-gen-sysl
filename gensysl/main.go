@@ -60,9 +60,9 @@ func (p *PrinterModule) VisitFile(file *protogen.File) (err error) {
 // VisitService converts to sysl and constructs endpoints from methods
 // service myservice{...} --> myservice:
 func (p *PrinterModule) VisitService(file *protogen.File, s *protogen.Service) error {
-	name := syslpopulate.SanitiseTypeName(s.GoName)
+	name := syslpopulate.SanitiseTypeName(string(s.Desc.Name()))
 	p.Module.Apps[name] = syslpopulate.NewApplication(name)
-	pkgName, _ := goPackageOptionRaw(string(file.Desc.FullName()))
+	pkgName, _ := goPackageOptionRaw(string(s.Desc.FullName()), name)
 	p.Module.Apps[name].Attrs["package"] = syslpopulate.NewAttribute(pkgName)
 	p.Module.Apps[name].Attrs["description"] = syslpopulate.NewAttribute(s.Comments.Leading.String() + s.Comments.Trailing.String())
 	for _, e := range s.Methods {
@@ -95,7 +95,7 @@ func (p *PrinterModule) VisitMethod(s *protogen.Service, m *protogen.Method) (er
 // TypeApplication (as in sysl types belong to applications but not in proto
 // message foo{...} --> !type foo:
 func (p *PrinterModule) VisitMessage(file *protogen.File, m *protogen.Message) error {
-	typeName := syslpopulate.SanitiseTypeName(m.GoIdent.GoName)
+	typeName := syslpopulate.SanitiseTypeName(string(m.Desc.Name()))
 	var fieldName string
 	pattenAttributes := make(map[string]*sysl.Attribute)
 	attrDefs := make(map[string]*sysl.Type)
@@ -115,7 +115,7 @@ func (p *PrinterModule) VisitMessage(file *protogen.File, m *protogen.Message) e
 		pattenAttributes["description"] = syslpopulate.NewAttribute(description)
 	}
 	for _, e := range m.Fields {
-		fieldName = syslpopulate.SanitiseTypeName(e.GoName)
+		fieldName = syslpopulate.SanitiseTypeName(string(e.Desc.Name()))
 		attrDefs[fieldName] = fieldGoType(packageName, e)
 	}
 	for _, e := range m.Messages {
@@ -210,8 +210,8 @@ func goPackageOptionRaw(opt string, t ...string) (rawPkg string, impPath string)
 	} else {
 		rawPkg = opt
 	}
-	rawPkg = syslpopulate.SanitiseTypeName(rawPkg)
 	rawPkg = strings.ReplaceAll(rawPkg, ".", "_")
+	rawPkg = syslpopulate.SanitiseTypeName(rawPkg)
 	for _, e := range t {
 		rawPkg = strings.ReplaceAll(rawPkg, e, "")
 	}

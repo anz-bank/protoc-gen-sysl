@@ -9,11 +9,11 @@ Bar:
 grpc_testing:
     @package = "grpc_testing"
     !type Request:
-        Query <: string:
+        query <: string:
             @json_tag = "query"
             @rpcId = "1"
     !type Response:
-        Query <: string:
+        query <: string:
             @json_tag = "query"
             @rpcId = "1"
 

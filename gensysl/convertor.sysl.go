@@ -15,7 +15,7 @@ import (
 func (p *PrinterModule) messageToSysl(m *protogen.Message) (string, string) {
 	var fieldType string
 	fieldType = syslpopulate.SanitiseTypeName(string(m.Desc.Name()))
-	application, _ := goPackageOptionRaw(string(m.Desc.FullName()), fieldType)
+	application, _ := goPackageOptionRaw(string(m.Desc.FullName()), string(m.Desc.Name()))
 	return application, fieldType
 }
 
@@ -37,7 +37,7 @@ func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	}
 	application, _ := goPackageOptionRaw(string(field.Desc.FullName()), string(field.Desc.Name()))
 	if field.Message != nil {
-		application, _ = goPackageOptionRaw(string(field.Message.Desc.FullName()), string(field.Desc.Name()))
+		application, _ = goPackageOptionRaw(string(field.Message.Desc.FullName()), string(field.Message.Desc.Name()))
 	}
 	if application == currentApp {
 		application = ""

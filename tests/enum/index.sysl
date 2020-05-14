@@ -12,14 +12,14 @@ grpc_testing:
         AUD: 0
         USD: 1
     !type Request:
-        CurrencyCode <: grpc_testing_Request.Currency:
+        currency_code <: grpc_testing_Request.Currency:
             @json_tag = "currencyCode"
             @rpcId = "2"
-        Query <: string:
+        query <: string:
             @json_tag = "query"
             @rpcId = "1"
     !type Response:
-        Query <: string:
+        query <: string:
             @json_tag = "query"
             @rpcId = "1"
 

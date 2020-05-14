@@ -6,8 +6,8 @@ Bar:
         @description = ""
         return ok <: grpc_testing.This
 
-googleany:
-    @package = "googleany"
+google_protobuf:
+    @package = "google_protobuf"
     !type any_:
         @description =:
             |// `Any` contains an arbitrary serialized protocol buffer message along with a
@@ -90,17 +90,17 @@ googleany:
             |//       "value": "1.212s"
             |//     }
             |//
-        TypeUrl <: string:
+        type_url <: string:
             @json_tag = "typeUrl"
             @rpcId = "1"
-        Value <: bytes:
+        value <: bytes:
             @json_tag = "value"
             @rpcId = "2"
 
 grpc_testing:
     @package = "grpc_testing"
     !type This:
-        GrpcRequest <: googleany.any_:
+        grpc_request <: google_protobuf.any_:
             @json_tag = "grpcRequest"
             @rpcId = "1"
 

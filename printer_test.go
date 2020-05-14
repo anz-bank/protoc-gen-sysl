@@ -24,20 +24,20 @@ import (
 )
 
 var tests = []string{
-	"any/",
-	"hello/",
-	"externaltype/",
-	"disconnectedimport/",
-	"any/",
-	"simple/",
-	"empty/",
-	"repeated/",
-	"messageinmessage/",
-	"test",
-	"multiplefiles/",
-	"otheroption/",
-	"enum/",
 	"date/",
+	//"any/",
+	//"hello/",
+	//"externaltype/",
+	//"disconnectedimport/",
+	//"any/",
+	//"simple/",
+	//"empty/",
+	//"repeated/",
+	//"messageinmessage/",
+	//"test",
+	//"multiplefiles/",
+	//"otheroption/",
+	//"enum/",
 }
 
 const testDir = "./tests"

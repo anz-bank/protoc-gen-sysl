@@ -42,284 +42,284 @@ google_protobuf:
     !type DescriptorProto:
         @description =:
             |// Describes a message type.
-        EnumType <: sequence of google_protobuf_EnumDescriptorProto.EnumDescriptorProto
-        Extension <: sequence of google_protobuf_FieldDescriptorProto.FieldDescriptorProto
-        ExtensionRange <: sequence of google_protobuf_DescriptorProto_ExtensionRange.DescriptorProto_ExtensionRange
-        Field <: sequence of google_protobuf_FieldDescriptorProto.FieldDescriptorProto
-        Name <: string:
+        enum_type <: sequence of EnumDescriptorProto
+        extension <: sequence of FieldDescriptorProto
+        extension_range <: sequence of google_protobuf_DescriptorProto.DescriptorProto_ExtensionRange
+        field <: sequence of FieldDescriptorProto
+        name <: string:
             @json_tag = "name"
             @rpcId = "1"
-        NestedType <: sequence of google_protobuf_DescriptorProto.DescriptorProto
-        OneofDecl <: sequence of google_protobuf_OneofDescriptorProto.OneofDescriptorProto
-        Options <: google_protobuf_MessageOptions.MessageOptions:
+        nested_type <: sequence of DescriptorProto
+        oneof_decl <: sequence of OneofDescriptorProto
+        options <: MessageOptions:
             @json_tag = "options"
             @rpcId = "7"
-        ReservedName <: sequence of string
-        ReservedRange <: sequence of google_protobuf_DescriptorProto_ReservedRange.DescriptorProto_ReservedRange
+        reserved_name <: sequence of string
+        reserved_range <: sequence of google_protobuf_DescriptorProto.DescriptorProto_ReservedRange
     !type EnumDescriptorProto:
         @description =:
             |// Describes an enum type.
-        Name <: string:
+        name <: string:
             @json_tag = "name"
             @rpcId = "1"
-        Options <: google_protobuf_EnumOptions.EnumOptions:
+        options <: EnumOptions:
             @json_tag = "options"
             @rpcId = "3"
-        ReservedName <: sequence of string
-        ReservedRange <: sequence of google_protobuf_EnumDescriptorProto_EnumReservedRange.EnumDescriptorProto_EnumReservedRange
-        Value <: sequence of google_protobuf_EnumValueDescriptorProto.EnumValueDescriptorProto
+        reserved_name <: sequence of string
+        reserved_range <: sequence of google_protobuf_EnumDescriptorProto.EnumDescriptorProto_EnumReservedRange
+        value <: sequence of EnumValueDescriptorProto
     !type EnumOptions:
-        AllowAlias <: bool:
+        allow_alias <: bool:
             @json_tag = "allowAlias"
             @rpcId = "2"
-        Deprecated <: bool:
+        deprecated <: bool:
             @json_tag = "deprecated"
             @rpcId = "3"
-        UninterpretedOption <: sequence of google_protobuf_UninterpretedOption.UninterpretedOption
+        uninterpreted_option <: sequence of UninterpretedOption
     !type EnumValueDescriptorProto:
         @description =:
             |// Describes a value within an enum.
-        Name <: string:
+        name <: string:
             @json_tag = "name"
             @rpcId = "1"
-        Number <: int:
+        number <: int:
             @json_tag = "number"
             @rpcId = "2"
-        Options <: google_protobuf_EnumValueOptions.EnumValueOptions:
+        options <: EnumValueOptions:
             @json_tag = "options"
             @rpcId = "3"
     !type EnumValueOptions:
-        Deprecated <: bool:
+        deprecated <: bool:
             @json_tag = "deprecated"
             @rpcId = "1"
-        UninterpretedOption <: sequence of google_protobuf_UninterpretedOption.UninterpretedOption
+        uninterpreted_option <: sequence of UninterpretedOption
     !type ExtensionRangeOptions:
-        UninterpretedOption <: sequence of google_protobuf_UninterpretedOption.UninterpretedOption
+        uninterpreted_option <: sequence of UninterpretedOption
     !type FieldDescriptorProto:
         @description =:
             |// Describes a field within a message.
-        DefaultValue <: string:
+        default_value <: string:
             @json_tag = "defaultValue"
             @rpcId = "7"
-        Extendee <: string:
+        extendee <: string:
             @json_tag = "extendee"
             @rpcId = "2"
-        JsonName <: string:
+        json_name <: string:
             @json_tag = "jsonName"
             @rpcId = "10"
-        Label <: google_protobuf_FieldDescriptorProto.FieldDescriptorProto_Label:
+        label <: google_protobuf_FieldDescriptorProto.FieldDescriptorProto_Label:
             @json_tag = "label"
             @rpcId = "4"
-        Name <: string:
+        name <: string:
             @json_tag = "name"
             @rpcId = "1"
-        Number <: int:
+        number <: int:
             @json_tag = "number"
             @rpcId = "3"
-        OneofIndex <: int:
+        oneof_index <: int:
             @json_tag = "oneofIndex"
             @rpcId = "9"
-        Options <: google_protobuf_FieldOptions.FieldOptions:
+        options <: FieldOptions:
             @json_tag = "options"
             @rpcId = "8"
-        Type <: google_protobuf_FieldDescriptorProto.FieldDescriptorProto_Type:
+        type <: google_protobuf_FieldDescriptorProto.FieldDescriptorProto_Type:
             @json_tag = "type"
             @rpcId = "5"
-        TypeName <: string:
+        type_name <: string:
             @json_tag = "typeName"
             @rpcId = "6"
     !type FieldOptions:
-        Ctype <: google_protobuf_FieldOptions.FieldOptions_CType:
+        ctype <: google_protobuf_FieldOptions.FieldOptions_CType:
             @json_tag = "ctype"
             @rpcId = "1"
-        Deprecated <: bool:
+        deprecated <: bool:
             @json_tag = "deprecated"
             @rpcId = "3"
-        Jstype <: google_protobuf_FieldOptions.FieldOptions_JSType:
+        jstype <: google_protobuf_FieldOptions.FieldOptions_JSType:
             @json_tag = "jstype"
             @rpcId = "6"
-        Lazy <: bool:
+        lazy <: bool:
             @json_tag = "lazy"
             @rpcId = "5"
-        Packed <: bool:
+        packed <: bool:
             @json_tag = "packed"
             @rpcId = "2"
-        UninterpretedOption <: sequence of google_protobuf_UninterpretedOption.UninterpretedOption
-        Weak <: bool:
+        uninterpreted_option <: sequence of UninterpretedOption
+        weak <: bool:
             @json_tag = "weak"
             @rpcId = "10"
     !type FileDescriptorProto:
         @description =:
             |// Describes a complete .proto file.
-        Dependency <: sequence of string
-        EnumType <: sequence of google_protobuf_EnumDescriptorProto.EnumDescriptorProto
-        Extension <: sequence of google_protobuf_FieldDescriptorProto.FieldDescriptorProto
-        MessageType <: sequence of google_protobuf_DescriptorProto.DescriptorProto
-        Name <: string:
+        dependency <: sequence of string
+        enum_type <: sequence of EnumDescriptorProto
+        extension <: sequence of FieldDescriptorProto
+        message_type <: sequence of DescriptorProto
+        name <: string:
             @json_tag = "name"
             @rpcId = "1"
-        Options <: google_protobuf_FileOptions.FileOptions:
+        options <: FileOptions:
             @json_tag = "options"
             @rpcId = "8"
-        Package <: string:
+        package <: string:
             @json_tag = "package"
             @rpcId = "2"
-        PublicDependency <: sequence of int
-        Service <: sequence of google_protobuf_ServiceDescriptorProto.ServiceDescriptorProto
-        SourceCodeInfo <: google_protobuf_SourceCodeInfo.SourceCodeInfo:
+        public_dependency <: sequence of int
+        service <: sequence of ServiceDescriptorProto
+        source_code_info <: SourceCodeInfo:
             @json_tag = "sourceCodeInfo"
             @rpcId = "9"
-        Syntax <: string:
+        syntax <: string:
             @json_tag = "syntax"
             @rpcId = "12"
-        WeakDependency <: sequence of int
+        weak_dependency <: sequence of int
     !type FileDescriptorSet:
         @description =:
             |// The protocol compiler can output a FileDescriptorSet containing the .proto
             |// files it parses.
-        File <: sequence of google_protobuf_FileDescriptorProto.FileDescriptorProto
+        file <: sequence of FileDescriptorProto
     !type FileOptions:
-        CcEnableArenas <: bool:
+        cc_enable_arenas <: bool:
             @json_tag = "ccEnableArenas"
             @rpcId = "31"
-        CcGenericServices <: bool:
+        cc_generic_services <: bool:
             @json_tag = "ccGenericServices"
             @rpcId = "16"
-        CsharpNamespace <: string:
+        csharp_namespace <: string:
             @json_tag = "csharpNamespace"
             @rpcId = "37"
-        Deprecated <: bool:
+        deprecated <: bool:
             @json_tag = "deprecated"
             @rpcId = "23"
-        GoPackage <: string:
+        go_package <: string:
             @json_tag = "goPackage"
             @rpcId = "11"
-        JavaGenerateEqualsAndHash <: bool:
+        java_generate_equals_and_hash <: bool:
             @json_tag = "javaGenerateEqualsAndHash"
             @rpcId = "20"
-        JavaGenericServices <: bool:
+        java_generic_services <: bool:
             @json_tag = "javaGenericServices"
             @rpcId = "17"
-        JavaMultipleFiles <: bool:
+        java_multiple_files <: bool:
             @json_tag = "javaMultipleFiles"
             @rpcId = "10"
-        JavaOuterClassname <: string:
+        java_outer_classname <: string:
             @json_tag = "javaOuterClassname"
             @rpcId = "8"
-        JavaPackage <: string:
+        java_package <: string:
             @json_tag = "javaPackage"
             @rpcId = "1"
-        JavaStringCheckUtf8 <: bool:
+        java_string_check_utf8 <: bool:
             @json_tag = "javaStringCheckUtf8"
             @rpcId = "27"
-        ObjcClassPrefix <: string:
+        objc_class_prefix <: string:
             @json_tag = "objcClassPrefix"
             @rpcId = "36"
-        OptimizeFor <: google_protobuf_FileOptions.FileOptions_OptimizeMode:
+        optimize_for <: google_protobuf_FileOptions.FileOptions_OptimizeMode:
             @json_tag = "optimizeFor"
             @rpcId = "9"
-        PhpClassPrefix <: string:
+        php_class_prefix <: string:
             @json_tag = "phpClassPrefix"
             @rpcId = "40"
-        PhpGenericServices <: bool:
+        php_generic_services <: bool:
             @json_tag = "phpGenericServices"
             @rpcId = "42"
-        PhpMetadataNamespace <: string:
+        php_metadata_namespace <: string:
             @json_tag = "phpMetadataNamespace"
             @rpcId = "44"
-        PhpNamespace <: string:
+        php_namespace <: string:
             @json_tag = "phpNamespace"
             @rpcId = "41"
-        PyGenericServices <: bool:
+        py_generic_services <: bool:
             @json_tag = "pyGenericServices"
             @rpcId = "18"
-        RubyPackage <: string:
+        ruby_package <: string:
             @json_tag = "rubyPackage"
             @rpcId = "45"
-        SwiftPrefix <: string:
+        swift_prefix <: string:
             @json_tag = "swiftPrefix"
             @rpcId = "39"
-        UninterpretedOption <: sequence of google_protobuf_UninterpretedOption.UninterpretedOption
+        uninterpreted_option <: sequence of UninterpretedOption
     !type GeneratedCodeInfo:
         @description =:
             |// Describes the relationship between generated code and its original source
             |// file. A GeneratedCodeInfo message is associated with only one generated
             |// source file, but may contain references to different source .proto files.
-        Annotation <: sequence of google_protobuf_GeneratedCodeInfo_Annotation.GeneratedCodeInfo_Annotation
+        annotation <: sequence of google_protobuf_GeneratedCodeInfo.GeneratedCodeInfo_Annotation
     !type MessageOptions:
-        Deprecated <: bool:
+        deprecated <: bool:
             @json_tag = "deprecated"
             @rpcId = "3"
-        MapEntry <: bool:
+        map_entry <: bool:
             @json_tag = "mapEntry"
             @rpcId = "7"
-        MessageSetWireFormat <: bool:
+        message_set_wire_format <: bool:
             @json_tag = "messageSetWireFormat"
             @rpcId = "1"
-        NoStandardDescriptorAccessor <: bool:
+        no_standard_descriptor_accessor <: bool:
             @json_tag = "noStandardDescriptorAccessor"
             @rpcId = "2"
-        UninterpretedOption <: sequence of google_protobuf_UninterpretedOption.UninterpretedOption
+        uninterpreted_option <: sequence of UninterpretedOption
     !type MethodDescriptorProto:
         @description =:
             |// Describes a method of a service.
-        ClientStreaming <: bool:
+        client_streaming <: bool:
             @json_tag = "clientStreaming"
             @rpcId = "5"
-        InputType <: string:
+        input_type <: string:
             @json_tag = "inputType"
             @rpcId = "2"
-        Name <: string:
+        name <: string:
             @json_tag = "name"
             @rpcId = "1"
-        Options <: google_protobuf_MethodOptions.MethodOptions:
+        options <: MethodOptions:
             @json_tag = "options"
             @rpcId = "4"
-        OutputType <: string:
+        output_type <: string:
             @json_tag = "outputType"
             @rpcId = "3"
-        ServerStreaming <: bool:
+        server_streaming <: bool:
             @json_tag = "serverStreaming"
             @rpcId = "6"
     !type MethodOptions:
-        Deprecated <: bool:
+        deprecated <: bool:
             @json_tag = "deprecated"
             @rpcId = "33"
-        IdempotencyLevel <: google_protobuf_MethodOptions.MethodOptions_IdempotencyLevel:
+        idempotency_level <: google_protobuf_MethodOptions.MethodOptions_IdempotencyLevel:
             @json_tag = "idempotencyLevel"
             @rpcId = "34"
-        UninterpretedOption <: sequence of google_protobuf_UninterpretedOption.UninterpretedOption
+        uninterpreted_option <: sequence of UninterpretedOption
     !type OneofDescriptorProto:
         @description =:
             |// Describes a oneof.
-        Name <: string:
+        name <: string:
             @json_tag = "name"
             @rpcId = "1"
-        Options <: google_protobuf_OneofOptions.OneofOptions:
+        options <: OneofOptions:
             @json_tag = "options"
             @rpcId = "2"
     !type OneofOptions:
-        UninterpretedOption <: sequence of google_protobuf_UninterpretedOption.UninterpretedOption
+        uninterpreted_option <: sequence of UninterpretedOption
     !type ServiceDescriptorProto:
         @description =:
             |// Describes a service.
-        Method <: sequence of google_protobuf_MethodDescriptorProto.MethodDescriptorProto
-        Name <: string:
+        method <: sequence of MethodDescriptorProto
+        name <: string:
             @json_tag = "name"
             @rpcId = "1"
-        Options <: google_protobuf_ServiceOptions.ServiceOptions:
+        options <: ServiceOptions:
             @json_tag = "options"
             @rpcId = "3"
     !type ServiceOptions:
-        Deprecated <: bool:
+        deprecated <: bool:
             @json_tag = "deprecated"
             @rpcId = "33"
-        UninterpretedOption <: sequence of google_protobuf_UninterpretedOption.UninterpretedOption
+        uninterpreted_option <: sequence of UninterpretedOption
     !type SourceCodeInfo:
         @description =:
             |// Encapsulates information about the original source file from which a
             |// FileDescriptorProto was generated.
-        Location <: sequence of google_protobuf_SourceCodeInfo_Location.SourceCodeInfo_Location
+        location <: sequence of google_protobuf_SourceCodeInfo.SourceCodeInfo_Location
     !type UninterpretedOption:
         @description =:
             |// A message representing a option the parser does not recognize. This only
@@ -328,53 +328,53 @@ google_protobuf:
             |// options protos in descriptor objects (e.g. returned by Descriptor::options(),
             |// or produced by Descriptor::CopyTo()) will never have UninterpretedOptions
             |// in them.
-        AggregateValue <: string:
+        aggregate_value <: string:
             @json_tag = "aggregateValue"
             @rpcId = "8"
-        DoubleValue <: float:
+        double_value <: float:
             @json_tag = "doubleValue"
             @rpcId = "6"
-        IdentifierValue <: string:
+        identifier_value <: string:
             @json_tag = "identifierValue"
             @rpcId = "3"
-        Name <: sequence of google_protobuf_UninterpretedOption_NamePart.UninterpretedOption_NamePart
-        NegativeIntValue <: int:
+        name <: sequence of google_protobuf_UninterpretedOption.UninterpretedOption_NamePart
+        negative_int_value <: int:
             @json_tag = "negativeIntValue"
             @rpcId = "5"
-        PositiveIntValue <: int:
+        positive_int_value <: int:
             @json_tag = "positiveIntValue"
             @rpcId = "4"
-        StringValue <: bytes:
+        string_value <: bytes:
             @json_tag = "stringValue"
             @rpcId = "7"
 
 google_protobuf_DescriptorProto:
     @package = "google_protobuf_DescriptorProto"
-    !type DescriptorProto_ExtensionRange:
-        End <: int:
+    !type ExtensionRange:
+        end <: int:
             @json_tag = "end"
             @rpcId = "2"
-        Options <: google_protobuf_ExtensionRangeOptions.ExtensionRangeOptions:
+        options <: google_protobuf.ExtensionRangeOptions:
             @json_tag = "options"
             @rpcId = "3"
-        Start <: int:
+        start <: int:
             @json_tag = "start"
             @rpcId = "1"
-    !type DescriptorProto_ReservedRange:
+    !type ReservedRange:
         @description =:
             |// Range of reserved tag numbers. Reserved tag numbers may not be used by
             |// fields or extension ranges in the same message. Reserved ranges may
             |// not overlap.
-        End <: int:
+        end <: int:
             @json_tag = "end"
             @rpcId = "2"
-        Start <: int:
+        start <: int:
             @json_tag = "start"
             @rpcId = "1"
 
 google_protobuf_EnumDescriptorProto:
     @package = "google_protobuf_EnumDescriptorProto"
-    !type EnumDescriptorProto_EnumReservedRange:
+    !type EnumReservedRange:
         @description =:
             |// Range of reserved numeric values. Reserved values may not be used by
             |// entries in the same enum. Reserved ranges may not overlap.
@@ -382,10 +382,10 @@ google_protobuf_EnumDescriptorProto:
             |// Note that this is distinct from DescriptorProto.ReservedRange in that it
             |// is inclusive such that it can appropriately represent the entire int32
             |// domain.
-        End <: int:
+        end <: int:
             @json_tag = "end"
             @rpcId = "2"
-        Start <: int:
+        start <: int:
             @json_tag = "start"
             @rpcId = "1"
 
@@ -432,15 +432,15 @@ google_protobuf_FileOptions:
 
 google_protobuf_GeneratedCodeInfo:
     @package = "google_protobuf_GeneratedCodeInfo"
-    !type GeneratedCodeInfo_Annotation:
-        Begin <: int:
+    !type Annotation:
+        begin <: int:
             @json_tag = "begin"
             @rpcId = "3"
-        End <: int:
+        end <: int:
             @json_tag = "end"
             @rpcId = "4"
-        Path <: sequence of int
-        SourceFile <: string:
+        path <: sequence of int
+        source_file <: string:
             @json_tag = "sourceFile"
             @rpcId = "2"
 
@@ -452,30 +452,30 @@ google_protobuf_MethodOptions:
 
 google_protobuf_SourceCodeInfo:
     @package = "google_protobuf_SourceCodeInfo"
-    !type SourceCodeInfo_Location:
-        LeadingComments <: string:
+    !type Location:
+        leading_comments <: string:
             @json_tag = "leadingComments"
             @rpcId = "3"
-        LeadingDetachedComments <: sequence of string
-        Path <: sequence of int
-        Span <: sequence of int
-        TrailingComments <: string:
+        leading_detached_comments <: sequence of string
+        path <: sequence of int
+        span <: sequence of int
+        trailing_comments <: string:
             @json_tag = "trailingComments"
             @rpcId = "4"
 
 google_protobuf_UninterpretedOption:
     @package = "google_protobuf_UninterpretedOption"
-    !type UninterpretedOption_NamePart:
+    !type NamePart:
         @description =:
             |// The name of the uninterpreted option.  Each string represents a segment in
             |// a dot-separated name.  is_extension is true iff a segment represents an
             |// extension (denoted with parentheses in options specs in .proto files).
             |// E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
             |// "foo.(bar.baz).qux".
-        IsExtension <: bool:
+        is_extension <: bool:
             @json_tag = "isExtension"
             @rpcId = "2"
-        NamePart <: string:
+        name_part <: string:
             @json_tag = "namePart"
             @rpcId = "1"
 
@@ -485,10 +485,10 @@ grpc_testing:
         @description =:
             |// A protobuf representation for grpc status. This is used by test
             |// clients to specify a status that the server should attempt to return.
-        Code <: int:
+        code <: int:
             @json_tag = "code"
             @rpcId = "1"
-        Message <: string:
+        message <: string:
             @json_tag = "message"
             @rpcId = "2"
     !enum GrpclbRouteType:
@@ -498,10 +498,10 @@ grpc_testing:
     !type Payload:
         @description =:
             |// A block of data, to simply increase gRPC message size.
-        Body <: bytes:
+        body <: bytes:
             @json_tag = "body"
             @rpcId = "2"
-        Type <: grpc_testing_Payload.PayloadType:
+        type <: grpc_testing_Payload.PayloadType:
             @json_tag = "type"
             @rpcId = "1"
     !enum PayloadType:
@@ -511,86 +511,86 @@ grpc_testing:
     !type ResponseParameters:
         @description =:
             |// Configuration for a particular response.
-        IntervalUs <: int:
+        interval_us <: int:
             @json_tag = "intervalUs"
             @rpcId = "2"
-        Size <: int:
+        size <: int:
             @json_tag = "size"
             @rpcId = "1"
     !type SimpleRequest:
         @description =:
             |// Unary request.
-        FillGrpclbRouteType <: bool:
+        fill_grpclb_route_type <: bool:
             @json_tag = "fillGrpclbRouteType"
             @rpcId = "10"
-        FillOauthScope <: bool:
+        fill_oauth_scope <: bool:
             @json_tag = "fillOauthScope"
             @rpcId = "5"
-        FillServerId <: bool:
+        fill_server_id <: bool:
             @json_tag = "fillServerId"
             @rpcId = "9"
-        FillUsername <: bool:
+        fill_username <: bool:
             @json_tag = "fillUsername"
             @rpcId = "4"
-        Payload <: grpc_testing_Payload.Payload:
+        payload <: Payload:
             @json_tag = "payload"
             @rpcId = "3"
-        ResponseSize <: int:
+        response_size <: int:
             @json_tag = "responseSize"
             @rpcId = "2"
-        ResponseStatus <: grpc_testing_EchoStatus.EchoStatus:
+        response_status <: EchoStatus:
             @json_tag = "responseStatus"
             @rpcId = "7"
-        ResponseType <: grpc_testing_SimpleRequest.PayloadType:
+        response_type <: grpc_testing_SimpleRequest.PayloadType:
             @json_tag = "responseType"
             @rpcId = "1"
     !type SimpleResponse:
         @description =:
             |// Unary response, as configured by the request.
-        GrpclbRouteType <: grpc_testing_SimpleResponse.GrpclbRouteType:
+        grpclb_route_type <: grpc_testing_SimpleResponse.GrpclbRouteType:
             @json_tag = "grpclbRouteType"
             @rpcId = "5"
-        OauthScope <: string:
+        oauth_scope <: string:
             @json_tag = "oauthScope"
             @rpcId = "3"
-        Payload <: grpc_testing_Payload.Payload:
+        payload <: Payload:
             @json_tag = "payload"
             @rpcId = "1"
-        ServerId <: string:
+        server_id <: string:
             @json_tag = "serverId"
             @rpcId = "4"
-        Username <: string:
+        username <: string:
             @json_tag = "username"
             @rpcId = "2"
     !type StreamingInputCallRequest:
         @description =:
             |// Client-streaming request.
-        Payload <: grpc_testing_Payload.Payload:
+        payload <: Payload:
             @json_tag = "payload"
             @rpcId = "1"
     !type StreamingInputCallResponse:
         @description =:
             |// Client-streaming response.
-        AggregatedPayloadSize <: int:
+        aggregated_payload_size <: int:
             @json_tag = "aggregatedPayloadSize"
             @rpcId = "1"
     !type StreamingOutputCallRequest:
         @description =:
             |// Server-streaming request.
-        Payload <: grpc_testing_Payload.Payload:
+        payload <: Payload:
             @json_tag = "payload"
             @rpcId = "3"
-        ResponseParameters <: sequence of grpc_testing_ResponseParameters.ResponseParameters
-        ResponseStatus <: grpc_testing_EchoStatus.EchoStatus:
+        response_parameters <: sequence of ResponseParameters
+        response_status <: EchoStatus:
             @json_tag = "responseStatus"
             @rpcId = "7"
-        ResponseType <: grpc_testing_StreamingOutputCallRequest.PayloadType:
+        response_type <: grpc_testing_StreamingOutputCallRequest.PayloadType:
             @json_tag = "responseType"
             @rpcId = "1"
     !type StreamingOutputCallResponse:
         @description =:
             |// Server-streaming response, as configured by the request and parameters.
-        Payload <: grpc_testing_Payload.Payload:
+        payload <: Payload:
             @json_tag = "payload"
             @rpcId = "1"
 

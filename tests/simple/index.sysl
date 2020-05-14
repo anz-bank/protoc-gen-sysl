@@ -19,18 +19,18 @@ Foo:
 grpc_testing:
     @package = "grpc_testing"
     !type Money:
-        Nanos <: int:
+        nanos <: int:
             @json_tag = "nanos"
             @rpcId = "3"
-        Units <: int:
+        units <: int:
             @json_tag = "units"
             @rpcId = "2"
     !type Request:
-        Query <: string:
+        query <: string:
             @json_tag = "query"
             @rpcId = "1"
     !type Response:
-        Query <: string:
+        query <: string:
             @json_tag = "query"
             @rpcId = "1"
 
