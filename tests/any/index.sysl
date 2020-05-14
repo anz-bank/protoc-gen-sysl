@@ -2,7 +2,9 @@
 Bar:
     @description = ""
     @package = "grpc_testing"
+    @source_path = "tests/any/any.proto"
     AnotherEndpoint(input <: grpc_testing.This)[~grpc, ~GRPC]:
+        @source_path = "tests/any/any.proto"
         @description = ""
         return ok <: grpc_testing.This
 

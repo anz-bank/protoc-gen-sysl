@@ -2,14 +2,18 @@
 Bar:
     @description = ""
     @package = "grpc_testing_what"
+    @source_path = "tests/externaltype/externaltype.proto"
     AnotherEndpoint(input <: grpc_testing_what.date_)[~grpc, ~GRPC]:
+        @source_path = "tests/externaltype/externaltype.proto"
         @description = ""
         return ok <: grpc_testing_what.date_
 
 Car:
     @description = ""
     @package = "grpc_testing_what"
+    @source_path = "tests/externaltype/externaltype.proto"
     AnotherEndpoint(input <: grpc_testing_what.this)[~grpc, ~GRPC]:
+        @source_path = "tests/externaltype/externaltype.proto"
         @description = ""
         return ok <: grpc_testing_what.this
 

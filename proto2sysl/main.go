@@ -53,6 +53,7 @@ func VisitService(module *sysl.Module, s *protogen.Service) error {
 	app := newsysl.Application(name)
 
 	app.Attrs["package"] = newsysl.Attribute(pkgName)
+	app.Attrs["source_path"] = newsysl.Attribute(s.Location.SourceFile)
 	app.Attrs["description"] = newsysl.Attribute(s.Comments.Leading.String() + s.Comments.Trailing.String())
 	module.Apps[name] = app
 	for _, e := range s.Methods {
@@ -83,6 +84,7 @@ func VisitMethod(module *sysl.Module, m *protogen.Method) error {
 
 	// Attributes
 	endpoint.Attrs = make(map[string]*sysl.Attribute)
+	endpoint.Attrs["source_path"] = newsysl.Attribute(m.Location.SourceFile)
 	endpoint.Attrs["description"] = newsysl.Attribute(m.Comments.Leading.String() + m.Comments.Trailing.String())
 	endpoint.Attrs["patterns"] = newsysl.Pattern("grpc", "GRPC")
 
