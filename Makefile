@@ -1,4 +1,4 @@
-all: ci install syslproto
+all: ci install
 .PHONY: install test tests demo update-sysl update-tests
 
 
@@ -39,10 +39,6 @@ update-tests:		## Updates the code_generator_request.pb.bin for the go test case
 	protoc --debug_out="tests/repeated:tests/." ./tests/repeated/*.proto
 	protoc --debug_out="tests/any:tests/." ./tests/any/*.proto
 	protoc --debug_out="tests/hello:tests/." ./tests/hello/*.proto
-
-syslproto:		## Rebuilds the `option protos` to go and keeps the demo directory in sync
-	protoc --go_out=. sysloption/sysloption.proto
-	rm demo/sysloption.proto && cp sysloption/sysloption.proto demo/
 
 demo:			## Makes sure the demo directory still builds and compiles
 	cd demo && make

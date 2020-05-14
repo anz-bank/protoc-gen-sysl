@@ -12,7 +12,7 @@ Foo:
     @description =:
         |// This is a comment before Foo
     @package = "grpc_testing"
-    ThisEndpoint(input <: grpc_testing.Request):
+    thisEndpoint(input <: grpc_testing.Request):
         @description = ""
         return ok <: grpc_testing.Response
 

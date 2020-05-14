@@ -12,7 +12,7 @@ package main
 import (
 	"flag"
 
-	"github.com/anz-bank/protoc-gen-sysl/gensysl"
+	"github.com/anz-bank/protoc-gen-sysl/proto2sysl"
 
 	"google.golang.org/protobuf/compiler/protogen"
 )
@@ -28,5 +28,5 @@ func main() {
 	)
 	protogen.Options{
 		ParamFunc: flags.Set,
-	}.Run(gensysl.GenerateFiles)
+	}.Run(proto2sysl.GenerateFiles)
 }

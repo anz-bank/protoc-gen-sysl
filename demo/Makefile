@@ -7,4 +7,4 @@ test:
 	protoc --sysl_out=. example.proto
 
 diagrams:
-	sysl sd -o output.png -s "Foo <- thisEndpoint" index.sysl
+	sysl sd -o output.png -s "Foo <- ThisEndpoint" example.sysl

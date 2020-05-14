@@ -1,8 +1,10 @@
-package gensysl
+package proto2sysl
 
 import (
 	"bytes"
 	"strings"
+
+	"google.golang.org/protobuf/reflect/protoreflect"
 
 	"github.com/anz-bank/protoc-gen-sysl/syslpopulate"
 	"github.com/anz-bank/sysl/pkg/printer"
@@ -11,7 +13,7 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
-type PrinterModule struct {
+type Converter struct {
 	Log    *logrus.Logger
 	Module *sysl.Module
 }
@@ -21,7 +23,7 @@ func GenerateFiles(gen *protogen.Plugin) error {
 	filename := "index.sysl"
 	var buf bytes.Buffer
 	g := gen.NewGeneratedFile(filename, gen.Files[0].GoImportPath)
-	p := &PrinterModule{
+	p := &Converter{
 		Log:    logrus.New(),
 		Module: &sysl.Module{Apps: make(map[string]*sysl.Application)},
 	}
@@ -35,7 +37,7 @@ func GenerateFiles(gen *protogen.Plugin) error {
 	return nil
 }
 
-func (p *PrinterModule) VisitFile(file *protogen.File) (err error) {
+func (p *Converter) VisitFile(file *protogen.File) (err error) {
 	for _, s := range file.Services {
 		if err := p.VisitService(s); err != nil {
 			return err
@@ -56,8 +58,8 @@ func (p *PrinterModule) VisitFile(file *protogen.File) (err error) {
 
 // VisitService converts to sysl and constructs endpoints from methods
 // service myservice{...} --> myservice:
-func (p *PrinterModule) VisitService(s *protogen.Service) error {
-	pkgName, name := syslNames(string(s.Desc.Parent().ParentFile().Package()), string(s.Desc.FullName()))
+func (p *Converter) VisitService(s *protogen.Service) error {
+	pkgName, name := descToSyslName(s.Desc)
 	p.Module.Apps[name] = syslpopulate.NewApplication(name)
 	p.Module.Apps[name].Attrs["package"] = syslpopulate.NewAttribute(pkgName)
 	p.Module.Apps[name].Attrs["description"] = syslpopulate.NewAttribute(s.Comments.Leading.String() + s.Comments.Trailing.String())
@@ -73,13 +75,13 @@ func (p *PrinterModule) VisitService(s *protogen.Service) error {
 // rpc thisEndpoint(InputType)returns(outputType) -->
 // thisEndpoint(input <: InputType):
 //     return ok <: outputType
-func (p *PrinterModule) VisitMethod(s *protogen.Service, m *protogen.Method) error {
-	appName := syslpopulate.SanitiseTypeName(s.GoName)
-	endpointName := syslpopulate.SanitiseTypeName(m.GoName)
-	application, Name := syslNames(string(m.Input.Desc.Parent().ParentFile().Package()), string(m.Input.Desc.FullName()))
-	endpoint := syslpopulate.NewEndpoint(m.GoName)
+func (p *Converter) VisitMethod(s *protogen.Service, m *protogen.Method) error {
+	appName := string(m.Desc.Parent().Name())
+	endpointName := syslpopulate.SanitiseTypeName(string(m.Desc.Name()))
+	application, Name := descToSyslName(m.Input.Desc)
+	endpoint := syslpopulate.NewEndpoint(endpointName)
 	endpoint.Param = []*sysl.Param{syslpopulate.NewParameter(Name, application)}
-	application, Name = syslNames(string(m.Output.Desc.Parent().ParentFile().Package()), string(m.Output.Desc.FullName()))
+	application, Name = descToSyslName(m.Output.Desc)
 	endpoint.Stmt = []*sysl.Statement{syslpopulate.NewReturn(application, Name)}
 	endpoint.Attrs = make(map[string]*sysl.Attribute)
 	endpoint.Attrs["description"] = syslpopulate.NewAttribute(m.Comments.Leading.String() + m.Comments.Trailing.String())
@@ -90,12 +92,11 @@ func (p *PrinterModule) VisitMethod(s *protogen.Service, m *protogen.Method) err
 // VisitMessage converts to sysl and constructs types from messages. All types are writen to the
 // TypeApplication (as in sysl types belong to applications but not in proto
 // message foo{...} --> !type foo:
-func (p *PrinterModule) VisitMessage(m *protogen.Message) error {
-	typeName := syslpopulate.SanitiseTypeName(string(m.Desc.Name()))
+func (p *Converter) VisitMessage(m *protogen.Message) error {
 	var fieldName string
 	attrs := make(map[string]*sysl.Attribute)
 	attrDefs := make(map[string]*sysl.Type)
-	packageName, typeName := syslNames(string(m.Desc.Parent().ParentFile().Package()), string(m.Desc.FullName()))
+	packageName, typeName := descToSyslName(m.Desc)
 	if len(m.Fields) == 0 {
 		attrs["patterns"] = syslpopulate.NewPattern("empty")
 	}
@@ -136,19 +137,29 @@ func (p *PrinterModule) VisitMessage(m *protogen.Message) error {
 // VisitEnumValue converts to sysl enums. All types are writen to the
 // Currently this sysl syntax is unsupported, but enums exist within the sysl data object
 // enum foo{...} --> !enum foo:
-func (p *PrinterModule) VisitEnum(e *protogen.Enum) error {
-	packageName, typeName := syslNames(string(e.Desc.Parent().ParentFile().Package()), string(e.Desc.FullName()))
+func (p *Converter) VisitEnum(e *protogen.Enum) error {
+	packageName, typeName := descToSyslName(e.Desc)
 	if _, ok := p.Module.Apps[packageName]; !ok {
 		p.Module.Apps[packageName] = syslpopulate.NewApplication(packageName)
+	}
+	values := make(map[string]int64)
+	t := e.Values
+	for _, val := range t {
+		values[syslpopulate.SanitiseTypeName(string(val.Desc.Name()))] = int64(val.Desc.Number())
 	}
 	p.Module.Apps[packageName].Types[typeName] = &sysl.Type{
 		Type: &sysl.Type_Enum_{
 			Enum: &sysl.Type_Enum{
-				Items: enumToSysl(e),
+				Items: values,
 			},
 		},
 	}
 	return nil
+}
+
+func descToSyslName(Desc protoreflect.Descriptor) (string, string) {
+	return syslNames(string(Desc.Parent().ParentFile().Package()), string(Desc.FullName()))
+
 }
 
 func syslNames(pkg, fullName string) (string, string) {

@@ -18,7 +18,7 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/pluginpb"
 
-	"github.com/anz-bank/protoc-gen-sysl/gensysl"
+	"github.com/anz-bank/protoc-gen-sysl/proto2sysl"
 
 	"google.golang.org/protobuf/proto"
 
@@ -70,11 +70,11 @@ func ConvertSyslToProto(filename string) (*pluginpb.CodeGeneratorResponse, error
 	if err != nil {
 		return nil, err
 	}
-	var (
-		flags flag.FlagSet
-	)
+	var flags flag.FlagSet
 	res := &bytes.Buffer{}
-	run(protogen.Options{ParamFunc: flags.Set}, req, res, gensysl.GenerateFiles)
+	if err := run(protogen.Options{ParamFunc: flags.Set}, req, res, proto2sysl.GenerateFiles); err != nil {
+		return nil, err
+	}
 	response := &pluginpb.CodeGeneratorResponse{}
 	err = proto.Unmarshal(res.Bytes(), response)
 	if err != nil {

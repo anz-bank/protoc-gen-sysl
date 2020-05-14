@@ -1,4 +1,4 @@
-package gensysl
+package proto2sysl
 
 import (
 	"strconv"
@@ -11,34 +11,14 @@ import (
 	"github.com/anz-bank/sysl/pkg/sysl"
 )
 
-// messageToSysl converts a message to a sysl type
-func (p *PrinterModule) messageToSysl(m *protogen.Message) (string, string) {
-	//var fieldType string
-	//fieldType = syslpopulate.SanitiseTypeName(string(m.Desc.Name()))
-	//application, _ := goPackageOptionRaw(string(m.Desc.FullName()), string(m.Desc.Name()))
-	packageName, typeName := syslNames(string(m.Desc.Parent().ParentFile().Package()), string(m.Desc.FullName()))
-	return packageName, typeName
-}
-
-// enumToSysl converts an Enum to a sysl enum
-func enumToSysl(e *protogen.Enum) map[string]int64 {
-	values := make(map[string]int64)
-	if t := e.Values; t != nil {
-		for _, val := range t {
-			values[syslpopulate.SanitiseTypeName(string(val.Desc.Name()))] = int64(val.Desc.Number())
-		}
-	}
-	return values
-}
-
 // fieldGoType returns the Go type used for a field.
 func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	if field.Desc.IsWeak() {
 		return nil
 	}
-	application, _ := syslNames(string(field.Desc.Parent().ParentFile().Package()), string(field.Desc.FullName()))
+	application, _ := descToSyslName(field.Desc)
 	if field.Message != nil {
-		application, _ = syslNames(string(field.Message.Desc.Parent().ParentFile().Package()), string(field.Message.Desc.FullName()))
+		application, _ = descToSyslName(field.Message.Desc)
 	}
 	var t *sysl.Type
 	switch field.Desc.Kind() {
@@ -55,13 +35,13 @@ func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	case protoreflect.BytesKind:
 		t = syslpopulate.SyslPrimitive(sysl.Type_BYTES)
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		_, typeName := syslNames(string(field.Message.Desc.Parent().ParentFile().Package()), string(field.Message.Desc.FullName()))
+		_, typeName := descToSyslName(field.Message.Desc)
 		if application == currentApp {
 			application = ""
 		}
 		t = syslpopulate.NewType(typeName, application)
 	case protoreflect.EnumKind:
-		_, typeName := syslNames(string(field.Enum.Desc.Parent().ParentFile().Package()), string(field.Enum.Desc.FullName()))
+		_, typeName := descToSyslName(field.Enum.Desc)
 		if application == currentApp {
 			application = ""
 		}
