@@ -75,6 +75,7 @@ func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	case protoreflect.EnumKind:
 		t = syslpopulate.NewType(syslpopulate.SanitiseTypeName(field.Enum.GoIdent.GoName), application)
 	}
+	t.Attrs = map[string]*sysl.Attribute{"json_tag": syslpopulate.NewAttribute(field.Desc.JSONName())}
 	switch {
 	case field.Desc.IsList():
 		return syslpopulate.Sequence(t)

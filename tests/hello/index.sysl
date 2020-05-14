@@ -1,0 +1,21 @@
+
+Hello:
+    @description = ""
+    @package = "hello"
+    Listme(input <: hello.Request):
+        @description = ""
+        return ok <: hello.Response
+    Mayi(input <: hello.Request):
+        @description = ""
+        return ok <: hello.Response
+
+hello:
+    @package = "hello"
+    !type Request:
+        AccountId <: string
+        Operation <: string
+        UserId <: string
+    !type Response:
+        Reason <: string
+        YouMay <: bool
+
