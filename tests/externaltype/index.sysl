@@ -2,18 +2,22 @@
 Bar:
     @description = ""
     @package = "grpc_testing_what"
+    @source_line = "8"
     @source_path = "tests/externaltype/externaltype.proto"
     AnotherEndpoint(input <: grpc_testing_what.date_)[~grpc, ~GRPC]:
         @source_path = "tests/externaltype/externaltype.proto"
+        @source_line = "8"
         @description = ""
         return ok <: grpc_testing_what.date_
 
 Car:
     @description = ""
     @package = "grpc_testing_what"
+    @source_line = "8"
     @source_path = "tests/externaltype/externaltype.proto"
     AnotherEndpoint(input <: grpc_testing_what.this)[~grpc, ~GRPC]:
         @source_path = "tests/externaltype/externaltype.proto"
+        @source_line = "8"
         @description = ""
         return ok <: grpc_testing_what.this
 
@@ -30,6 +34,8 @@ google_protobuf:
             |//     }
             |//
             |// The JSON representation for `Empty` is empty JSON object `{}`.
+        @source_line = "34"
+        @source_path = "google/protobuf/empty.proto"
         ...
     !type Timestamp:
         @description =:
@@ -119,6 +125,8 @@ google_protobuf:
             |// ) to obtain a formatter capable of generating timestamps in this format.
             |//
             |//
+        @source_line = "34"
+        @source_path = "google/protobuf/timestamp.proto"
         nanos <: int:
             @json_tag = "nanos"
             @rpcId = "2"
@@ -129,20 +137,30 @@ google_protobuf:
 grpc_testing_what:
     @package = "grpc_testing_what"
     !type date_:
+        @source_line = "5"
+        @source_path = "tests/externaltype/externaltype.proto"
         foobar <: google_protobuf.Timestamp:
             @json_tag = "foobar"
             @rpcId = "1"
     !type foo:
+        @source_line = "5"
+        @source_path = "tests/externaltype/externaltype.proto"
         foobar <: google_protobuf.Empty:
             @json_tag = "foobar"
             @rpcId = "1"
     !type repeatedDate:
+        @source_line = "5"
+        @source_path = "tests/externaltype/externaltype.proto"
         foobar <: sequence of google_protobuf.Timestamp
     !type this:
+        @source_line = "5"
+        @source_path = "tests/externaltype/externaltype.proto"
         foobar <: this_That:
             @json_tag = "foobar"
             @rpcId = "1"
     !type this_That:
+        @source_line = "5"
+        @source_path = "tests/externaltype/externaltype.proto"
         ohno <: string:
             @json_tag = "ohno"
             @rpcId = "1"

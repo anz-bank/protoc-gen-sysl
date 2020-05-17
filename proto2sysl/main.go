@@ -54,6 +54,7 @@ func VisitService(module *sysl.Module, s *protogen.Service) error {
 
 	app.Attrs["package"] = newsysl.Attribute(pkgName)
 	app.Attrs["source_path"] = newsysl.Attribute(s.Location.SourceFile)
+	app.Attrs["source_line"] = newsysl.AttributeAny(s.Desc.ParentFile().SourceLocations().Get(int(s.Location.Path[0])).StartLine)
 	app.Attrs["description"] = newsysl.Attribute(s.Comments.Leading.String() + s.Comments.Trailing.String())
 	module.Apps[name] = app
 	for _, e := range s.Methods {
@@ -85,6 +86,7 @@ func VisitMethod(module *sysl.Module, m *protogen.Method) error {
 	// Attributes
 	endpoint.Attrs = make(map[string]*sysl.Attribute)
 	endpoint.Attrs["source_path"] = newsysl.Attribute(m.Location.SourceFile)
+	endpoint.Attrs["source_line"] = newsysl.AttributeAny(m.Desc.ParentFile().SourceLocations().Get(int(m.Location.Path[0])).StartLine)
 	endpoint.Attrs["description"] = newsysl.Attribute(m.Comments.Leading.String() + m.Comments.Trailing.String())
 	endpoint.Attrs["patterns"] = newsysl.Pattern("grpc", "GRPC")
 
@@ -100,7 +102,8 @@ func VisitMessage(module *sysl.Module, m *protogen.Message) error {
 	attrs := make(map[string]*sysl.Attribute)
 	attrDefs := make(map[string]*sysl.Type)
 	packageName, typeName := descToSyslName(m.Desc)
-
+	attrs["source_path"] = newsysl.Attribute(m.Location.SourceFile)
+	attrs["source_line"] = newsysl.AttributeAny(m.Desc.ParentFile().SourceLocations().Get(int(m.Location.Path[0])).StartLine)
 	if description := m.Comments.Leading.String() + m.Comments.Trailing.String(); description != "" {
 		attrs["description"] = newsysl.Attribute(description)
 	}
@@ -153,12 +156,17 @@ func VisitEnum(module *sysl.Module, e *protogen.Enum) error {
 	for _, val := range t {
 		values[newsysl.SanitiseTypeName(string(val.Desc.Name()))] = int64(val.Desc.Number())
 	}
+	attrs := make(map[string]*sysl.Attribute)
+	attrs["source_path"] = newsysl.Attribute(e.Location.SourceFile)
+	attrs["source_line"] = newsysl.AttributeAny(e.Desc.ParentFile().SourceLocations().Get(int(e.Location.Path[0])).StartLine)
+
 	module.Apps[packageName].Types[typeName] = &sysl.Type{
 		Type: &sysl.Type_Enum_{
 			Enum: &sysl.Type_Enum{
 				Items: values,
 			},
 		},
+		Attrs: attrs,
 	}
 	return nil
 }

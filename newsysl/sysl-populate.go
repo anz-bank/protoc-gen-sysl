@@ -1,6 +1,7 @@
 package newsysl
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/anz-bank/sysl/pkg/sysl"
@@ -61,6 +62,13 @@ func Param(name, application string) *sysl.Param {
 func Attribute(value string) *sysl.Attribute {
 	return &sysl.Attribute{
 		Attribute: &sysl.Attribute_S{S: value},
+	}
+}
+
+// Attribute Initialises a Sysl Attribute
+func AttributeAny(value interface{}) *sysl.Attribute {
+	return &sysl.Attribute{
+		Attribute: &sysl.Attribute_S{S: fmt.Sprint(value)},
 	}
 }
 

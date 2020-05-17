@@ -2,6 +2,8 @@
 hello:
     @package = "hello"
     !type Request:
+        @source_line = "4"
+        @source_path = "tests/hello/hello.proto"
         AccountId <: string:
             @json_tag = "AccountId"
             @rpcId = "3"
@@ -12,6 +14,8 @@ hello:
             @json_tag = "UserId"
             @rpcId = "1"
     !type Response:
+        @source_line = "4"
+        @source_path = "tests/hello/hello.proto"
         Reason <: string:
             @json_tag = "Reason"
             @rpcId = "2"

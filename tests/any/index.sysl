@@ -2,9 +2,11 @@
 Bar:
     @description = ""
     @package = "grpc_testing"
+    @source_line = "5"
     @source_path = "tests/any/any.proto"
     AnotherEndpoint(input <: grpc_testing.This)[~grpc, ~GRPC]:
         @source_path = "tests/any/any.proto"
+        @source_line = "5"
         @description = ""
         return ok <: grpc_testing.This
 
@@ -92,6 +94,8 @@ google_protobuf:
             |//       "value": "1.212s"
             |//     }
             |//
+        @source_line = "34"
+        @source_path = "google/protobuf/any.proto"
         type_url <: string:
             @json_tag = "typeUrl"
             @rpcId = "1"
@@ -102,6 +106,8 @@ google_protobuf:
 grpc_testing:
     @package = "grpc_testing"
     !type This:
+        @source_line = "4"
+        @source_path = "tests/any/any.proto"
         grpc_request <: google_protobuf.any_:
             @json_tag = "grpcRequest"
             @rpcId = "1"

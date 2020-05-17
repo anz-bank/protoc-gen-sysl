@@ -1,18 +1,26 @@
 
 grpc_testing2:
     !type Request:
+        @source_line = "4"
+        @source_path = "tests/messageinmessage/simple2.proto"
         bar <: Request_Type:
             @json_tag = "bar"
             @rpcId = "9"
     !enum Request_Type:
+        @source_line = "4"
+        @source_path = "tests/messageinmessage/simple2.proto"
         ACCOUNT: 1
         CARD: 2
         UNKNOWN: 0
     !enum Type2:
+        @source_line = "5"
+        @source_path = "tests/messageinmessage/simple2.proto"
         ACCOUNT: 1
         CARD: 2
         UNKNOWN: 0
     !type foo:
+        @source_line = "4"
+        @source_path = "tests/messageinmessage/simple2.proto"
         foobar <: Request_Type:
             @json_tag = "foobar"
             @rpcId = "1"
