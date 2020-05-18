@@ -14,6 +14,11 @@ message date {
     google.protobuf.Timestamp foobar = 1;
 }
 
+message repeatedDate {
+    repeated google.protobuf.Timestamp foobar = 1;
+}
+
+
 message foo {
     google.protobuf.Empty foobar = 1;
 }

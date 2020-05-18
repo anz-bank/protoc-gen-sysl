@@ -5,5 +5,5 @@ package grpc.testing;
 import "tests/multiplefiles/types.proto";
 
 service Bar{
-    rpc AnotherEndpoint(Request) returns(Response);
+    rpc anotherEndpoint(Request) returns(Response);
 }

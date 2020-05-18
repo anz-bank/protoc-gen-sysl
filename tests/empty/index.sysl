@@ -1,14 +1,18 @@
 
 Bar:
     @description = ""
-    @package = "grpctesting"
-    AnotherEndpoint(input <: grpctesting.Response):
+    @package = "grpc_testing"
+    @source_path = "tests/empty/empty.proto"
+    AnotherEndpoint(input <: grpc_testing.Response)[~grpc, ~GRPC]:
         @description = ""
-        return ok <: grpctesting.Response
+        @source_path = "tests/empty/empty.proto"
+        return ok <: grpc_testing.Response
 
-grpctesting:
-    @package = "grpctesting"
+grpc_testing:
+    @package = "grpc_testing"
     !type Response[~empty]:
         @description =:
             | Hello world
+        @source_path = "tests/empty/type.proto"
         ...
+

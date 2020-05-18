@@ -9,3 +9,6 @@ service Bar{
 message date {
     string this = 1;
 }
+message that {
+    date s = 1;
+}

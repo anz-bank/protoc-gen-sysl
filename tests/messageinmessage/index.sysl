@@ -1,8 +1,12 @@
 
-grpctesting2:
+grpc_testing2:
     !type Request:
-        bar <: grpctesting2.Type
-    !enum Type:
+        @description = ""
+        @source_path = "tests/messageinmessage/simple2.proto"
+        bar <: Request_Type:
+            @json_tag = "bar"
+            @rpcId = "9"
+    !enum Request_Type:
         ACCOUNT: 1
         CARD: 2
         UNKNOWN: 0
@@ -11,5 +15,12 @@ grpctesting2:
         CARD: 2
         UNKNOWN: 0
     !type foo:
-        foobar <: grpctesting2.Type
-        qwerty <: grpctesting2.Type2
+        @description = ""
+        @source_path = "tests/messageinmessage/simple2.proto"
+        foobar <: Request_Type:
+            @json_tag = "foobar"
+            @rpcId = "1"
+        qwerty <: Type2:
+            @json_tag = "qwerty"
+            @rpcId = "8"
+

@@ -1,18 +1,31 @@
 
 Bar:
     @description = ""
-    @package = "grpctesting"
-    AnotherEndpoint(input <: grpctesting.Request):
+    @package = "grpc_testing"
+    @source_path = "tests/enum/enum.proto"
+    AnotherEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
         @description = ""
-        return ok <: grpctesting.Response
+        @source_path = "tests/enum/enum.proto"
+        return ok <: grpc_testing.Response
 
-grpctesting:
-    @package = "grpctesting"
+grpc_testing:
+    @package = "grpc_testing"
     !enum Currency:
         AUD: 0
         USD: 1
     !type Request:
-        currency_code <: grpctesting.Currency
-        query <: string
+        @description = ""
+        @source_path = "tests/enum/enum.proto"
+        currency_code <: Currency:
+            @json_tag = "currencyCode"
+            @rpcId = "2"
+        query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
     !type Response:
-        query <: string
+        @description = ""
+        @source_path = "tests/enum/enum.proto"
+        query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
+

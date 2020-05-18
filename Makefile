@@ -1,4 +1,4 @@
-all: ci install syslproto
+all: ci install
 .PHONY: install test tests demo update-sysl update-tests
 
 
@@ -23,10 +23,11 @@ update-sysl:		## Updates the expected sysl files by compiling with the current p
 	protoc --sysl_out=tests/messageinmessage/ tests/messageinmessage/*.proto
 	protoc --sysl_out=tests/repeated/ tests/repeated/*.proto
 	protoc --sysl_out=tests/any/ tests/any/*.proto
+	protoc --sysl_out=tests/hello/ tests/hello/*.proto
 
 update-tests:		## Updates the code_generator_request.pb.bin for the go test cases.
-	protoc --debug_out="tests/test:tests/." ./tests/test/test.proto
-	protoc --debug_out="tests/simple:tests/." ./tests/simple/simple.proto
+	protoc --debug_out="tests/test:tests/." ./tests/test/*.proto
+	protoc --debug_out="tests/simple:tests/" ./tests/simple/simple.proto
 	protoc --debug_out="tests/multiplefiles:tests/." ./tests/multiplefiles/services.proto
 	protoc --debug_out="tests/enum:tests/." ./tests/enum/enum.proto
 	protoc --debug_out="tests/otheroption:tests/." ./tests/otheroption/otheroption.proto
@@ -37,10 +38,7 @@ update-tests:		## Updates the code_generator_request.pb.bin for the go test case
 	protoc --debug_out="tests/messageinmessage:tests/." ./tests/messageinmessage/*.proto
 	protoc --debug_out="tests/repeated:tests/." ./tests/repeated/*.proto
 	protoc --debug_out="tests/any:tests/." ./tests/any/*.proto
-
-syslproto:		## Rebuilds the `option protos` to go and keeps the demo directory in sync
-	protoc --go_out=. sysloption/sysloption.proto
-	rm demo/sysloption.proto && cp sysloption/sysloption.proto demo/
+	protoc --debug_out="tests/hello:tests/." ./tests/hello/*.proto
 
 demo:			## Makes sure the demo directory still builds and compiles
 	cd demo && make
@@ -48,3 +46,11 @@ demo:			## Makes sure the demo directory still builds and compiles
 ci:				## Runs the same ci that is on master.
 	go test -v ./... -count=1
 	golangci-lint run
+grpc: sysl grpc
+# Build sysl into GRPC
+sysl: *.sysl
+	sysl tmpl --template grpc.sysl --app-name hello --start start --outdir tests/hello tests/hello/index.sysl
+	sysl tmpl --template grpc.sysl --app-name Hello --start start --outdir tests/hello2 tests/hello/index.sysl
+# Execure proto to generate go code
+# grpc: *
+# 	protoc -I hello/ hello/hello.proto --go_out=plugins=grpc:hello

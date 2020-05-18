@@ -2,32 +2,45 @@
 Bar:
     @description =:
         | This is a comment before Bar
-    @package = "grpctesting"
-    AnotherEndpoint(input <: grpctesting.Request):
+    @package = "grpc_testing"
+    @source_path = "tests/simple/simple.proto"
+    AnotherEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
         @description =:
             | this is a comment before Bar.AnotherEndpoint
-        return ok <: grpctesting.Response
+        @source_path = "tests/simple/simple.proto"
+        return ok <: grpc_testing.Response
 
 Foo:
     @description =:
         | This is a comment before Foo
-    @package = "grpctesting"
-    thisEndpoint(input <: grpctesting.Request):
+    @package = "grpc_testing"
+    @source_path = "tests/simple/simple.proto"
+    thisEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
         @description = ""
-        Bar <- AnotherEndpoint
-        ThisApp <- DoesntExist
-        return ok <: grpctesting.Response
+        @source_path = "tests/simple/simple.proto"
+        return ok <: grpc_testing.Response
 
-ThisApp:
-    DoesntExist:
-        ...
-
-grpctesting:
-    @package = "grpctesting"
+grpc_testing:
+    @package = "grpc_testing"
     !type Money:
-        nanos <: int
-        units <: int
+        @description = ""
+        @source_path = "tests/simple/simple.proto"
+        nanos <: int:
+            @json_tag = "nanos"
+            @rpcId = "3"
+        units <: int:
+            @json_tag = "units"
+            @rpcId = "2"
     !type Request:
-        query <: string
+        @description = ""
+        @source_path = "tests/simple/simple.proto"
+        query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
     !type Response:
-        query <: string
+        @description = ""
+        @source_path = "tests/simple/simple.proto"
+        query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
+

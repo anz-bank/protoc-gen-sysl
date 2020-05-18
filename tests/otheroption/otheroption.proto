@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package grpc.testing;
 
-import "tests/otheroption/option.proto";
-
 message Request {
     string query = 1;
 }
@@ -13,9 +11,5 @@ message Response {
 }
 
 service Bar{
-    rpc AnotherEndpoint(Request) returns(Response){
-        option (foobar.bars) = {
-            bar: "thisShouldn'tBeProcessed"
-        };
-    }
+    rpc AnotherEndpoint(Request) returns(Response){}
 }

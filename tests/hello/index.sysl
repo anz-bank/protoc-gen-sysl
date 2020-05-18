@@ -1,0 +1,25 @@
+
+hello:
+    @package = "hello"
+    !type Request:
+        @description = ""
+        @source_path = "tests/hello/hello.proto"
+        AccountId <: string:
+            @json_tag = "AccountId"
+            @rpcId = "3"
+        Operation <: string:
+            @json_tag = "Operation"
+            @rpcId = "2"
+        UserId <: string:
+            @json_tag = "UserId"
+            @rpcId = "1"
+    !type Response:
+        @description = ""
+        @source_path = "tests/hello/hello.proto"
+        Reason <: string:
+            @json_tag = "Reason"
+            @rpcId = "2"
+        YouMay <: bool:
+            @json_tag = "YouMay"
+            @rpcId = "1"
+

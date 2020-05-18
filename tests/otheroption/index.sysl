@@ -1,14 +1,25 @@
 
 Bar:
     @description = ""
-    @package = "grpctesting"
-    AnotherEndpoint(input <: grpctesting.Request):
+    @package = "grpc_testing"
+    @source_path = "tests/otheroption/otheroption.proto"
+    AnotherEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
         @description = ""
-        return ok <: grpctesting.Response
+        @source_path = "tests/otheroption/otheroption.proto"
+        return ok <: grpc_testing.Response
 
-grpctesting:
-    @package = "grpctesting"
+grpc_testing:
+    @package = "grpc_testing"
     !type Request:
-        query <: string
+        @description = ""
+        @source_path = "tests/otheroption/otheroption.proto"
+        query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
     !type Response:
-        query <: string
+        @description = ""
+        @source_path = "tests/otheroption/otheroption.proto"
+        query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
+

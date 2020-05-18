@@ -2,33 +2,45 @@ package main
 
 import (
 	"bytes"
+	"flag"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/gogo/protobuf/proto"
-	plugin_go "github.com/gogo/protobuf/protoc-gen-gogo/plugin"
+	"github.com/anz-bank/sysl/pkg/parse"
+	"github.com/anz-bank/sysl/pkg/syslutil"
+	"github.com/spf13/afero"
+
+	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/types/pluginpb"
+
+	"github.com/anz-bank/protoc-gen-sysl/proto2sysl"
+
+	"google.golang.org/protobuf/proto"
 
 	"github.com/alecthomas/assert"
-	"github.com/anz-bank/sysl/pkg/syslutil"
-
-	pgs "github.com/lyft/protoc-gen-star"
-	"github.com/spf13/afero"
 )
 
 var tests = []string{
-	"empty/",
-	"any/",
-	"repeated/",
-	"simple/",
-	"messageinmessage/",
-	"externaltype/",
-	"test",
+	"test/",
 	"multiplefiles/",
+	"date/",
+	"any/",
+	"hello/",
+	"externaltype/",
+	"disconnectedimport/",
+	"any/",
+	"simple/",
+	"empty/",
+	"repeated/",
+	"messageinmessage/",
+	"test",
 	"otheroption/",
 	"enum/",
-	"disconnectedimport/",
-	"date/",
 }
 
 const testDir = "./tests"
@@ -38,36 +50,74 @@ func TestPrinting(t *testing.T) {
 		test = filepath.Join(testDir, test)
 		_, fs := syslutil.WriteToMemOverlayFs(test)
 		GeneratorResponse, err := ConvertSyslToProto(filepath.Join(test, "code_generator_request.pb.bin"))
-
 		t.Run(test, func(t *testing.T) {
 			assert.NoError(t, err)
 			golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
 			assert.NoError(t, err)
+			if *GeneratorResponse.File[0].Content != string(golden) {
+				fmt.Println(*GeneratorResponse.File[0].Content)
+			}
 			assert.Equal(t, *GeneratorResponse.File[0].Content, string(golden))
-			t.Log(filepath.Join("Passed", test, *GeneratorResponse.File[0].Name))
+			if _, err := parse.NewParser().Parse(*GeneratorResponse.File[0].Name, fs); err != nil {
+				log.Fatal(err)
+			}
 		})
 	}
 }
 
 // ConvertSyslToProto opens a sysl filename and returns the CodeGeneratorResponse for the test cases.
-func ConvertSyslToProto(filename string) (*plugin_go.CodeGeneratorResponse, error) {
+func ConvertSyslToProto(filename string) (*pluginpb.CodeGeneratorResponse, error) {
 	req, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
-
-	res := &bytes.Buffer{}
-	pgs.Init(
-		pgs.ProtocInput(req),  // use the pre-generated request
-		pgs.ProtocOutput(res), // capture CodeGeneratorResponse
-	).RegisterModule(
-		SyslPrinter(),
-	).Render()
-	response := plugin_go.CodeGeneratorResponse{}
-	err = proto.Unmarshal(res.Bytes(), &response)
+	var (
+		flags flag.FlagSet
+		_     = flags.String("tests/test", "", "prefix to prepend to import paths")
+		res   bytes.Buffer
+	)
+	if err := run(protogen.Options{ParamFunc: flags.Set}, req, &res, proto2sysl.GenerateFiles); err != nil {
+		return nil, err
+	}
+	response := &pluginpb.CodeGeneratorResponse{}
+	err = proto.Unmarshal(res.Bytes(), response)
 	if err != nil {
 		return nil, err
 	}
-	return &response, nil
+	return response, nil
+}
 
+func run(opts protogen.Options, input io.Reader, output io.Writer, f func(*protogen.Plugin) error) error {
+	in, err := ioutil.ReadAll(input)
+	if err != nil {
+		return err
+	}
+	req := &pluginpb.CodeGeneratorRequest{}
+	if err := proto.Unmarshal(in, req); err != nil {
+		return err
+	}
+	this := ""
+	req.Parameter = &this
+	gen, err := opts.New(req)
+	if err != nil {
+		return err
+	}
+	if err := f(gen); err != nil {
+		// Errors from the plugin function are reported by setting the
+		// error field in the CodeGeneratorResponse.
+		//
+		// In contrast, errors that indicate a problem in protoc
+		// itself (unparsable input, I/O errors, etc.) are reported
+		// to stderr.
+		gen.Error(err)
+	}
+	resp := gen.Response()
+	out, err := proto.Marshal(resp)
+	if err != nil {
+		return err
+	}
+	if _, err := output.Write(out); err != nil {
+		return err
+	}
+	return nil
 }
