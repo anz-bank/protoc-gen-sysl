@@ -1,29 +1,30 @@
 
 Bar:
     @description =:
-        |// This is a comment before Bar
+        | This is a comment before Bar
     @package = "grpc_testing"
-    @source_path = "tests/tests/simple/simple.proto"
+    @source_path = "tests/simple/simple.proto"
     AnotherEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
         @description =:
-            |// this is a comment before Bar.AnotherEndpoint
-        @source_path = "tests/tests/simple/simple.proto"
+            | this is a comment before Bar.AnotherEndpoint
+        @source_path = "tests/simple/simple.proto"
         return ok <: grpc_testing.Response
 
 Foo:
     @description =:
-        |// This is a comment before Foo
+        | This is a comment before Foo
     @package = "grpc_testing"
-    @source_path = "tests/tests/simple/simple.proto"
+    @source_path = "tests/simple/simple.proto"
     thisEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
         @description = ""
-        @source_path = "tests/tests/simple/simple.proto"
+        @source_path = "tests/simple/simple.proto"
         return ok <: grpc_testing.Response
 
 grpc_testing:
     @package = "grpc_testing"
     !type Money:
-        @source_path = "tests/tests/simple/simple.proto"
+        @description = ""
+        @source_path = "tests/simple/simple.proto"
         nanos <: int:
             @json_tag = "nanos"
             @rpcId = "3"
@@ -31,12 +32,14 @@ grpc_testing:
             @json_tag = "units"
             @rpcId = "2"
     !type Request:
-        @source_path = "tests/tests/simple/simple.proto"
+        @description = ""
+        @source_path = "tests/simple/simple.proto"
         query <: string:
             @json_tag = "query"
             @rpcId = "1"
     !type Response:
-        @source_path = "tests/tests/simple/simple.proto"
+        @description = ""
+        @source_path = "tests/simple/simple.proto"
         query <: string:
             @json_tag = "query"
             @rpcId = "1"

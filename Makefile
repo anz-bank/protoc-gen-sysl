@@ -11,7 +11,7 @@ install:		## Installs this project as a binary in your go binary directory.
 	go install github.com/anz-bank/protoc-gen-sysl
 
 update-sysl:		## Updates the expected sysl files by compiling with the current protoc-gen-sysl installation.
-	protoc --sysl_out="import_prefix=tests:tests/simple/" tests/simple/simple.proto
+	protoc --sysl_out=tests/simple/ tests/simple/simple.proto
 	protoc --sysl_out=tests/test/ tests/test/test.proto
 	protoc --sysl_out=tests/enum/ tests/enum/enum.proto
 	protoc --sysl_out=tests/multiplefiles/ tests/multiplefiles/services.proto
@@ -26,7 +26,7 @@ update-sysl:		## Updates the expected sysl files by compiling with the current p
 	protoc --sysl_out=tests/hello/ tests/hello/*.proto
 
 update-tests:		## Updates the code_generator_request.pb.bin for the go test cases.
-	protoc -I tests/ --debug_out="tests/test:tests/." ./tests/test/*.proto
+	protoc --debug_out="tests/test:tests/." ./tests/test/*.proto
 	protoc --debug_out="tests/simple:tests/" ./tests/simple/simple.proto
 	protoc --debug_out="tests/multiplefiles:tests/." ./tests/multiplefiles/services.proto
 	protoc --debug_out="tests/enum:tests/." ./tests/enum/enum.proto

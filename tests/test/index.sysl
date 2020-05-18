@@ -10,37 +10,37 @@ Foo:
 
 TestService:
     @description =:
-        |// A simple service to test the various types of RPCs and experiment with
-        |// performance with various types of payload.
-        |// One empty request followed by one empty response.
-        |//    rpc EmptyCall(Empty) returns (Empty);
+        | A simple service to test the various types of RPCs and experiment with
+        | performance with various types of payload.
+        | One empty request followed by one empty response.
+        |    rpc EmptyCall(Empty) returns (Empty);
     @package = "grpc_testing"
     @source_path = "tests/test/test.proto"
     FullDuplexCall(input <: grpc_testing.StreamingOutputCallRequest)[~grpc, ~GRPC]:
         @description =:
-            |// A sequence of requests with each request served by the server immediately.
-            |// As one request could lead to multiple responses, this interface
-            |// demonstrates the idea of full duplexing.
+            | A sequence of requests with each request served by the server immediately.
+            | As one request could lead to multiple responses, this interface
+            | demonstrates the idea of full duplexing.
         @source_path = "tests/test/test.proto"
         return ok <: grpc_testing.StreamingOutputCallResponse
     HalfDuplexCall(input <: grpc_testing.StreamingOutputCallRequest)[~grpc, ~GRPC]:
         @description =:
-            |// A sequence of requests followed by a sequence of responses.
-            |// The server buffers all the client requests and then serves them in order. A
-            |// stream of responses are returned to the client when the server starts with
-            |// first request.
+            | A sequence of requests followed by a sequence of responses.
+            | The server buffers all the client requests and then serves them in order. A
+            | stream of responses are returned to the client when the server starts with
+            | first request.
         @source_path = "tests/test/test.proto"
         return ok <: grpc_testing.StreamingOutputCallResponse
     StreamingInputCall(input <: grpc_testing.StreamingInputCallRequest)[~grpc, ~GRPC]:
         @description =:
-            |// A sequence of requests followed by one response (streamed upload).
-            |// The server returns the aggregated size of client payload as the result.
+            | A sequence of requests followed by one response (streamed upload).
+            | The server returns the aggregated size of client payload as the result.
         @source_path = "tests/test/test.proto"
         return ok <: grpc_testing.StreamingInputCallResponse
     StreamingOutputCall(input <: grpc_testing.StreamingOutputCallRequest)[~grpc, ~GRPC]:
         @description =:
-            |// One request followed by a sequence of responses (streamed download).
-            |// The server returns the payload with client desired type and sizes.
+            | One request followed by a sequence of responses (streamed download).
+            | The server returns the payload with client desired type and sizes.
         @source_path = "tests/test/test.proto"
         return ok <: grpc_testing.StreamingOutputCallResponse
 
@@ -48,7 +48,7 @@ google_protobuf:
     @package = "google_protobuf"
     !type DescriptorProto:
         @description =:
-            |// Describes a message type.
+            | Describes a message type.
         @source_path = "google/protobuf/descriptor.proto"
         enum_type <: sequence of EnumDescriptorProto
         extension <: sequence of FieldDescriptorProto
@@ -65,6 +65,7 @@ google_protobuf:
         reserved_name <: sequence of string
         reserved_range <: sequence of DescriptorProto_ReservedRange
     !type DescriptorProto_ExtensionRange:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         end <: int:
             @json_tag = "end"
@@ -77,9 +78,9 @@ google_protobuf:
             @rpcId = "1"
     !type DescriptorProto_ReservedRange:
         @description =:
-            |// Range of reserved tag numbers. Reserved tag numbers may not be used by
-            |// fields or extension ranges in the same message. Reserved ranges may
-            |// not overlap.
+            | Range of reserved tag numbers. Reserved tag numbers may not be used by
+            | fields or extension ranges in the same message. Reserved ranges may
+            | not overlap.
         @source_path = "google/protobuf/descriptor.proto"
         end <: int:
             @json_tag = "end"
@@ -89,7 +90,7 @@ google_protobuf:
             @rpcId = "1"
     !type EnumDescriptorProto:
         @description =:
-            |// Describes an enum type.
+            | Describes an enum type.
         @source_path = "google/protobuf/descriptor.proto"
         name <: string:
             @json_tag = "name"
@@ -102,12 +103,11 @@ google_protobuf:
         value <: sequence of EnumValueDescriptorProto
     !type EnumDescriptorProto_EnumReservedRange:
         @description =:
-            |// Range of reserved numeric values. Reserved values may not be used by
-            |// entries in the same enum. Reserved ranges may not overlap.
-            |//
-            |// Note that this is distinct from DescriptorProto.ReservedRange in that it
-            |// is inclusive such that it can appropriately represent the entire int32
-            |// domain.
+            | Range of reserved numeric values. Reserved values may not be used by
+            | entries in the same enum. Reserved ranges may not overlap.
+            | Note that this is distinct from DescriptorProto.ReservedRange in that it
+            | is inclusive such that it can appropriately represent the entire int32
+            | domain.
         @source_path = "google/protobuf/descriptor.proto"
         end <: int:
             @json_tag = "end"
@@ -116,6 +116,7 @@ google_protobuf:
             @json_tag = "start"
             @rpcId = "1"
     !type EnumOptions:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         allow_alias <: bool:
             @json_tag = "allowAlias"
@@ -126,7 +127,7 @@ google_protobuf:
         uninterpreted_option <: sequence of UninterpretedOption
     !type EnumValueDescriptorProto:
         @description =:
-            |// Describes a value within an enum.
+            | Describes a value within an enum.
         @source_path = "google/protobuf/descriptor.proto"
         name <: string:
             @json_tag = "name"
@@ -138,17 +139,19 @@ google_protobuf:
             @json_tag = "options"
             @rpcId = "3"
     !type EnumValueOptions:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         deprecated <: bool:
             @json_tag = "deprecated"
             @rpcId = "1"
         uninterpreted_option <: sequence of UninterpretedOption
     !type ExtensionRangeOptions:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         uninterpreted_option <: sequence of UninterpretedOption
     !type FieldDescriptorProto:
         @description =:
-            |// Describes a field within a message.
+            | Describes a field within a message.
         @source_path = "google/protobuf/descriptor.proto"
         default_value <: string:
             @json_tag = "defaultValue"
@@ -204,6 +207,7 @@ google_protobuf:
         TYPE_UINT32: 13
         TYPE_UINT64: 4
     !type FieldOptions:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         ctype <: FieldOptions_CType:
             @json_tag = "ctype"
@@ -234,7 +238,7 @@ google_protobuf:
         JS_STRING: 1
     !type FileDescriptorProto:
         @description =:
-            |// Describes a complete .proto file.
+            | Describes a complete .proto file.
         @source_path = "google/protobuf/descriptor.proto"
         dependency <: sequence of string
         enum_type <: sequence of EnumDescriptorProto
@@ -260,11 +264,12 @@ google_protobuf:
         weak_dependency <: sequence of int
     !type FileDescriptorSet:
         @description =:
-            |// The protocol compiler can output a FileDescriptorSet containing the .proto
-            |// files it parses.
+            | The protocol compiler can output a FileDescriptorSet containing the .proto
+            | files it parses.
         @source_path = "google/protobuf/descriptor.proto"
         file <: sequence of FileDescriptorProto
     !type FileOptions:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         cc_enable_arenas <: bool:
             @json_tag = "ccEnableArenas"
@@ -333,12 +338,13 @@ google_protobuf:
         SPEED: 1
     !type GeneratedCodeInfo:
         @description =:
-            |// Describes the relationship between generated code and its original source
-            |// file. A GeneratedCodeInfo message is associated with only one generated
-            |// source file, but may contain references to different source .proto files.
+            | Describes the relationship between generated code and its original source
+            | file. A GeneratedCodeInfo message is associated with only one generated
+            | source file, but may contain references to different source .proto files.
         @source_path = "google/protobuf/descriptor.proto"
         annotation <: sequence of GeneratedCodeInfo_Annotation
     !type GeneratedCodeInfo_Annotation:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         begin <: int:
             @json_tag = "begin"
@@ -351,6 +357,7 @@ google_protobuf:
             @json_tag = "sourceFile"
             @rpcId = "2"
     !type MessageOptions:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         deprecated <: bool:
             @json_tag = "deprecated"
@@ -367,7 +374,7 @@ google_protobuf:
         uninterpreted_option <: sequence of UninterpretedOption
     !type MethodDescriptorProto:
         @description =:
-            |// Describes a method of a service.
+            | Describes a method of a service.
         @source_path = "google/protobuf/descriptor.proto"
         client_streaming <: bool:
             @json_tag = "clientStreaming"
@@ -388,6 +395,7 @@ google_protobuf:
             @json_tag = "serverStreaming"
             @rpcId = "6"
     !type MethodOptions:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         deprecated <: bool:
             @json_tag = "deprecated"
@@ -402,7 +410,7 @@ google_protobuf:
         NO_SIDE_EFFECTS: 1
     !type OneofDescriptorProto:
         @description =:
-            |// Describes a oneof.
+            | Describes a oneof.
         @source_path = "google/protobuf/descriptor.proto"
         name <: string:
             @json_tag = "name"
@@ -411,11 +419,12 @@ google_protobuf:
             @json_tag = "options"
             @rpcId = "2"
     !type OneofOptions:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         uninterpreted_option <: sequence of UninterpretedOption
     !type ServiceDescriptorProto:
         @description =:
-            |// Describes a service.
+            | Describes a service.
         @source_path = "google/protobuf/descriptor.proto"
         method <: sequence of MethodDescriptorProto
         name <: string:
@@ -425,6 +434,7 @@ google_protobuf:
             @json_tag = "options"
             @rpcId = "3"
     !type ServiceOptions:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         deprecated <: bool:
             @json_tag = "deprecated"
@@ -432,11 +442,12 @@ google_protobuf:
         uninterpreted_option <: sequence of UninterpretedOption
     !type SourceCodeInfo:
         @description =:
-            |// Encapsulates information about the original source file from which a
-            |// FileDescriptorProto was generated.
+            | Encapsulates information about the original source file from which a
+            | FileDescriptorProto was generated.
         @source_path = "google/protobuf/descriptor.proto"
         location <: sequence of SourceCodeInfo_Location
     !type SourceCodeInfo_Location:
+        @description = ""
         @source_path = "google/protobuf/descriptor.proto"
         leading_comments <: string:
             @json_tag = "leadingComments"
@@ -449,12 +460,12 @@ google_protobuf:
             @rpcId = "4"
     !type UninterpretedOption:
         @description =:
-            |// A message representing a option the parser does not recognize. This only
-            |// appears in options protos created by the compiler::Parser class.
-            |// DescriptorPool resolves these when building Descriptor objects. Therefore,
-            |// options protos in descriptor objects (e.g. returned by Descriptor::options(),
-            |// or produced by Descriptor::CopyTo()) will never have UninterpretedOptions
-            |// in them.
+            | A message representing a option the parser does not recognize. This only
+            | appears in options protos created by the compiler::Parser class.
+            | DescriptorPool resolves these when building Descriptor objects. Therefore,
+            | options protos in descriptor objects (e.g. returned by Descriptor::options(),
+            | or produced by Descriptor::CopyTo()) will never have UninterpretedOptions
+            | in them.
         @source_path = "google/protobuf/descriptor.proto"
         aggregate_value <: string:
             @json_tag = "aggregateValue"
@@ -477,11 +488,11 @@ google_protobuf:
             @rpcId = "7"
     !type UninterpretedOption_NamePart:
         @description =:
-            |// The name of the uninterpreted option.  Each string represents a segment in
-            |// a dot-separated name.  is_extension is true iff a segment represents an
-            |// extension (denoted with parentheses in options specs in .proto files).
-            |// E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
-            |// "foo.(bar.baz).qux".
+            | The name of the uninterpreted option.  Each string represents a segment in
+            | a dot-separated name.  is_extension is true iff a segment represents an
+            | extension (denoted with parentheses in options specs in .proto files).
+            | E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
+            | "foo.(bar.baz).qux".
         @source_path = "google/protobuf/descriptor.proto"
         is_extension <: bool:
             @json_tag = "isExtension"
@@ -494,8 +505,8 @@ grpc_testing:
     @package = "grpc_testing"
     !type EchoStatus:
         @description =:
-            |// A protobuf representation for grpc status. This is used by test
-            |// clients to specify a status that the server should attempt to return.
+            | A protobuf representation for grpc status. This is used by test
+            | clients to specify a status that the server should attempt to return.
         @source_path = "tests/test/test.proto"
         code <: int:
             @json_tag = "code"
@@ -509,7 +520,7 @@ grpc_testing:
         GRPCLB_ROUTE_TYPE_UNKNOWN: 0
     !type Payload:
         @description =:
-            |// A block of data, to simply increase gRPC message size.
+            | A block of data, to simply increase gRPC message size.
         @source_path = "tests/test/test.proto"
         body <: bytes:
             @json_tag = "body"
@@ -523,7 +534,7 @@ grpc_testing:
         UNCOMPRESSABLE: 1
     !type ResponseParameters:
         @description =:
-            |// Configuration for a particular response.
+            | Configuration for a particular response.
         @source_path = "tests/test/test.proto"
         interval_us <: int:
             @json_tag = "intervalUs"
@@ -533,7 +544,7 @@ grpc_testing:
             @rpcId = "1"
     !type SimpleRequest:
         @description =:
-            |// Unary request.
+            | Unary request.
         @source_path = "tests/test/test.proto"
         fill_grpclb_route_type <: bool:
             @json_tag = "fillGrpclbRouteType"
@@ -561,7 +572,7 @@ grpc_testing:
             @rpcId = "1"
     !type SimpleResponse:
         @description =:
-            |// Unary response, as configured by the request.
+            | Unary response, as configured by the request.
         @source_path = "tests/test/test.proto"
         grpclb_route_type <: GrpclbRouteType:
             @json_tag = "grpclbRouteType"
@@ -580,21 +591,21 @@ grpc_testing:
             @rpcId = "2"
     !type StreamingInputCallRequest:
         @description =:
-            |// Client-streaming request.
+            | Client-streaming request.
         @source_path = "tests/test/test.proto"
         payload <: Payload:
             @json_tag = "payload"
             @rpcId = "1"
     !type StreamingInputCallResponse:
         @description =:
-            |// Client-streaming response.
+            | Client-streaming response.
         @source_path = "tests/test/test.proto"
         aggregated_payload_size <: int:
             @json_tag = "aggregatedPayloadSize"
             @rpcId = "1"
     !type StreamingOutputCallRequest:
         @description =:
-            |// Server-streaming request.
+            | Server-streaming request.
         @source_path = "tests/test/test.proto"
         payload <: Payload:
             @json_tag = "payload"
@@ -608,7 +619,7 @@ grpc_testing:
             @rpcId = "1"
     !type StreamingOutputCallResponse:
         @description =:
-            |// Server-streaming response, as configured by the request and parameters.
+            | Server-streaming response, as configured by the request and parameters.
         @source_path = "tests/test/test.proto"
         payload <: Payload:
             @json_tag = "payload"

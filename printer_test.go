@@ -72,14 +72,11 @@ func ConvertSyslToProto(filename string) (*pluginpb.CodeGeneratorResponse, error
 		return nil, err
 	}
 	var (
-		flags        flag.FlagSet
-		_            = flags.String("tests/test", "", "prefix to prepend to import paths")
-		importPrefix = flags.String("import_prefix", "", "prefix to prepend to import paths")
-		res          bytes.Buffer
+		flags flag.FlagSet
+		_     = flags.String("tests/test", "", "prefix to prepend to import paths")
+		res   bytes.Buffer
 	)
-	this := "abc"
-	importPrefix = &this
-	if err := run(protogen.Options{ParamFunc: flags.Set, ImportRewriteFunc: importRewriteFunc(importPrefix)}, req, &res, proto2sysl.GenerateFiles); err != nil {
+	if err := run(protogen.Options{ParamFunc: flags.Set}, req, &res, proto2sysl.GenerateFiles); err != nil {
 		return nil, err
 	}
 	response := &pluginpb.CodeGeneratorResponse{}
@@ -99,6 +96,8 @@ func run(opts protogen.Options, input io.Reader, output io.Writer, f func(*proto
 	if err := proto.Unmarshal(in, req); err != nil {
 		return err
 	}
+	this := ""
+	req.Parameter = &this
 	gen, err := opts.New(req)
 	if err != nil {
 		return err
