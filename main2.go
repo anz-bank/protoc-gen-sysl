@@ -19,9 +19,20 @@ import (
 
 func main() {
 	var (
-		flags flag.FlagSet
+		flags        flag.FlagSet
+		importPrefix = flags.String("import_prefix", "", "prefix to prepend to import paths")
 	)
 	protogen.Options{
-		ParamFunc: flags.Set,
+		ParamFunc:         flags.Set,
+		ImportRewriteFunc: importRewriteFunc(importPrefix),
 	}.Run(proto2sysl.GenerateFiles)
+}
+
+func importRewriteFunc(importPrefix *string) func(protogen.GoImportPath) protogen.GoImportPath {
+	return func(importPath protogen.GoImportPath) protogen.GoImportPath {
+		if *importPrefix != "" {
+			return protogen.GoImportPath(*importPrefix) + importPath
+		}
+		return importPath
+	}
 }

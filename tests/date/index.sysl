@@ -2,24 +2,20 @@
 Bar:
     @description = ""
     @package = "grpc_testing"
-    @source_line = "5"
     @source_path = "tests/date/date.proto"
     AnotherEndpoint(input <: grpc_testing.date_)[~grpc, ~GRPC]:
-        @source_path = "tests/date/date.proto"
-        @source_line = "5"
         @description = ""
+        @source_path = "tests/date/date.proto"
         return ok <: grpc_testing.date_
 
 grpc_testing:
     @package = "grpc_testing"
     !type date_:
-        @source_line = "4"
         @source_path = "tests/date/date.proto"
         this <: string:
             @json_tag = "this"
             @rpcId = "1"
     !type that:
-        @source_line = "4"
         @source_path = "tests/date/date.proto"
         s <: date_:
             @json_tag = "s"

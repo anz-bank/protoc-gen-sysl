@@ -2,22 +2,17 @@
 Bar:
     @description = ""
     @package = "grpc_testing"
-    @source_line = "7"
     @source_path = "tests/disconnectedimport/services.proto"
     AnotherEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
-        @source_path = "tests/disconnectedimport/services.proto"
-        @source_line = "7"
         @description = ""
+        @source_path = "tests/disconnectedimport/services.proto"
         return ok <: grpc_testing.Response
 
 grpc_testing:
     !enum Currency:
-        @source_line = "5"
-        @source_path = "tests/disconnectedimport/disconnectedimport.proto"
         AUD: 0
         USD: 1
     !type Request:
-        @source_line = "6"
         @source_path = "tests/disconnectedimport/types.proto"
         currency_code <: Currency:
             @json_tag = "currencyCode"
@@ -26,7 +21,6 @@ grpc_testing:
             @json_tag = "query"
             @rpcId = "1"
     !type Response:
-        @source_line = "6"
         @source_path = "tests/disconnectedimport/types.proto"
         query <: string:
             @json_tag = "query"

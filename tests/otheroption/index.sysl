@@ -2,24 +2,20 @@
 Bar:
     @description = ""
     @package = "grpc_testing"
-    @source_line = "5"
     @source_path = "tests/otheroption/otheroption.proto"
     AnotherEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
         @description = ""
         @source_path = "tests/otheroption/otheroption.proto"
-        @source_line = "5"
         return ok <: grpc_testing.Response
 
 grpc_testing:
     @package = "grpc_testing"
     !type Request:
-        @source_line = "4"
         @source_path = "tests/otheroption/otheroption.proto"
         query <: string:
             @json_tag = "query"
             @rpcId = "1"
     !type Response:
-        @source_line = "4"
         @source_path = "tests/otheroption/otheroption.proto"
         query <: string:
             @json_tag = "query"

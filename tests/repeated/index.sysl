@@ -2,12 +2,10 @@
 grpc_testing:
     @package = "grpc_testing"
     !type Request:
-        @source_line = "5"
         @source_path = "tests/repeated/repeated.proto"
         q <: sequence of Whatever
         query <: sequence of string
     !type Whatever:
-        @source_line = "5"
         @source_path = "tests/repeated/repeated.proto"
         query <: string:
             @json_tag = "query"
