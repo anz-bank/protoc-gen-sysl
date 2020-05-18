@@ -56,7 +56,7 @@ func VisitService(importPrefix string, module *sysl.Module, s *protogen.Service)
 
 	app.Attrs["package"] = newsysl.Attribute(pkgName)
 	app.Attrs["source_path"] = newsysl.Attribute(path.Join(importPrefix, s.Location.SourceFile))
-	app.Attrs["description"] = newsysl.Attribute(s.Comments.Leading.String() + s.Comments.Trailing.String())
+	app.Attrs["description"] = newsysl.Attribute(cleanDescription(s.Comments.Leading.String(), s.Comments.Trailing.String()))
 	module.Apps[name] = app
 	for _, e := range s.Methods {
 		if err := VisitMethod(importPrefix, module, e); err != nil {
@@ -86,7 +86,7 @@ func VisitMethod(importPrefix string, module *sysl.Module, m *protogen.Method) e
 
 	// Attributes
 	endpoint.Attrs = make(map[string]*sysl.Attribute)
-	endpoint.Attrs["description"] = newsysl.Attribute(m.Comments.Leading.String() + m.Comments.Trailing.String())
+	endpoint.Attrs["description"] = newsysl.Attribute(cleanDescription(m.Comments.Leading.String(), m.Comments.Trailing.String()))
 	endpoint.Attrs["patterns"] = newsysl.Pattern("grpc", "GRPC")
 	endpoint.Attrs["source_path"] = newsysl.AttributeAny(path.Join(importPrefix, m.Location.SourceFile))
 
@@ -103,9 +103,7 @@ func VisitMessage(importPrefix string, module *sysl.Module, m *protogen.Message)
 	attrDefs := make(map[string]*sysl.Type)
 	packageName, typeName := descToSyslName(m.Desc)
 	attrs["source_path"] = newsysl.AttributeAny(path.Join(importPrefix, m.Location.SourceFile))
-	if description := m.Comments.Leading.String() + m.Comments.Trailing.String(); description != "" {
-		attrs["description"] = newsysl.Attribute(description)
-	}
+	attrs["description"] = newsysl.Attribute(cleanDescription(m.Comments.Leading.String(), m.Comments.Trailing.String()))
 	for _, e := range m.Fields {
 		fieldName = newsysl.SanitiseTypeName(string(e.Desc.Name()))
 		attrDefs[fieldName] = fieldGoType(packageName, e)

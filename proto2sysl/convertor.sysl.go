@@ -2,6 +2,7 @@ package proto2sysl
 
 import (
 	"strconv"
+	"strings"
 
 	"google.golang.org/protobuf/reflect/protoreflect"
 
@@ -10,6 +11,14 @@ import (
 	"github.com/anz-bank/protoc-gen-sysl/newsysl"
 	"github.com/anz-bank/sysl/pkg/sysl"
 )
+
+func cleanDescription(s ...string) string {
+	var ret string
+	for _, e := range s {
+		ret += strings.ReplaceAll(e, "//", "\n")
+	}
+	return ret
+}
 
 // fieldGoType returns the Go type used for a field.
 func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
