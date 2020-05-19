@@ -5,7 +5,7 @@ go 1.13
 require (
 	github.com/Joshcarp/sysl v0.5.1 // indirect
 	github.com/alecthomas/assert v0.0.0-20170929043011-405dbfeb8e38
-	github.com/anz-bank/sysl v0.92.0
+	github.com/anz-bank/sysl v0.93.0
 	github.com/golang/protobuf v1.4.2
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
