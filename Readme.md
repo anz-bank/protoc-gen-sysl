@@ -42,20 +42,46 @@ Application:
 Here we describe an Application with one Endpoint, and the `Foo <- thisEndpoint` specifies that this application calls a dependency.
 This isn't supported in proto files, as proto files primarily are only for API specifications, not interactions of those APIs. 
 
+## Example
+- Given the proto file:
+```
+syntax = "proto3";
 
-Then once we call the proto tool:
+package grpc.testing;
+
+message Request {
+    string query = 1;
+}
+
+message Response {
+    string query = 1;
+}
+
+service Foo{
+    rpc thisEndpoint(Request) returns(Response);
+}
+
+service Bar{
+    rpc AnotherEndpoint(Request) returns(Response);
+}
+
+```
+
+We can convert this to sysl using:
 `protoc --sysl_out=. example.proto`
 
 we have our new sysl file:
 
 ```
 Bar:
-    AnotherEndpoint(input <: Types.Request):
+    @package="grpc_testing"
+    AnotherEndpoint(input <: grpc_testing.Request):
         return Response
 Foo:
-    thisEndpoint(input <: Types.Request):
+    @package="grpc_testing"
+    thisEndpoint(input <: grpc_testing.Request):
         return Response
-Types:
+grpc_testing:
     !type Request:
         query <: string
     !type Response:
