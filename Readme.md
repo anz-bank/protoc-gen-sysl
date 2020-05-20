@@ -43,6 +43,22 @@ Here we describe an Application with one Endpoint, and the `Foo <- thisEndpoint`
 This isn't supported in proto files, as proto files primarily are only for API specifications, not interactions of those APIs. 
 
 ## Example
+```
++---------------------+ imported  +------------------+
+| generated sysl file |---------->| manual sysl file |---------> sysl toolchain (sequence diagrams/sysl-catalog)
++---------------------+           +------------------+
+     ^                                     ^ imported
+     |    protoc-gen-sysl                  |
+     |                            +----------------------+
+  +--+-----------+                |other manual/generated|
+  | .proto file  |                |sysl files            |
+  +--------------+                +----------------------+
+
+```
+
+Where the manual sysl file can "redefine" applications with the `<-` syntax and other sysl specifics before being used in the sysl toolchain.
+
+
 - Given the proto file:
 ```
 syntax = "proto3";
