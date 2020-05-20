@@ -9,31 +9,16 @@ Supports using sysls "call" syntax through proto options
 
 ## Installation
 
-`go get github.com/anz-bank/protoc-gen-sysl`
-
-now add the [sysloption.proto](/sysloption/sysloption.proto) to your local project and import in your local proto file.
-
+`go get -u -v github.com/anz-bank/protoc-gen-sysl`
 
 ## Usage
-import the sysloption.proto into your current project:
-`
-import "sysloption.proto";
-`
-
-use the option on a method:
-```proto
-service Foo{
-    rpc AnotherEndpoint(Request) returns (Response);
-    rpc thisEndpoint(Request) returns(Response){
-        option (sysl.calls) = {call: "Bar.AnotherEndpoint"};
-    };
-}
-```
-and run
 
 `protoc --sysl_out=. input.proto`
 
-NOTE: Currently all sysl.calls need to refer to services that exist within the same proto file.
+or 
+`protoc -I <import prefix> --sysl_out=import_prefix=<import prefix> input.proto` if you're using the -I flag with protoc
+
+This will help determine where source locations are relative to where the protoc tool was run. s
 
 
 ## Examples
@@ -57,34 +42,7 @@ Application:
 Here we describe an Application with one Endpoint, and the `Foo <- thisEndpoint` specifies that this application calls a dependency.
 This isn't supported in proto files, as proto files primarily are only for API specifications, not interactions of those APIs. 
 
-This proto tool gives an option to add these interactions to proto source files:
 
-```diff 
-syntax = "proto3";
-
-package grpc.testing;
-
-+import "sysloption.proto";
-
-message Request {
-    string query = 1;
-}
-
-message Response {
-    string query = 1;
-}
-
-service Foo{
--    rpc thisEndpoint(Request) returns(Response);
-+    rpc thisEndpoint(Request) returns(Response){
-+       option (sysl.calls) = {call: "Bar.AnotherEndpoint"};
-    };
-}
-
-service Bar{
-    rpc AnotherEndpoint(Request) returns(Response);
-}
-```
 Then once we call the proto tool:
 `protoc --sysl_out=. example.proto`
 
@@ -96,7 +54,6 @@ Bar:
         return Response
 Foo:
     thisEndpoint(input <: Types.Request):
-        Bar <- AnotherEndpoint
         return Response
 Types:
     !type Request:
@@ -106,11 +63,28 @@ Types:
 
 ```
 
-Note the `Bar <- AnotherEndpoint` that was generated from the `sysl.calls` Option
+## Importing manually written sysl
+Once the generated sysl exists, one can write more sysl to specify the interactions:
+manual.sysl:
 
-Now we can generate a diagram for our grpc service:
+```
+import generated.sysl # Specify that we import our sysl file we just generated
+Bar:
+    AnotherEndpoint:
+        Foo <- thisEndpoint # Here we specify that we call another service
+```
 
-`sysl sd -o output.png -s "Foo <- thisEndpoint" example.sysl`
+Now you can generate sequence diagrams with `sysl sd -s "Bar <- AnotherEndpoint" manual.sysl` 
+or use (https://github.com.anz-bank/sysl-catalog)[] for building api catalogs
 
-
-![output](demo/output.png)
+## Mapping from proto to sysl
+proto|sysl|description|
+|--|--|--|
+package  grpc.testing;|@package="grpc_testing"||
+message Request | grpc_testing: !type Request:...| types belong to an application the same name as the package|
+string query = 1; | query <: string: <br>@rpcid="1", @json_tag="query"| |
+service Foo| Foo: | The foo application
+ rpc thisEndpoint(Request) returns(Request){};| thisEndpoint(req <: grpc_testing.Request)<br>returns ok <: grpc_testing.Response | 
+ int64 | int | | 
+ int32 | int | | 
+ float<x>| float| | 
