@@ -75,7 +75,7 @@ Bar:
 ```
 
 Now you can generate sequence diagrams with `sysl sd -s "Bar <- AnotherEndpoint" manual.sysl` 
-or use (https://github.com.anz-bank/sysl-catalog)[] for building api catalogs
+or use [https://github.com.anz-bank/sysl-catalog]() for building api catalogs
 
 ## Mapping from proto to sysl
 proto|sysl|description|
