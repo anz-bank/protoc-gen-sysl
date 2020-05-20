@@ -124,18 +124,15 @@ or use [https://github.com.anz-bank/sysl-catalog]() for building api catalogs
 ## Mapping from proto to sysl
 proto|sysl|description|
 |--|--|--|
-package  grpc.testing;|@package="grpc_testing"||
-message Request | grpc_testing: !type Request:...| types belong to an application the same name as the package|
-string query = 1; | query <: string: <br>@rpcid="1", @json_tag="query"| |
-service Foo| Foo: | The foo application
- rpc thisEndpoint(Request) returns(Request){};|  <details>
- ```
- thisEndpoint(req <: grpc_testing.Request)
-    returns ok <: grpc_testing.Response
- ```
- </details> ||
- int64 | int || 
- int32 | int || 
- float<x>| float||
- message | !type ||
- enum | !enum|| 
+`package  grpc.testing;`|`@package="grpc_testing"`|package attributes will be attached to any applications|
+`message Request` | `grpc_testing:`<br>` !type Request:...`| types belong to an application the same name as the package|
+`string query = 1;` | `query <: string:` <br>`    @rpcid="1", @json_tag="query"`||
+`service Foo`| `Foo:`<br>`    @package="grpc_testing"` | The foo application
+`rpc thisEndpoint(Request) returns(Request){};`|`thisEndpoint(req <: grpc_testing.Request)[~grpc, ~GRPC]:`<br>`    returns ok <: grpc_testing.Response`| Individual endpoints will have the ~grpc + ~GRPC patterns to differentiate from any other endpoints in sysl|
+`int64` | `int` ||
+`int32` | `int` ||
+`float<x>`| `float`||
+`message` | `!type` ||
+`enum` | `!enum`||
+`repeated type`| `sequence of type`||
+`message foo{`<br>`message bar`| `!type foo_bar`| Messages defined in messages will have names in the format outername_innername
