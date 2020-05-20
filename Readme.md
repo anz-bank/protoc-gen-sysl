@@ -43,6 +43,8 @@ Here we describe an Application with one Endpoint, and the `Foo <- thisEndpoint`
 This isn't supported in proto files, as proto files primarily are only for API specifications, not interactions of those APIs. 
 
 ## Example
+Example workflow:
+
 ```
 +---------------------+ imported  +------------------+
 | generated sysl file |---------->| manual sysl file |---------> sysl toolchain (sequence diagrams/sysl-catalog)
@@ -126,7 +128,14 @@ package  grpc.testing;|@package="grpc_testing"||
 message Request | grpc_testing: !type Request:...| types belong to an application the same name as the package|
 string query = 1; | query <: string: <br>@rpcid="1", @json_tag="query"| |
 service Foo| Foo: | The foo application
- rpc thisEndpoint(Request) returns(Request){};| thisEndpoint(req <: grpc_testing.Request)<br>returns ok <: grpc_testing.Response | 
- int64 | int | | 
- int32 | int | | 
- float<x>| float| | 
+ rpc thisEndpoint(Request) returns(Request){};|  <details>
+ ```
+ thisEndpoint(req <: grpc_testing.Request)
+    returns ok <: grpc_testing.Response
+ ```
+ </details> ||
+ int64 | int || 
+ int32 | int || 
+ float<x>| float||
+ message | !type ||
+ enum | !enum|| 
