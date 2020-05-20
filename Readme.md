@@ -42,20 +42,62 @@ Application:
 Here we describe an Application with one Endpoint, and the `Foo <- thisEndpoint` specifies that this application calls a dependency.
 This isn't supported in proto files, as proto files primarily are only for API specifications, not interactions of those APIs. 
 
+## Example
+```
++---------------------+ imported  +------------------+
+| generated sysl file |---------->| manual sysl file |---------> sysl toolchain (sequence diagrams/sysl-catalog)
++---------------------+           +------------------+
+     ^                                     ^ imported
+     |    protoc-gen-sysl                  |
+     |                            +----------------------+
+  +--+-----------+                |other manual/generated|
+  | .proto file  |                |sysl files            |
+  +--------------+                +----------------------+
 
-Then once we call the proto tool:
+```
+
+Where the manual sysl file can "redefine" applications with the `<-` syntax and other sysl specifics before being used in the sysl toolchain.
+
+
+- Given the proto file:
+```
+syntax = "proto3";
+
+package grpc.testing;
+
+message Request {
+    string query = 1;
+}
+
+message Response {
+    string query = 1;
+}
+
+service Foo{
+    rpc thisEndpoint(Request) returns(Response);
+}
+
+service Bar{
+    rpc AnotherEndpoint(Request) returns(Response);
+}
+
+```
+
+We can convert this to sysl using:
 `protoc --sysl_out=. example.proto`
 
 we have our new sysl file:
 
 ```
 Bar:
-    AnotherEndpoint(input <: Types.Request):
+    @package="grpc_testing"
+    AnotherEndpoint(input <: grpc_testing.Request):
         return Response
 Foo:
-    thisEndpoint(input <: Types.Request):
+    @package="grpc_testing"
+    thisEndpoint(input <: grpc_testing.Request):
         return Response
-Types:
+grpc_testing:
     !type Request:
         query <: string
     !type Response:
@@ -75,7 +117,7 @@ Bar:
 ```
 
 Now you can generate sequence diagrams with `sysl sd -s "Bar <- AnotherEndpoint" manual.sysl` 
-or use (https://github.com.anz-bank/sysl-catalog)[] for building api catalogs
+or use [https://github.com.anz-bank/sysl-catalog]() for building api catalogs
 
 ## Mapping from proto to sysl
 proto|sysl|description|
