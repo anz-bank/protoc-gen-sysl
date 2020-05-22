@@ -28,4 +28,6 @@ jobs:
 
     - name: Test 32 bit system
       run: GOARCH=386 go test ./...
+    - name: install
+      run: go get -u -v github.com/anz-bank/protoc-gen-sysl
     
