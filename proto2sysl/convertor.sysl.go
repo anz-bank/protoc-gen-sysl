@@ -12,8 +12,9 @@ import (
 	"github.com/anz-bank/sysl/pkg/sysl"
 )
 
-func cleanDescription(s ...string) string {
+func cleanDescription(comment protogen.CommentSet) string {
 	var ret string
+	s := []string{comment.Leading.String(), comment.Trailing.String()}
 	for _, e := range s {
 		ret += strings.ReplaceAll(e, "//", "\n")
 	}
@@ -56,9 +57,14 @@ func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 		}
 		t = newsysl.Type(typeName, application)
 	}
+
 	t.Attrs = map[string]*sysl.Attribute{
 		"json_tag": newsysl.Attribute(field.Desc.JSONName()),
 		"rpcId":    newsysl.Attribute(strconv.Itoa(int(field.Desc.Number()))),
+	}
+	if description := cleanDescription(field.Comments); description != "" {
+		t.Attrs["description"] = newsysl.Attribute(description)
+
 	}
 	switch {
 	case field.Desc.IsList():
