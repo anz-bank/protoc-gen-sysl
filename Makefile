@@ -54,3 +54,5 @@ sysl: *.sysl
 # Execure proto to generate go code
 # grpc: *
 # 	protoc -I hello/ hello/hello.proto --go_out=plugins=grpc:hello
+docker:
+	docker build -t protoc-gen-sysl .
