@@ -1,29 +1,27 @@
-name: Release
+name: Docker
 
 on:
   push:
-    branches: [ master ]
+    tags:
+      - 'v*.*.*'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   release:
-    name: Release protoc-gen-sysl
+    name: Release
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code into the Go module directory
+      - name: Check out code
         uses: actions/checkout@master
-      - name: Login to docker hub
-        uses: actions-hub/docker/login@master
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USER }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASS }}
-
-      - name: Build :latest
-        run: docker build -t anzbank/protoc-gen-sysl:latest .
-
-      - name: Push to docker hub :latest
-        uses: actions-hub/docker@master
+      - name: Build and push docker image
+        uses: docker/build-push-action@v1
         with:
-          args: push docker.io/anzbank/protoc-gen-sysl:latest
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+          repository: docker.io/anzbank/protoc-gen-sysl
+          tag_with_ref: true
+          add_git_labels: true
+          tags: latest
+          labels: org.opencontainers.image.revision=${{ github.sha }},org.opencontainers.image.url=https://sysl.io
