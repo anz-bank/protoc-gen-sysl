@@ -22,4 +22,4 @@ RUN go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 RUN go get -u -v github.com/envoyproxy/protoc-gen-validate
 RUN go get -u -v github.com/anz-bank/protoc-gen-sysl
 
-ENTRYPOINT [ "protoc", "--sysl-out" ]
+ENTRYPOINT [ "protoc" ]
