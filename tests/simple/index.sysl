@@ -4,7 +4,7 @@ Bar[~gRPC]:
         | This is a comment before Bar
     @package = "grpc_testing"
     @source_path = "tests/simple/simple.proto"
-    AnotherEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
+    AnotherEndpoint(input <: grpc_testing.Request)[~gRPC]:
         @description =:
             | this is a comment before Bar.AnotherEndpoint
         @source_path = "tests/simple/simple.proto"
@@ -15,7 +15,7 @@ Foo[~gRPC]:
         | This is a comment before Foo
     @package = "grpc_testing"
     @source_path = "tests/simple/simple.proto"
-    thisEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
+    thisEndpoint(input <: grpc_testing.Request)[~gRPC]:
         @description = ""
         @source_path = "tests/simple/simple.proto"
         return ok <: grpc_testing.Response

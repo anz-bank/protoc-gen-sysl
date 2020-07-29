@@ -3,7 +3,7 @@ Bar[~gRPC]:
     @description = ""
     @package = "grpc_testing_what"
     @source_path = "tests/externaltype/externaltype.proto"
-    AnotherEndpoint(input <: grpc_testing_what.date_)[~grpc, ~GRPC]:
+    AnotherEndpoint(input <: grpc_testing_what.date_)[~gRPC]:
         @description = ""
         @source_path = "tests/externaltype/externaltype.proto"
         return ok <: grpc_testing_what.date_
@@ -12,7 +12,7 @@ Car[~gRPC]:
     @description = ""
     @package = "grpc_testing_what"
     @source_path = "tests/externaltype/externaltype.proto"
-    AnotherEndpoint(input <: grpc_testing_what.this)[~grpc, ~GRPC]:
+    AnotherEndpoint(input <: grpc_testing_what.this)[~gRPC]:
         @description = ""
         @source_path = "tests/externaltype/externaltype.proto"
         return ok <: grpc_testing_what.this
