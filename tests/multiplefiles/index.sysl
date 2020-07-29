@@ -1,9 +1,9 @@
 
-Bar:
+Bar[~gRPC]:
     @description = ""
     @package = "grpc_testing"
     @source_path = "tests/multiplefiles/services.proto"
-    anotherEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
+    anotherEndpoint(input <: grpc_testing.Request)[~gRPC]:
         @description = ""
         @source_path = "tests/multiplefiles/services.proto"
         return ok <: grpc_testing.Response

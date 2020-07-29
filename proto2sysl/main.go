@@ -57,6 +57,7 @@ func VisitService(importPrefix string, module *sysl.Module, s *protogen.Service)
 	app.Attrs["package"] = newsysl.Attribute(pkgName)
 	app.Attrs["source_path"] = newsysl.Attribute(path.Join(importPrefix, s.Location.SourceFile))
 	app.Attrs["description"] = newsysl.Attribute(cleanDescription(s.Comments))
+	app.Attrs["patterns"] = newsysl.Pattern("gRPC")
 	module.Apps[name] = app
 	for _, e := range s.Methods {
 		if err := VisitMethod(importPrefix, module, e); err != nil {
@@ -87,7 +88,7 @@ func VisitMethod(importPrefix string, module *sysl.Module, m *protogen.Method) e
 	// Attributes
 	endpoint.Attrs = make(map[string]*sysl.Attribute)
 	endpoint.Attrs["description"] = newsysl.Attribute(cleanDescription(m.Comments))
-	endpoint.Attrs["patterns"] = newsysl.Pattern("grpc", "GRPC")
+	endpoint.Attrs["patterns"] = newsysl.Pattern("gRPC")
 	endpoint.Attrs["source_path"] = newsysl.AttributeAny(path.Join(importPrefix, m.Location.SourceFile))
 
 	module.Apps[appName].Endpoints[endpointName] = endpoint

@@ -1,9 +1,9 @@
 
-Bar:
+Bar[~gRPC]:
     @description = ""
     @package = "grpc_testing"
     @source_path = "tests/date/date.proto"
-    AnotherEndpoint(input <: grpc_testing.date_)[~grpc, ~GRPC]:
+    AnotherEndpoint(input <: grpc_testing.date_)[~gRPC]:
         @description = ""
         @source_path = "tests/date/date.proto"
         return ok <: grpc_testing.date_

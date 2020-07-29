@@ -1,14 +1,14 @@
 
-Foo:
+Foo[~gRPC]:
     @description = ""
     @package = "grpc_testing"
     @source_path = "tests/test/test.proto"
-    Foobar(input <: grpc_testing.StreamingOutputCallRequest)[~grpc, ~GRPC]:
+    Foobar(input <: grpc_testing.StreamingOutputCallRequest)[~gRPC]:
         @description = ""
         @source_path = "tests/test/test.proto"
         return ok <: grpc_testing.StreamingOutputCallResponse
 
-TestService:
+TestService[~gRPC]:
     @description =:
         | A simple service to test the various types of RPCs and experiment with
         | performance with various types of payload.
@@ -16,14 +16,14 @@ TestService:
         |    rpc EmptyCall(Empty) returns (Empty);
     @package = "grpc_testing"
     @source_path = "tests/test/test.proto"
-    FullDuplexCall(input <: grpc_testing.StreamingOutputCallRequest)[~grpc, ~GRPC]:
+    FullDuplexCall(input <: grpc_testing.StreamingOutputCallRequest)[~gRPC]:
         @description =:
             | A sequence of requests with each request served by the server immediately.
             | As one request could lead to multiple responses, this interface
             | demonstrates the idea of full duplexing.
         @source_path = "tests/test/test.proto"
         return ok <: grpc_testing.StreamingOutputCallResponse
-    HalfDuplexCall(input <: grpc_testing.StreamingOutputCallRequest)[~grpc, ~GRPC]:
+    HalfDuplexCall(input <: grpc_testing.StreamingOutputCallRequest)[~gRPC]:
         @description =:
             | A sequence of requests followed by a sequence of responses.
             | The server buffers all the client requests and then serves them in order. A
@@ -31,13 +31,13 @@ TestService:
             | first request.
         @source_path = "tests/test/test.proto"
         return ok <: grpc_testing.StreamingOutputCallResponse
-    StreamingInputCall(input <: grpc_testing.StreamingInputCallRequest)[~grpc, ~GRPC]:
+    StreamingInputCall(input <: grpc_testing.StreamingInputCallRequest)[~gRPC]:
         @description =:
             | A sequence of requests followed by one response (streamed upload).
             | The server returns the aggregated size of client payload as the result.
         @source_path = "tests/test/test.proto"
         return ok <: grpc_testing.StreamingInputCallResponse
-    StreamingOutputCall(input <: grpc_testing.StreamingOutputCallRequest)[~grpc, ~GRPC]:
+    StreamingOutputCall(input <: grpc_testing.StreamingOutputCallRequest)[~gRPC]:
         @description =:
             | One request followed by a sequence of responses (streamed download).
             | The server returns the payload with client desired type and sizes.

@@ -1,9 +1,9 @@
 
-Bar:
+Bar[~gRPC]:
     @description = ""
     @package = "grpc_testing"
     @source_path = "tests/enum/enum.proto"
-    AnotherEndpoint(input <: grpc_testing.Request)[~grpc, ~GRPC]:
+    AnotherEndpoint(input <: grpc_testing.Request)[~gRPC]:
         @description = ""
         @source_path = "tests/enum/enum.proto"
         return ok <: grpc_testing.Response
