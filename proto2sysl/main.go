@@ -88,7 +88,7 @@ func VisitMethod(importPrefix string, module *sysl.Module, m *protogen.Method) e
 	// Attributes
 	endpoint.Attrs = make(map[string]*sysl.Attribute)
 	endpoint.Attrs["description"] = newsysl.Attribute(cleanDescription(m.Comments))
-	endpoint.Attrs["patterns"] = newsysl.Pattern("grpc", "GRPC")
+	endpoint.Attrs["patterns"] = newsysl.Pattern("gRPC")
 	endpoint.Attrs["source_path"] = newsysl.AttributeAny(path.Join(importPrefix, m.Location.SourceFile))
 
 	module.Apps[appName].Endpoints[endpointName] = endpoint
