@@ -1,5 +1,5 @@
 
-Foo:
+Foo[~gRPC]:
     @description = ""
     @package = "grpc_testing"
     @source_path = "tests/test/test.proto"
@@ -8,7 +8,7 @@ Foo:
         @source_path = "tests/test/test.proto"
         return ok <: grpc_testing.StreamingOutputCallResponse
 
-TestService:
+TestService[~gRPC]:
     @description =:
         | A simple service to test the various types of RPCs and experiment with
         | performance with various types of payload.

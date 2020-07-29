@@ -1,5 +1,5 @@
 
-Bar:
+Bar[~gRPC]:
     @description =:
         | This is a comment before Bar
     @package = "grpc_testing"
@@ -10,7 +10,7 @@ Bar:
         @source_path = "tests/simple/simple.proto"
         return ok <: grpc_testing.Response
 
-Foo:
+Foo[~gRPC]:
     @description =:
         | This is a comment before Foo
     @package = "grpc_testing"

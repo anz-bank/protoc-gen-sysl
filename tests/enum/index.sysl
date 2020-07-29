@@ -1,5 +1,5 @@
 
-Bar:
+Bar[~gRPC]:
     @description = ""
     @package = "grpc_testing"
     @source_path = "tests/enum/enum.proto"

@@ -1,5 +1,5 @@
 
-Bar:
+Bar[~gRPC]:
     @description = ""
     @package = "grpc_testing_what"
     @source_path = "tests/externaltype/externaltype.proto"
@@ -8,7 +8,7 @@ Bar:
         @source_path = "tests/externaltype/externaltype.proto"
         return ok <: grpc_testing_what.date_
 
-Car:
+Car[~gRPC]:
     @description = ""
     @package = "grpc_testing_what"
     @source_path = "tests/externaltype/externaltype.proto"
