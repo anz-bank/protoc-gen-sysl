@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     bash \
     && rm -rf /var/lib/apt/lists/*
-ENV PROTOC_VERSION="3.11.2"
+ENV PROTOC_VERSION="3.12.4"
 RUN curl -L -O https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip
 RUN unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d /usr/local/
 
