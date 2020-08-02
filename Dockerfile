@@ -20,6 +20,7 @@ WORKDIR /
 COPY --from=builder /src/protoc-gen-sysl /bin/
 RUN go get -u -v \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
+    github.com/golang/protobuf/protoc-gen-go \
     github.com/envoyproxy/protoc-gen-validate \
     github.com/anz-bank/protoc-gen-sysl
 
