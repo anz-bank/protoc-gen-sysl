@@ -22,6 +22,6 @@ RUN go get -u -v \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
     github.com/golang/protobuf/protoc-gen-go \
     github.com/envoyproxy/protoc-gen-validate \
-    github.com/anz-bank/protoc-gen-sysl
+    google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
 ENTRYPOINT [ "protoc" ]
