@@ -5,43 +5,93 @@ import (
 	"path"
 	"strings"
 
-	"google.golang.org/protobuf/reflect/protoreflect"
-
 	"github.com/anz-bank/protoc-gen-sysl/newsysl"
 	"github.com/anz-bank/sysl/pkg/printer"
 	"github.com/anz-bank/sysl/pkg/sysl"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
+// GenContext contains top-level data relevant to the whole generation process.
+type GenContext struct {
+	// module is the destination Sysl module being generated.
+	module *sysl.Module
+	// importPrefix is a path to prefix to source locations.
+	importPrefix string
+	// pkgNs is a map of proto package names to Sysl namespaces declared in those files.
+	// The namespace values should be used for types declared in those packages.
+	pkgNs map[string][]string
+}
+
+// NewGenContext returns a new GenContext populated with the context from gen.
+func NewGenContext(gen *protogen.Plugin) GenContext {
+	return GenContext{
+		importPrefix: getImportPrefix(gen),
+		pkgNs:        extractPackageNamespaces(gen),
+		module:       newsysl.Module(),
+	}
+}
+
+// extractPackageNamespaces explores the set of imported files and returns a map of proto packages
+// to the Sysl namespaces declared as options in those files.
+func extractPackageNamespaces(gen *protogen.Plugin) map[string][]string {
+	m := make(map[string][]string, len(gen.Files))
+	for _, file := range gen.Files {
+		m[string(file.Desc.Package())] = getFileNamespaceOption(file.Desc)
+	}
+	return m
+}
+
+// getImportPrefix extracts the import_prefix parameter from the gen request.
+func getImportPrefix(gen *protogen.Plugin) string {
+	return strings.Replace(gen.Request.GetParameter(), "import_prefix=", "", 1)
+}
+
+// includeImport returns true if the proto identified by the import path should be included in the
+// generation.
+func includeImport(path string) bool {
+	return path != "google/protobuf/descriptor.proto"
+}
+
 // GenerateFile generates the contents of a index.sysl file.
 func GenerateFiles(gen *protogen.Plugin) error {
 	g := gen.NewGeneratedFile("index.sysl", gen.Files[0].GoImportPath)
-	m := newsysl.Module() // destination sysl module
-	import_prefix := strings.Replace(gen.Request.GetParameter(), "import_prefix=", "", 1)
-	for _, file := range gen.Files {
-		if err := VisitFile(import_prefix, m, file); err != nil {
-			return err
-		}
+	m, err := GenerateModule(gen)
+	if err != nil {
+		return err
 	}
+
 	var buf bytes.Buffer
 	printer.Module(&buf, m)
 	g.P(buf.String())
 	return nil
 }
 
-func VisitFile(importPrefix string, module *sysl.Module, file *protogen.File) (err error) {
+func GenerateModule(gen *protogen.Plugin) (*sysl.Module, error) {
+	ctx := NewGenContext(gen)
+
+	for _, file := range gen.Files {
+		if includeImport(*file.Proto.Name) {
+			if err := VisitFile(ctx, file); err != nil {
+				return nil, err
+			}
+		}
+	}
+	return ctx.module, nil
+}
+
+func VisitFile(ctx GenContext, file *protogen.File) (err error) {
 	for _, s := range file.Services {
-		if err := VisitService(importPrefix, module, s); err != nil {
+		if err := VisitService(ctx, s); err != nil {
 			return err
 		}
 	}
 	for _, t := range file.Messages {
-		if err := VisitMessage(importPrefix, module, t); err != nil {
+		if err := VisitMessage(ctx, t); err != nil {
 			return err
 		}
 	}
 	for _, e := range file.Enums {
-		if err := VisitEnum(module, e); err != nil {
+		if err := VisitEnum(ctx, e); err != nil {
 			return nil
 		}
 	}
@@ -50,17 +100,16 @@ func VisitFile(importPrefix string, module *sysl.Module, file *protogen.File) (e
 
 // VisitService converts to sysl and constructs endpoints from methods
 // service myservice{...} --> myservice:
-func VisitService(importPrefix string, module *sysl.Module, s *protogen.Service) error {
-	pkgName, name := descToSyslName(s.Desc)
-	app := newsysl.Application(name)
+func VisitService(ctx GenContext, s *protogen.Service) error {
+	names := getNames(ctx, s.Desc)
+	app := getOrCreateApp(ctx, names)
 
-	app.Attrs["package"] = newsysl.Attribute(pkgName)
-	app.Attrs["source_path"] = newsysl.Attribute(path.Join(importPrefix, s.Location.SourceFile))
+	app.Attrs["source_path"] = newsysl.Attribute(path.Join(ctx.importPrefix, s.Location.SourceFile))
 	app.Attrs["description"] = newsysl.Attribute(cleanDescription(s.Comments))
 	app.Attrs["patterns"] = newsysl.Pattern("gRPC")
-	module.Apps[name] = app
-	for _, e := range s.Methods {
-		if err := VisitMethod(importPrefix, module, e); err != nil {
+
+	for _, method := range s.Methods {
+		if err := VisitMethod(ctx, names.appName, method); err != nil {
 			return err
 		}
 	}
@@ -68,69 +117,89 @@ func VisitService(importPrefix string, module *sysl.Module, s *protogen.Service)
 }
 
 // VisitMethod converts a message to a sysl endpoint and fills in calls to other functions
-// rpc thisEndpoint(InputType)returns(outputType) -->
+// rpc thisEndpoint(InputType) returns(OutputType) -->
 // thisEndpoint(input <: InputType):
-//     return ok <: outputType
-func VisitMethod(importPrefix string, module *sysl.Module, m *protogen.Method) error {
-	appName := string(m.Desc.Parent().Name())
-	endpointName := newsysl.SanitiseTypeName(string(m.Desc.Name()))
-	endpoint := newsysl.Endpoint(endpointName)
+//     return ok <: OutputType
+func VisitMethod(ctx GenContext, appName []string, m *protogen.Method) error {
+	names := getNames(ctx, m.Desc)
+	appFullName := namespaceJoin(appName)
+	endpoint := newsysl.Endpoint(names.name)
 
-	// Apps types are stored in a sysl app which is the same as the package name
-	// Input
-	packageName, Name := descToSyslName(m.Input.Desc)
-	endpoint.Param = []*sysl.Param{newsysl.Param(Name, packageName)}
-
-	// Output
-	packageName, Name = descToSyslName(m.Output.Desc)
-	endpoint.Stmt = []*sysl.Statement{newsysl.Return(packageName, Name)}
+	endpoint.Param = []*sysl.Param{VisitParam(ctx, m.Input)}
+	endpoint.Stmt = []*sysl.Statement{VisitReturn(ctx, m.Output)}
 
 	// Attributes
 	endpoint.Attrs = make(map[string]*sysl.Attribute)
 	endpoint.Attrs["description"] = newsysl.Attribute(cleanDescription(m.Comments))
 	endpoint.Attrs["patterns"] = newsysl.Pattern("gRPC")
-	endpoint.Attrs["source_path"] = newsysl.AttributeAny(path.Join(importPrefix, m.Location.SourceFile))
+	endpoint.Attrs["source_path"] = newsysl.Attribute(path.Join(ctx.importPrefix, m.Location.SourceFile))
 
-	module.Apps[appName].Endpoints[endpointName] = endpoint
+	ctx.module.Apps[appFullName].Endpoints[endpoint.Name] = endpoint
 	return nil
+}
+
+// VisitParam converts an input message to a Sysl parameter and constructs a corresponding type in
+// the TypeApplication (unlike protobufs, Sysl types must be contained by applications).
+// rpc thisEndpoint(InputType) returns(OutputType) -->
+// Types: !type InputType: ...
+func VisitParam(ctx GenContext, m *protogen.Message) *sysl.Param {
+	names := getNames(ctx, m.Desc)
+	app := getOrCreateApp(ctx, names)
+	if _, ok := app.Types[names.name]; !ok {
+		app.Types[names.name] = newsysl.Type(names.name, names.appName...)
+	}
+	return newsysl.Param(names.name, names.appName...)
+}
+
+// VisitReturn converts an output message to a Sysl return statement and constructs a corresponding
+// type in the TypeApplication (unlike protobufs, Sysl types must be contained by applications).
+// rpc thisEndpoint(InputType) returns(OutputType) -->
+// Types: !type OutputType: ...
+func VisitReturn(ctx GenContext, m *protogen.Message) *sysl.Statement {
+	names := getNames(ctx, m.Desc)
+	app := getOrCreateApp(ctx, names)
+	if _, ok := app.Types[names.name]; !ok {
+		app.Types[names.name] = newsysl.Type(names.name, names.appName...)
+	}
+	return newsysl.Return(names.fullName)
 }
 
 // VisitMessage converts to sysl and constructs types from messages. All types are writen to the
 // TypeApplication (as in sysl types belong to applications but not in proto
 // message foo{...} --> !type foo:
-func VisitMessage(importPrefix string, module *sysl.Module, m *protogen.Message) error {
-	var fieldName string
+func VisitMessage(ctx GenContext, m *protogen.Message) error {
+	names := getNames(ctx, m.Desc)
+
 	attrs := make(map[string]*sysl.Attribute)
+	attrs["source_path"] = newsysl.Attribute(path.Join(ctx.importPrefix, m.Location.SourceFile))
+	if desc := cleanDescription(m.Comments); desc != "" {
+		attrs["description"] = newsysl.Attribute(desc)
+	}
+
+	// Process nested messages and enums first, so they're available for reference.
+	for _, e := range m.Messages {
+		if err := VisitMessage(ctx, e); err != nil {
+			return err
+		}
+	}
+	for _, e := range m.Enums {
+		if err := VisitEnum(ctx, e); err != nil {
+			return err
+		}
+	}
+
 	attrDefs := make(map[string]*sysl.Type)
-	packageName, typeName := descToSyslName(m.Desc)
-	attrs["source_path"] = newsysl.AttributeAny(path.Join(importPrefix, m.Location.SourceFile))
-	attrs["description"] = newsysl.Attribute(cleanDescription(m.Comments))
-	for _, e := range m.Fields {
-		fieldName = newsysl.SanitiseTypeName(string(e.Desc.Name()))
-		attrDefs[fieldName] = fieldGoType(packageName, e)
+	for _, f := range m.Fields {
+		fieldName := newsysl.SanitiseTypeName(string(f.Desc.Name()))
+		attrDefs[fieldName] = fieldSyslType(ctx, names, f)
 	}
 	// If there are no fields add ~empty pattern
 	if len(m.Fields) == 0 {
 		attrs["patterns"] = newsysl.Pattern("empty")
 	}
-	// in proto messages can be defined within messages
-	for _, e := range m.Messages {
-		if err := VisitMessage(importPrefix, module, e); err != nil {
-			return err
-		}
-	}
-	// same with enums
-	for _, e := range m.Enums {
-		if err := VisitEnum(module, e); err != nil {
-			return err
-		}
-	}
-	// If this is the first service in the package, we need to make an app to store the types
-	if _, ok := module.Apps[packageName]; !ok {
-		module.Apps[packageName] = newsysl.Application(packageName)
-		module.Apps[packageName].Attrs["package"] = newsysl.Attribute(packageName)
-	}
-	module.Apps[packageName].Types[typeName] = &sysl.Type{
+
+	app := getOrCreateApp(ctx, names)
+	app.Types[names.name] = &sysl.Type{
 		Attrs: attrs,
 		Type: &sysl.Type_Tuple_{
 			Tuple: &sysl.Type_Tuple{
@@ -144,17 +213,15 @@ func VisitMessage(importPrefix string, module *sysl.Module, m *protogen.Message)
 // VisitEnumValue converts to sysl enums. All types are writen to the
 // Currently this sysl syntax is unsupported, but enums exist within the sysl data object
 // enum foo{...} --> !enum foo:
-func VisitEnum(module *sysl.Module, e *protogen.Enum) error {
-	packageName, typeName := descToSyslName(e.Desc)
-	if _, ok := module.Apps[packageName]; !ok {
-		module.Apps[packageName] = newsysl.Application(packageName)
-	}
+func VisitEnum(ctx GenContext, e *protogen.Enum) error {
+	names := getNames(ctx, e.Desc)
 	values := make(map[string]int64)
-	t := e.Values
-	for _, val := range t {
+	for _, val := range e.Values {
 		values[newsysl.SanitiseTypeName(string(val.Desc.Name()))] = int64(val.Desc.Number())
 	}
-	module.Apps[packageName].Types[typeName] = &sysl.Type{
+
+	app := getOrCreateApp(ctx, names)
+	app.Types[names.name] = &sysl.Type{
 		Type: &sysl.Type_Enum_{
 			Enum: &sysl.Type_Enum{
 				Items: values,
@@ -164,22 +231,15 @@ func VisitEnum(module *sysl.Module, e *protogen.Enum) error {
 	return nil
 }
 
-func descToSyslName(Desc protoreflect.Descriptor) (string, string) {
-	return syslNames(string(Desc.Parent().ParentFile().Package()), string(Desc.FullName()))
-
-}
-
-func syslNames(pkg, fullName string) (string, string) {
-	// A semicolon-delimited suffix delimits the import path and package name.
-	name := strings.ReplaceAll(fullName, pkg, "")
-	pkg = strings.ReplaceAll(pkg, ".", "_")
-	name = strings.ReplaceAll(name, ".", "_")
-	for i := 0; i < len(name); i++ {
-		if name[i] == '_' && len(name) > i-1 {
-			name = name[i+1:]
-		} else {
-			break
-		}
+// getOrCreateApp returns the app in module named n.appName, creating a new one if it doesn't
+// already exist.
+func getOrCreateApp(ctx GenContext, n names) *sysl.Application {
+	name := namespaceJoin(n.appName)
+	app, ok := ctx.module.Apps[name]
+	if !ok {
+		app = newsysl.Application(n.appName...)
+		app.Attrs["package"] = newsysl.Attribute(strings.ReplaceAll(n.protoPackage, ".", "_"))
+		ctx.module.Apps[name] = app
 	}
-	return pkg, newsysl.SanitiseTypeName(name)
+	return app
 }

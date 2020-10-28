@@ -1,6 +1,7 @@
 package proto2sysl
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -21,15 +22,33 @@ func cleanDescription(comment protogen.CommentSet) string {
 	return ret
 }
 
-// fieldGoType returns the Go type used for a field.
-func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
+// fieldSyslType returns the Sysl type used for a field.
+func fieldSyslType(ctx GenContext, parentNames names, field *protogen.Field) *sysl.Type {
 	if field.Desc.IsWeak() {
 		return nil
 	}
-	application, _ := descToSyslName(field.Desc)
-	if field.Message != nil {
-		application, _ = descToSyslName(field.Message.Desc)
+
+	// createType returns a new type reflecting the message or enum field's descriptor.
+	createType := func(d protoreflect.Descriptor, comments protogen.CommentSet) *sysl.Type {
+		names := getNames(ctx, d)
+		var t *sysl.Type
+		if parentNames.protoPackage != names.protoPackage {
+			if ns, ok := ctx.pkgNs[names.protoPackage]; ok && len(ns) > 0 {
+				t = newsysl.Type(names.name, append(ns, typesAppName)...)
+			} else {
+				t = newsysl.Type(names.name, packageToApp(names.protoPackage))
+			}
+		} else if namespaceJoin(parentNames.appName) == namespaceJoin(names.appName) {
+			t = newsysl.Type(names.name)
+		} else {
+			t = newsysl.Type(names.name, names.appName...)
+		}
+		if desc := cleanDescription(comments); desc != "" {
+			t.Attrs = map[string]*sysl.Attribute{"description": newsysl.Attribute(desc)}
+		}
+		return t
 	}
+
 	var t *sysl.Type
 	switch field.Desc.Kind() {
 	case protoreflect.BoolKind:
@@ -45,17 +64,11 @@ func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	case protoreflect.BytesKind:
 		t = newsysl.Primitive(sysl.Type_BYTES)
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		_, typeName := descToSyslName(field.Message.Desc)
-		if application == currentApp {
-			application = ""
-		}
-		t = newsysl.Type(typeName, application)
+		t = createType(field.Message.Desc, field.Message.Comments)
 	case protoreflect.EnumKind:
-		_, typeName := descToSyslName(field.Enum.Desc)
-		if application == currentApp {
-			application = ""
-		}
-		t = newsysl.Type(typeName, application)
+		t = createType(field.Enum.Desc, field.Enum.Comments)
+	default:
+		panic(fmt.Sprintf("unknown type: %T", field.Desc.Kind()))
 	}
 
 	t.Attrs = map[string]*sysl.Attribute{
@@ -64,10 +77,9 @@ func fieldGoType(currentApp string, field *protogen.Field) *sysl.Type {
 	}
 	if description := cleanDescription(field.Comments); description != "" {
 		t.Attrs["description"] = newsysl.Attribute(description)
-
 	}
-	switch {
-	case field.Desc.IsList():
+
+	if field.Desc.IsList() {
 		return newsysl.Sequence(t)
 	}
 	return t

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package grpc.testing;
+package testing.repeated;
 
 
 message Request {

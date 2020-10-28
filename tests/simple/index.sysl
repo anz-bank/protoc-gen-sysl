@@ -23,7 +23,6 @@ Foo[~gRPC]:
 grpc_testing:
     @package = "grpc_testing"
     !type Money:
-        @description = ""
         @source_path = "tests/simple/simple.proto"
         nanos <: int:
             @json_tag = "nanos"
@@ -32,13 +31,11 @@ grpc_testing:
             @json_tag = "units"
             @rpcId = "2"
     !type Request:
-        @description = ""
         @source_path = "tests/simple/simple.proto"
         query <: string:
             @json_tag = "query"
             @rpcId = "1"
     !type Response:
-        @description = ""
         @source_path = "tests/simple/simple.proto"
         query <: string:
             @json_tag = "query"

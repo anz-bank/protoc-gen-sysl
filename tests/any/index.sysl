@@ -112,7 +112,6 @@ google_protobuf:
 grpc_testing:
     @package = "grpc_testing"
     !type This:
-        @description = ""
         @source_path = "tests/any/any.proto"
         grpc_request <: google_protobuf.any_:
             @json_tag = "grpcRequest"

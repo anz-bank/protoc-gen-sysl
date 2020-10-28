@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package org.team.project.names.child;
+
+import "google/protobuf/timestamp.proto";
+
+import "proto2sysl/options.proto";
+option (sysl.namespace) = " Org :: Team :: Project :: Child";
+
+message Child {
+  string foobar = 1;
+}

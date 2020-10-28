@@ -21,7 +21,7 @@ var TypeMapping = map[string]sysl.Type_Primitive{
 
 var specialMappings = map[string]string{"date": "date_", "Any": "Any_", "any": "any_"}
 
-// Pattern returns a pattern attribute nested in a whole bunch of other types because fml
+// Pattern returns a pattern attribute nested in other types.
 func Pattern(patterns ...string) *sysl.Attribute {
 	var Elt []*sysl.Attribute
 	for _, pattern := range patterns {
@@ -30,61 +30,61 @@ func Pattern(patterns ...string) *sysl.Attribute {
 	return &sysl.Attribute{Attribute: &sysl.Attribute_A{A: &sysl.Attribute_Array{Elt: Elt}}}
 }
 
-// Application Initialises a Sysl application
-func Application(appName string) *sysl.Application {
+// Application initialises a Sysl application
+func Application(appName ...string) *sysl.Application {
 	return &sysl.Application{
-		Name:      AppName(appName),
+		Name:      AppName(appName...),
 		Endpoints: map[string]*sysl.Endpoint{},
 		Types:     map[string]*sysl.Type{},
 		Attrs:     map[string]*sysl.Attribute{},
 	}
 }
 
-// Application Initialises a Sysl application
+// Module initialises a Sysl module.
 func Module() *sysl.Module {
 	return &sysl.Module{Apps: map[string]*sysl.Application{}}
 }
 
-// Endpoint Initialises a Sysl Endpoint
+// Endpoint initialises a Sysl Endpoint.
 func Endpoint(name string) *sysl.Endpoint {
 	return &sysl.Endpoint{Name: name}
 }
 
-// Param Initialises a Sysl Param input
-func Param(name, application string) *sysl.Param {
+// Param initialises a Sysl Param input.
+func Param(name string, appName ...string) *sysl.Param {
 	return &sysl.Param{
 		Name: "input",
-		Type: Type(name, application),
+		Type: Type(name, appName...),
 	}
 }
 
-// Attribute Initialises a Sysl Attribute
+// Attribute initialises a Sysl Attribute.
 func Attribute(value string) *sysl.Attribute {
 	return &sysl.Attribute{
 		Attribute: &sysl.Attribute_S{S: value},
 	}
 }
 
-// Attribute Initialises a Sysl Attribute
+// AttributeAny initialises a Sysl Attribute with a value encoded as a string.
 func AttributeAny(value interface{}) *sysl.Attribute {
 	return &sysl.Attribute{
 		Attribute: &sysl.Attribute_S{S: fmt.Sprint(value)},
 	}
 }
 
-// Type Initialises a Sysl type from string
-func Type(name, application string) *sysl.Type {
-	if strings.Contains(name, "sequence of") {
-		return NewSequence(strings.ReplaceAll(name, "sequence of", ""), application)
+// Type initialises a Sysl type from string.
+func Type(name string, appName ...string) *sysl.Type {
+	if strings.Contains(name, "sequence of ") {
+		return NewSequence(strings.ReplaceAll(name, "sequence of ", ""), appName...)
 	}
 	if fieldType, ok := TypeMapping[name]; ok {
 		return Primitive(fieldType)
 	}
-	return Struct(name, application)
+	return Struct(name, appName...)
 }
 
-// Return Initialises a return statement and wraps it in a sysl statement
-// payloads will be concatenated and seperated by dots "."
+// Return initialises a return statement and wraps it in a sysl statement.
+// Payloads will be concatenated and separated by dots.
 func Return(payloads ...string) *sysl.Statement {
 	for i := range payloads {
 		payloads[i] = SanitiseTypeName(payloads[i])
@@ -93,7 +93,7 @@ func Return(payloads ...string) *sysl.Statement {
 		Payload: "ok <: " + strings.Join(payloads, ".")}}}
 }
 
-// Call Initialises a call statement and wraps it in a sysl statement
+// Call initialises a call statement and wraps it in a sysl statement.
 func Call(app, endpoint string) *sysl.Statement {
 	return &sysl.Statement{Stmt: &sysl.Statement_Call{
 		Call: &sysl.Call{
@@ -101,7 +101,7 @@ func Call(app, endpoint string) *sysl.Statement {
 			Endpoint: endpoint}}}
 }
 
-// StringStatement Initialises a call statement and wraps it in a sysl statement
+// StringStatement initialises a call statement and wraps it in a sysl statement.
 func StringStatement(value string) *sysl.Statement {
 	return &sysl.Statement{Stmt: &sysl.Statement_Action{
 		Action: &sysl.Action{
@@ -111,12 +111,14 @@ func StringStatement(value string) *sysl.Statement {
 	}
 }
 
-// AppName returns an appname from the inputs
+// AppName returns an appname from the inputs.
+//
+// If name is empty, the returned AppName's part will be nil.
 func AppName(name ...string) *sysl.AppName {
 	return &sysl.AppName{Part: name}
 }
 
-// Primitive converts a string to a sysl primitive type (parameter must be in sysl type)
+// Primitive converts a string to a sysl primitive type (parameter must be in sysl type).
 func Primitive(fieldType sysl.Type_Primitive) *sysl.Type {
 	return &sysl.Type{
 		Type: &sysl.Type_Primitive_{
@@ -124,6 +126,8 @@ func Primitive(fieldType sysl.Type_Primitive) *sysl.Type {
 		},
 	}
 }
+
+// Sequence returns a sequence of a given type.
 func Sequence(t *sysl.Type) *sysl.Type {
 	return &sysl.Type{
 		Type: &sysl.Type_Sequence{
@@ -132,26 +136,22 @@ func Sequence(t *sysl.Type) *sysl.Type {
 	}
 }
 
-// Primitive converts a string to a sysl primitive type (parameter must be in sysl type)
-func NewSequence(fieldType, application string) *sysl.Type {
+// NewSequence returns a sequence of a new type.
+func NewSequence(fieldType string, appName ...string) *sysl.Type {
 	return &sysl.Type{
 		Type: &sysl.Type_Sequence{
-			Sequence: Type(fieldType, application),
+			Sequence: Type(fieldType, appName...),
 		},
 	}
 }
 
-// Struct converts a string to a sysl struct type
-func Struct(fieldType, application string) *sysl.Type {
-	var appName *sysl.AppName
-	if application != "" {
-		appName = AppName(application)
-	}
+// Struct converts a string to a sysl struct type.
+func Struct(fieldType string, appName ...string) *sysl.Type {
 	return &sysl.Type{
 		Type: &sysl.Type_TypeRef{
 			TypeRef: &sysl.ScopedRef{
 				Ref: &sysl.Scope{
-					Appname: appName,
+					Appname: AppName(appName...),
 					Path:    []string{fieldType},
 				},
 			},

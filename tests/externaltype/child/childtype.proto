@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package testing.externaltype.child;
+
+import "google/protobuf/timestamp.proto";
+
+message Child {
+  google.protobuf.Timestamp foobar = 1;
+}

@@ -3,13 +3,14 @@ package main
 import (
 	"bytes"
 	"flag"
-	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/joshcarp/gop/gop/retriever/retriever_local"
+	"github.com/stretchr/testify/require"
 
 	"github.com/anz-bank/sysl/pkg/parse"
 	"github.com/anz-bank/sysl/pkg/syslutil"
@@ -22,7 +23,7 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/alecthomas/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 var tests = []string{
@@ -41,26 +42,31 @@ var tests = []string{
 	"test",
 	"otheroption/",
 	"enum/",
+	"names/",
 }
 
 const testDir = "./tests"
 
 func TestPrinting(t *testing.T) {
+	t.Parallel()
+
 	for _, test := range tests {
-		test = filepath.Join(testDir, test)
-		_, fs := syslutil.WriteToMemOverlayFs(test)
-		GeneratorResponse, err := ConvertSyslToProto(filepath.Join(test, "code_generator_request.pb.bin"))
 		t.Run(test, func(t *testing.T) {
-			assert.NoError(t, err)
-			golden, err := afero.ReadFile(fs, *GeneratorResponse.File[0].Name)
-			assert.NoError(t, err)
-			if *GeneratorResponse.File[0].Content != string(golden) {
-				fmt.Println(*GeneratorResponse.File[0].Content)
-			}
-			assert.Equal(t, *GeneratorResponse.File[0].Content, string(golden))
-			if _, err := parse.NewParser().Parse(*GeneratorResponse.File[0].Name, fs); err != nil {
-				log.Fatal(err)
-			}
+			t.Parallel()
+			dir := filepath.Join(testDir, test)
+			_, fs := syslutil.WriteToMemOverlayFs(dir)
+
+			GeneratorResponse, err := ConvertSyslToProto(filepath.Join(dir, "code_generator_request.pb.bin"))
+			require.NoError(t, err)
+
+			file := GeneratorResponse.File[0]
+			golden, err := afero.ReadFile(fs, *file.Name)
+			require.NoError(t, err)
+
+			assert.Equal(t, *file.Content, string(golden), *file.Content)
+
+			_, err = parse.NewParser().Parse(*file.Name, retriever_local.New(fs))
+			require.NoError(t, err)
 		})
 	}
 }

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+import "proto2sysl/options.proto";
+import "tests/names/child/childtype.proto";
+
+package org.team.project.names;
+
+option go_package = "tests/names;whatever";
+option (sysl.namespace) = " Org::Team ::  Project ";
+
+message Request {
+  string query = 1;
+  org.team.project.names.child.Child child = 2;
+}
+
+message Response {
+  string query = 1;
+  Bar bar = 2;
+  message Nested {
+    string n = 1;
+  }
+}
+
+enum Bar {
+  UNDEFINED = 0;
+  BAZ = 1;
+}
+
+// This is a comment before Foo
+service Foo {
+  rpc thisEndpoint(Request) returns(Response) {};
+}

@@ -1,12 +1,12 @@
 
 grpc_testing2:
+    @package = "grpc_testing2"
     !type Request:
-        @description = ""
         @source_path = "tests/messageinmessage/simple2.proto"
-        bar <: Request_Type:
+        bar <: Type:
             @json_tag = "bar"
             @rpcId = "9"
-    !enum Request_Type:
+    !enum Type:
         ACCOUNT: 1
         CARD: 2
         UNKNOWN: 0
@@ -15,9 +15,8 @@ grpc_testing2:
         CARD: 2
         UNKNOWN: 0
     !type foo:
-        @description = ""
         @source_path = "tests/messageinmessage/simple2.proto"
-        foobar <: Request_Type:
+        foobar <: Type:
             @json_tag = "foobar"
             @rpcId = "1"
         qwerty <: Type2:

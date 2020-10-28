@@ -11,13 +11,11 @@ Bar[~gRPC]:
 grpc_testing:
     @package = "grpc_testing"
     !type date_:
-        @description = ""
         @source_path = "tests/date/date.proto"
         this <: string:
             @json_tag = "this"
             @rpcId = "1"
     !type that:
-        @description = ""
         @source_path = "tests/date/date.proto"
         s <: date_:
             @json_tag = "s"

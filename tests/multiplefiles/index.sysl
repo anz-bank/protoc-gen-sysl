@@ -9,11 +9,11 @@ Bar[~gRPC]:
         return ok <: grpc_testing.Response
 
 grpc_testing:
+    @package = "grpc_testing"
     !enum Currency:
         AUD: 0
         USD: 1
     !type Request:
-        @description = ""
         @source_path = "tests/multiplefiles/types.proto"
         currency_code <: Currency:
             @json_tag = "currencyCode"
@@ -22,7 +22,6 @@ grpc_testing:
             @json_tag = "query"
             @rpcId = "1"
     !type Response:
-        @description = ""
         @source_path = "tests/multiplefiles/types.proto"
         query <: string:
             @json_tag = "query"

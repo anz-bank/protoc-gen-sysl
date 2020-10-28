@@ -1,7 +1,9 @@
 syntax = "proto3";
 
-package grpc.testing.what;
+package testing.externaltype;
 
+import "tests/externaltype/siblingtype.proto";
+import "tests/externaltype/child/childtype.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
@@ -21,6 +23,8 @@ message repeatedDate {
 
 message foo {
     google.protobuf.Empty foobar = 1;
+    Sibling sibling = 2;
+    testing.externaltype.child.Child child = 3;
 }
 
 message this{

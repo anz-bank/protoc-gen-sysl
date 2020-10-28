@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package testing.externaltype;
+
+import "google/protobuf/timestamp.proto";
+
+message Sibling {
+  google.protobuf.Timestamp foobar = 1;
+}

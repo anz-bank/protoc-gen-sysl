@@ -1,35 +1,51 @@
 
-Bar[~gRPC]:
-    @description = ""
-    @package = "testing_externaltype"
-    @source_path = "tests/externaltype/externaltype.proto"
-    AnotherEndpoint(input <: testing_externaltype.date_)[~gRPC]:
-        @description = ""
-        @source_path = "tests/externaltype/externaltype.proto"
-        return ok <: testing_externaltype.date_
+Org :: Team :: Project :: Child :: Types:
+    @package = "org_team_project_names_child"
+    !type Child:
+        @source_path = "tests/names/child/childtype.proto"
+        foobar <: string:
+            @json_tag = "foobar"
+            @rpcId = "1"
 
-Car[~gRPC]:
-    @description = ""
-    @package = "testing_externaltype"
-    @source_path = "tests/externaltype/externaltype.proto"
-    AnotherEndpoint(input <: testing_externaltype.this)[~gRPC]:
+Org :: Team :: Project :: Foo[~gRPC]:
+    @description =:
+        | This is a comment before Foo
+    @package = "org_team_project_names"
+    @source_path = "tests/names/names.proto"
+    thisEndpoint(input <: Org :: Team :: Project :: Types.Request)[~gRPC]:
         @description = ""
-        @source_path = "tests/externaltype/externaltype.proto"
-        return ok <: testing_externaltype.this
+        @source_path = "tests/names/names.proto"
+        return ok <: Org :: Team :: Project :: Types.Response
+
+Org :: Team :: Project :: Types:
+    @package = "org_team_project_names"
+    !enum Bar:
+        BAZ: 1
+        UNDEFINED: 0
+    !type Nested:
+        @source_path = "tests/names/names.proto"
+        n <: string:
+            @json_tag = "n"
+            @rpcId = "1"
+    !type Request:
+        @source_path = "tests/names/names.proto"
+        child <: Org :: Team :: Project :: Child :: Types.Child:
+            @json_tag = "child"
+            @rpcId = "2"
+        query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
+    !type Response:
+        @source_path = "tests/names/names.proto"
+        bar <: Bar:
+            @json_tag = "bar"
+            @rpcId = "2"
+        query <: string:
+            @json_tag = "query"
+            @rpcId = "1"
 
 google_protobuf:
     @package = "google_protobuf"
-    !type Empty[~empty]:
-        @description =:
-            | A generic empty message that you can re-use to avoid defining duplicated
-            | empty messages in your APIs. A typical example is to use it as the request
-            | or the response type of an API method. For instance:
-            |     service Foo {
-            |       rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);
-            |     }
-            | The JSON representation for `Empty` is empty JSON object `{}`.
-        @source_path = "google/protobuf/empty.proto"
-        ...
     !type Timestamp:
         @description =:
             | A Timestamp represents a point in time independent of any time zone or local
@@ -118,50 +134,5 @@ google_protobuf:
                 | 1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
                 | 9999-12-31T23:59:59Z inclusive.
             @json_tag = "seconds"
-            @rpcId = "1"
-
-testing_externaltype:
-    @package = "testing_externaltype"
-    !type Sibling:
-        @source_path = "tests/externaltype/siblingtype.proto"
-        foobar <: google_protobuf.Timestamp:
-            @json_tag = "foobar"
-            @rpcId = "1"
-    !type That:
-        @source_path = "tests/externaltype/externaltype.proto"
-        ohno <: string:
-            @json_tag = "ohno"
-            @rpcId = "1"
-    !type date_:
-        @source_path = "tests/externaltype/externaltype.proto"
-        foobar <: google_protobuf.Timestamp:
-            @json_tag = "foobar"
-            @rpcId = "1"
-    !type foo:
-        @source_path = "tests/externaltype/externaltype.proto"
-        child <: testing_externaltype_child.Child:
-            @json_tag = "child"
-            @rpcId = "3"
-        foobar <: google_protobuf.Empty:
-            @json_tag = "foobar"
-            @rpcId = "1"
-        sibling <: Sibling:
-            @json_tag = "sibling"
-            @rpcId = "2"
-    !type repeatedDate:
-        @source_path = "tests/externaltype/externaltype.proto"
-        foobar <: sequence of google_protobuf.Timestamp
-    !type this:
-        @source_path = "tests/externaltype/externaltype.proto"
-        foobar <: That:
-            @json_tag = "foobar"
-            @rpcId = "1"
-
-testing_externaltype_child:
-    @package = "testing_externaltype_child"
-    !type Child:
-        @source_path = "tests/externaltype/child/childtype.proto"
-        foobar <: google_protobuf.Timestamp:
-            @json_tag = "foobar"
             @rpcId = "1"
 

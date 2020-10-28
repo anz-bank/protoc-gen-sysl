@@ -22,3 +22,5 @@ Each folder holds 3 files:
     - tests the creation of empty types in sysl
 - date
     - tests mapping of `date` to `date_` in sysl as `date` is a special identifier in sysl
+- namespace
+    - tests use of `sysl_namespace` file option to prefix generated Sysl applications with a Sysl namespace

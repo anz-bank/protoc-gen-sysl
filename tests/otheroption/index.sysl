@@ -11,13 +11,11 @@ Bar[~gRPC]:
 grpc_testing:
     @package = "grpc_testing"
     !type Request:
-        @description = ""
         @source_path = "tests/otheroption/otheroption.proto"
         query <: string:
             @json_tag = "query"
             @rpcId = "1"
     !type Response:
-        @description = ""
         @source_path = "tests/otheroption/otheroption.proto"
         query <: string:
             @json_tag = "query"

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "google/protobuf/descriptor.proto";
+
+package sysl;
+
+option go_package = "proto2sysl";
+
+extend google.protobuf.FileOptions {
+  string namespace = 55751;
+}

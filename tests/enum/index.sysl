@@ -14,7 +14,6 @@ grpc_testing:
         AUD: 0
         USD: 1
     !type Request:
-        @description = ""
         @source_path = "tests/enum/enum.proto"
         currency_code <: Currency:
             @json_tag = "currencyCode"
@@ -23,7 +22,6 @@ grpc_testing:
             @json_tag = "query"
             @rpcId = "1"
     !type Response:
-        @description = ""
         @source_path = "tests/enum/enum.proto"
         query <: string:
             @json_tag = "query"
