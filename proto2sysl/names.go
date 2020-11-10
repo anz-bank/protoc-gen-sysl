@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/anz-bank/protoc-gen-sysl/newsysl"
+	"github.com/anz-bank/protoc-gen-sysl/sysl"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -111,7 +112,7 @@ func packageToApp(pkg string) string {
 
 // getFileNamespaceOption returns the value of the sysl.namespace FileOption, split on "::".
 func getFileNamespaceOption(d protoreflect.FileDescriptor) []string {
-	return getNameOption(d, E_Namespace)
+	return getNameOption(d, sysl.E_Namespace)
 }
 
 // getNameOption returns the value of an option split and cleaned to resemble an app name, or an

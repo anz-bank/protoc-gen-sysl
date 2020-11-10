@@ -12,7 +12,7 @@ help:			## Show this help.
 %.pb.go: %.proto		## Generates .pb.go files from .proto files with protoc.
 	protoc --go_out=. $<
 
-generate: proto2sysl/options.pb.go		## Generates intermediate files.
+generate: sysl/options.pb.go	## Generates intermediate files.
 
 install: generate	## Installs this project as a binary in your go binary directory.
 	go install github.com/anz-bank/protoc-gen-sysl

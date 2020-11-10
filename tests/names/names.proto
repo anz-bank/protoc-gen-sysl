@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "proto2sysl/options.proto";
+import "sysl/options.proto";
 import "tests/names/child/childtype.proto";
 
 package org.team.project.names;
