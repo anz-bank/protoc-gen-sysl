@@ -11,6 +11,8 @@ message Response {
 }
 
 service Foo{
+    // // keep these slashes
+    // **grpcurl**: ```~$ curl https://example.com```
     rpc thisEndpoint(Request) returns(Response);
 }
 

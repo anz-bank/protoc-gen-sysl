@@ -17,7 +17,7 @@ func cleanDescription(comment protogen.CommentSet) string {
 	var ret string
 	s := []string{string(comment.Leading), string(comment.Trailing)}
 	for _, e := range s {
-		ret += strings.ReplaceAll(e, "//", "\n")
+		ret += strings.ReplaceAll(e, "\n//", "\n")
 	}
 	return ret
 }

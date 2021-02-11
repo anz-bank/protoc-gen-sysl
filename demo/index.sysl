@@ -1,25 +1,33 @@
 
-Bar:
+Bar[~gRPC]:
     @description = ""
     @package = "grpc_testing"
-    AnotherEndpoint(input <: grpc_testing.Request):
+    @source_path = "example.proto"
+    AnotherEndpoint(input <: grpc_testing.Request)[~gRPC]:
         @description = ""
+        @source_path = "example.proto"
         return ok <: grpc_testing.Response
 
-Foo:
+Foo[~gRPC]:
     @description = ""
     @package = "grpc_testing"
-    ThisEndpoint(input <: grpc_testing.Request):
-        @description = ""
+    @source_path = "example.proto"
+    thisEndpoint(input <: grpc_testing.Request)[~gRPC]:
+        @description =:
+            | // keep these slashes
+            | **grpcurl**: ```~$ curl https://example.com```
+        @source_path = "example.proto"
         return ok <: grpc_testing.Response
 
 grpc_testing:
     @package = "grpc_testing"
     !type Request:
+        @source_path = "example.proto"
         query <: string:
             @json_tag = "query"
             @rpcId = "1"
     !type Response:
+        @source_path = "example.proto"
         query <: string:
             @json_tag = "query"
             @rpcId = "1"
