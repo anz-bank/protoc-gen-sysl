@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package grpc.testing2;
 
+option go_package = "github.com/anz-bank/protoc-gen-sysl/tests/messageinmessage";
+
 message Request {
     Type bar = 9;
     enum Type {

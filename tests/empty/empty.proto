@@ -1,7 +1,8 @@
 syntax = "proto3";
 
 package grpc.testing;
-option go_package = "tests/empty;empty";
+
+option go_package = "github.com/anz-bank/protoc-gen-sysl/tests/empty;empty";
 
 import "tests/empty/type.proto";
 

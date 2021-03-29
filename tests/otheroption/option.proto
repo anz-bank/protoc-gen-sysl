@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package foobar;
 
-import "google/protobuf/descriptor.proto";
+option go_package = "github.com/anz-bank/protoc-gen-sysl/tests/otheroption";
 
-option go_package = "foobar";
+import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.MethodOptions {
     repeated barRule bars = 72297728;

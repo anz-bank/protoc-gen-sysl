@@ -6,7 +6,7 @@ package sysl
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	descriptorpb "google.golang.org/protobuf/types/descriptorpb"
 	math "math"
 )
 
@@ -22,7 +22,7 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 var E_Namespace = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.FileOptions)(nil),
+	ExtendedType:  (*descriptorpb.FileOptions)(nil),
 	ExtensionType: (*string)(nil),
 	Field:         55751,
 	Name:          "sysl.namespace",

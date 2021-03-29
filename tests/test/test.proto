@@ -18,6 +18,8 @@ syntax = "proto3";
 
 package grpc.testing;
 
+option go_package = "github.com/anz-bank/protoc-gen-sysl/tests/test";
+
 import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.ServiceOptions {

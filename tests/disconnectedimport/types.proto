@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package grpc.testing;
 
+option go_package = "github.com/anz-bank/protoc-gen-sysl/tests/disconnectedimport";
+
 import "tests/disconnectedimport/disconnectedimport.proto";
 
 message Request {

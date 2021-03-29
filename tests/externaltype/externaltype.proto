@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package testing.externaltype;
 
+option go_package = "github.com/anz-bank/protoc-gen-sysl/tests/externaltype";
+
 import "tests/externaltype/siblingtype.proto";
 import "tests/externaltype/child/childtype.proto";
 import "google/protobuf/timestamp.proto";
@@ -40,4 +42,3 @@ message this{
 service Car{
     rpc AnotherEndpoint(this) returns(this);
 }
-

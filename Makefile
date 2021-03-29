@@ -9,7 +9,7 @@ update: install update-sysl update-tests ## Update tests and debug
 help:			## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
-%.pb.go: %.proto		## Generates .pb.go files from .proto files with protoc.
+%.pb.go: %.proto	## Generates .pb.go files from .proto files with protoc.
 	protoc --go_out=. $<
 
 generate: sysl/options.pb.go	## Generates intermediate files.
@@ -57,7 +57,7 @@ tidy:			## Tidies up Go mod and source files.
 demo:			## Makes sure the demo directory still builds and compiles
 	cd demo && make
 
-ci: test				## Runs the same ci that is on master.
+ci: test		## Runs the same ci that is on master.
 	golangci-lint run
 
 grpc: sysl grpc

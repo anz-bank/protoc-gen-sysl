@@ -5,7 +5,7 @@ import "tests/names/child/childtype.proto";
 
 package org.team.project.names;
 
-option go_package = "tests/names;whatever";
+option go_package = "github.com/anz-bank/protoc-gen-sysl/tests/names;whatever";
 option (sysl.namespace) = " Org::Team ::  Project ";
 
 message Request {

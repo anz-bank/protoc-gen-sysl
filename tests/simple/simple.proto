@@ -1,7 +1,8 @@
 syntax = "proto3";
 
 package grpc.testing;
-option go_package = "tests/simple;whatever";
+
+option go_package = "github.com/anz-bank/protoc-gen-sysl/tests/simple;whatever";
 
 message Request {
     string query = 1;

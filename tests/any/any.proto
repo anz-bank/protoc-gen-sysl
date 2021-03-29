@@ -1,6 +1,10 @@
 syntax = "proto3";
+
 import "google/protobuf/any.proto";
+
 package grpc.testing;
+
+option go_package = "github.com/anz-bank/protoc-gen-sysl/tests/any";
 
 service Bar{
     rpc AnotherEndpoint(This) returns(This);
