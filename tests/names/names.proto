@@ -1,12 +1,12 @@
+//   {"sysl": {"namespace" : " Org :: Team ::  Project "}}
+
 syntax = "proto3";
 
-import "sysl/options.proto";
 import "tests/names/child/childtype.proto";
 
 package org.team.project.names;
 
 option go_package = "github.com/anz-bank/protoc-gen-sysl/tests/names;whatever";
-option (sysl.namespace) = " Org::Team ::  Project ";
 
 message Request {
   string query = 1;

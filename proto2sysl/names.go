@@ -1,11 +1,11 @@
 package proto2sysl
 
 import (
+	"encoding/json"
+	"regexp"
 	"strings"
 
 	"github.com/anz-bank/protoc-gen-sysl/newsysl"
-	"github.com/anz-bank/protoc-gen-sysl/sysl"
-	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -112,26 +112,40 @@ func packageToApp(pkg string) string {
 
 // getFileNamespaceOption returns the value of the sysl.namespace FileOption, split on "::".
 func getFileNamespaceOption(d protoreflect.FileDescriptor) []string {
-	return getNameOption(d, sysl.E_Namespace)
+	return getNameOption(d)
+}
+
+type SyslOption struct {
+	Sysl struct {
+		Namespace string `json:"namespace"`
+	} `json:"sysl"`
 }
 
 // getNameOption returns the value of an option split and cleaned to resemble an app name, or an
 // empty array if the given option is not present.
 //
 // Intend for the retrieval of namespace and app name values from options.
-func getNameOption(d protoreflect.Descriptor, o protoreflect.ExtensionType) []string {
-	opts := d.Options()
-	if opts == nil {
-		return []string{}
-	}
-	opt := proto.GetExtension(opts, o).(string)
-	if opt == "" {
-		return []string{}
-	}
+func getNameOption(file protoreflect.FileDescriptor) []string {
+	var re = regexp.MustCompile(`(?m)\{"sysl":.*}`)
+	var option SyslOption
+	locs := file.SourceLocations()
+	for i := 0; i < locs.Len(); i++ {
+		loc := locs.Get(i)
+		if len(loc.Path) == 1 {
+			for _, e := range loc.LeadingDetachedComments {
+				match := re.FindString(e)
+				if match != "" {
+					err := json.Unmarshal([]byte(match), &option)
+					if err != nil {
+						panic("Invalid sysl option, must be in form {\"sysl\": {\"namespace\" : \"foobar\"}}")
+					}
+				}
+			}
+		}
 
-	namespace := strings.Split(opt, "::")
-	for i, n := range namespace {
-		namespace[i] = strings.TrimSpace(n)
 	}
-	return namespace
+	if option.Sysl.Namespace == "" {
+		return nil
+	}
+	return strings.Split(strings.ReplaceAll(option.Sysl.Namespace, " ", ""), "::")
 }

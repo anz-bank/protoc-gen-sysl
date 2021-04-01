@@ -1,3 +1,5 @@
+//   {"sysl": {"namespace" : " Org :: Team :: Project :: Child"}}
+
 syntax = "proto3";
 
 package org.team.project.names.child;
@@ -5,9 +7,6 @@ package org.team.project.names.child;
 option go_package = "github.com/anz-bank/protoc-gen-sysl/tests/names/child";
 
 import "google/protobuf/timestamp.proto";
-
-import "sysl/options.proto";
-option (sysl.namespace) = " Org :: Team :: Project :: Child";
 
 message Child {
   string foobar = 1;

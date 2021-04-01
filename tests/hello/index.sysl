@@ -1,5 +1,5 @@
 
-hello:
+ORG :: TEAM :: Types:
     @package = "hello"
     !type Request:
         @source_path = "tests/hello/hello.proto"
