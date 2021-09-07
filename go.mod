@@ -2,7 +2,7 @@ module github.com/anz-bank/protoc-gen-sysl
 
 go 1.13
 
-replace github.com/spf13/afero v1.4.0 => github.com/anz-bank/afero v1.2.4
+replace github.com/spf13/afero => github.com/anz-bank/afero v1.2.4
 
 require (
 	github.com/anz-bank/sysl v0.342.0
