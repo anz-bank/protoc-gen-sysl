@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/joshcarp/gop/gop/retriever/retriever_local"
 	"github.com/stretchr/testify/require"
 
 	"github.com/anz-bank/sysl/pkg/parse"
@@ -65,7 +64,7 @@ func TestPrinting(t *testing.T) {
 
 			assert.Equal(t, *file.Content, string(golden), *file.Content)
 
-			_, err = parse.NewParser().Parse(*file.Name, retriever_local.New(fs))
+			_, err = parse.NewParser().ParseString(*file.Content)
 			require.NoError(t, err)
 		})
 	}
